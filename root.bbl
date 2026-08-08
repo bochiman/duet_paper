@@ -1,0 +1,87 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{#1}
+\csname url@rmstyle\endcsname
+\providecommand{\newblock}{\relax}
+\providecommand{\bibinfo}[2]{#2}
+\providecommand\BIBentrySTDinterwordspacing{\spaceskip=0pt\relax}
+\providecommand\BIBentryALTinterwordstretchfactor{4}
+\providecommand\BIBentryALTinterwordspacing{\spaceskip=\fontdimen2\font plus
+\BIBentryALTinterwordstretchfactor\fontdimen3\font minus
+  \fontdimen4\font\relax}
+\providecommand\BIBforeignlanguage[2]{{%
+\expandafter\ifx\csname l@#1\endcsname\relax
+\typeout{** WARNING: IEEEtran.bst: No hyphenation pattern has been}%
+\typeout{** loaded for the language `#1'. Using the pattern for}%
+\typeout{** the default language instead.}%
+\else
+\language=\csname l@#1\endcsname
+\fi
+#2}}
+
+\bibitem{rt2}
+A.~Brohan, N.~Brown, J.~Carbajal, Y.~Chebotar, X.~Chen, K.~Choromanski,
+  T.~Ding, D.~Driess, A.~Dubey, C.~Finn, P.~Florence, C.~Fu, M.~G. Arenas,
+  K.~Gopalakrishnan, K.~Han, K.~Hausman, A.~Herzog, J.~Hsu, B.~Ichter,
+  A.~Irpan, N.~Joshi, R.~Julian, D.~Kalashnikov, Y.~Kuang, I.~Leal, K.-H. Lee,
+  S.~Levine, Y.~Lu, H.~Michalewski, I.~Mordatch, K.~Pertsch, K.~Rao,
+  K.~Reymann, M.~Ryoo, G.~Salazar, P.~Sanketi, P.~Sermanet, J.~Singh, A.~Singh,
+  R.~Soricut, H.~Tran, V.~Vanhoucke, Q.~Vuong, A.~Wahid, S.~Welker,
+  P.~Wohlhart, J.~Wu, F.~Xia, T.~Xiao, P.~Xu, S.~Xu, T.~Yu, and B.~Zitkovich,
+  ``{RT-2}: Vision-language-action models transfer web knowledge to robotic
+  control,'' \emph{arXiv preprint arXiv:2307.15818}, 2023.
+
+\bibitem{openvla}
+M.~J. Kim, K.~Pertsch, S.~Karamcheti, T.~Xiao, A.~Balakrishna, S.~Nair,
+  R.~Rafailov, E.~Foster, T.~Lampe, P.~Sanketi, Q.~Vuong, T.~Kollar,
+  B.~Burchfiel, R.~Tedrake, D.~Sadigh, C.~Finn, and P.~Liang, ``{OpenVLA}: An
+  open-source vision-language-action model,'' \emph{arXiv preprint
+  arXiv:2406.09246}, 2024.
+
+\bibitem{starvla}
+{StarVLA Community}, ``{StarVLA}: A lego-like codebase for
+  vision-language-action model developing,''
+  \url{https://github.com/starVLA/starVLA}, 2026.
+
+\bibitem{diffusionpolicy}
+C.~Chi, S.~Feng, Y.~Du, Z.~Xu, E.~Cousineau, B.~Burchfiel, and S.~Song,
+  ``Diffusion policy: Visuomotor policy learning via action diffusion,''
+  \emph{The International Journal of Robotics Research}, 2024.
+
+\bibitem{pi0}
+K.~Black, N.~Brown, D.~Driess, A.~Esmail, M.~Equi, C.~Finn, N.~Fusai, L.~Groom,
+  K.~Hausman, B.~Ichter, J.~Jakubczak, T.~Jones, A.~Khazatsky, S.~Levine,
+  A.~Li-Bell, Y.~Lu, S.~Nair, K.~Pertsch, Q.~V. Xu, F.~Xia, and T.~Xiao,
+  ``$\pi_0$: A vision-language-action flow model for general robot control,''
+  \emph{arXiv preprint arXiv:2410.24164}, 2024.
+
+\bibitem{gr00t}
+{NVIDIA}, ``{GR00T N1}: An open foundation model for generalist humanoid
+  robots,'' \emph{arXiv preprint}, 2025, tODO: verify final citation before
+  submission.
+
+\bibitem{cfg}
+J.~Ho and T.~Salimans, ``Classifier-free diffusion guidance,'' \emph{arXiv
+  preprint arXiv:2207.12598}, 2022.
+
+\bibitem{vqvae}
+A.~van~den Oord, O.~Vinyals, and K.~Kavukcuoglu, ``Neural discrete
+  representation learning,'' in \emph{Advances in Neural Information Processing
+  Systems}, 2017.
+
+\bibitem{rvq}
+N.~Zeghidour, A.~Luebs, A.~Omran, J.~Skoglund, and M.~Tagliasacchi,
+  ``Soundstream: An end-to-end neural audio codec,'' \emph{IEEE/ACM
+  Transactions on Audio, Speech, and Language Processing}, 2022.
+
+\bibitem{dagger}
+S.~Ross, G.~Gordon, and D.~Bagnell, ``A reduction of imitation learning and
+  structured prediction to no-regret online learning,'' in \emph{Proceedings of
+  the Fourteenth International Conference on Artificial Intelligence and
+  Statistics}, 2011.
+
+\bibitem{libero}
+B.~Liu, Y.~Zhu, C.~Gao, Y.~Feng, Q.~Liu, Y.~Zhu, and P.~Stone, ``{LIBERO}:
+  Benchmarking knowledge transfer for lifelong robot learning,'' in
+  \emph{Advances in Neural Information Processing Systems}, 2023.
+
+\end{thebibliography}
