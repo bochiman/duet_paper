@@ -31,47 +31,45 @@ DUET: Dual Manifold Alignment for Recoverable Vision-Language-Action Policies
 \pagestyle{empty}
 
 \begin{abstract}
-Vision-language-action (VLA) policies have become a promising interface for instruction-conditioned robot manipulation, but their action parameterization hides a geometric tradeoff. Relative action policies behave like local tangent-vector fields: they are smooth and controller-friendly near demonstrations, yet they can drift when evaluated away from the demonstrated trajectory manifold. Absolute waypoint policies instead predict coordinates on a global end-effector state manifold, which can provide recovery anchors but is brittle as the primary controller. This paper introduces DUET, short for Dual-manifold Unified Execution and Transfer, a dual-branch VLA policy that treats relative actions as local tangent vectors and absolute waypoints as global coordinates on the demonstrated state manifold. The relative branch performs nominal tangent following, while a stateless absolute branch predicts recovery waypoints through residual vector-quantized conditioning and classifier-free flow-matching sampling. At deployment time, DUET measures the inconsistency between the local tangent field and the global manifold projection, combines it with a state-distribution distance, and uses the resulting OOD score to smoothly transition between tangent following and manifold projection. The same score modulates classifier-free guidance, making the absolute branch more conservative under larger distribution shift. We instantiate DUET in StarVLA with a Qwen-VL backbone and evaluate it on LIBERO manipulation tasks, including few-shot training and injected perturbation recovery. Experiments are currently in progress; this draft marks all quantitative results as TODO placeholders.
+Vision-language-action (VLA) models map vision and language to robot actions. However, after post-training on limited robot demonstrations, VLA policies may learn to imitate in-distribution behavior without acquiring the ability to recognize out-of-distribution (OOD) states or recover from them. Existing recovery systems often rely on external OOD predictors, verifiers, or world models for detection, and train recovery behavior from manually collected intervention and OOD-recovery trajectories. These pipelines incur substantial data and engineering cost, while their recovery modules remain loosely coupled to the action policy. We introduce DUET (Dual-manifold Unified Execution and Transfer), which jointly learns a state-aware relative tangent field and a stateless absolute waypoint manifold, and uses their endogenous disagreement together with state-distribution distance to detect OOD and shift control toward the stable absolute anchor for recovery. We evaluate DUET in LIBERO simulation and real-world robot manipulation across diverse designed OOD events and scenarios. DUET preserves nominal success (\textbf{TODO}\% vs. \textbf{TODO}\% for the relative-only baseline) while achieving \textbf{TODO}\% OOD recovery success, outperforming the strongest recovery baseline by \textbf{TODO} percentage points.
 \end{abstract}
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.96\textwidth]{figures/duet_teaser.png}
-\caption{DUET aligns two action geometries for recoverable robot control. Relative actions define a local tangent field around the demonstrated trajectory, while stateless absolute waypoints provide a global state-manifold anchor. When a perturbation moves the robot away from the nominal trajectory, tangent-projection disagreement increases and the policy shifts toward manifold-projection recovery.}
+\includegraphics[width=0.96\textwidth]{figures/fig1.pdf}
+\caption{Dual-manifold OOD detection and recovery. The relative and absolute end-effector manifolds coincide in-distribution but diverge under OOD, exposing an endogenous disagreement score $D_t$. Relative actions provide precise local motion but no global return path, whereas absolute waypoints project execution toward a stable demonstrated-manifold anchor.}
 \label{fig:teaser}
 \end{figure*}
 
 \section{INTRODUCTION}
 
-Generalist robot policies increasingly use large vision-language models (VLMs) to map images and language instructions to action chunks \cite{rt2,openvla,starvla}. A central design choice in these policies is how actions are represented. We view this choice geometrically, as illustrated in Fig.~\ref{fig:teaser}. Relative controls, such as delta end-effector commands or delta operational-space-control (OSC) actions, parameterize motion as a local vector field around the robot's current configuration. Near the demonstration support, this vector field is smooth, controller-friendly, and tolerant to small pose discrepancies. Away from that support, however, it may remain locally plausible while pointing along the wrong global trajectory. The policy can therefore follow a tangent direction that is well-formed in action space but no longer aligned with the demonstrated task manifold.
+Vision-language-action (VLA) policies adapt pretrained vision-language models to map visual observations and language instructions directly to robot actions \cite{rt2,openvla,starvla}. While this formulation enables broad semantic generalization, real robot execution is closed loop and frequently encounters conditions not represented in the task-specific demonstrations used for post-training. We call an execution state out-of-distribution (OOD) when its visual observation, robot--object configuration, or induced trajectory departs from the support of this post-training distribution. OOD can arise from transient camera occlusion, unexpected object displacement, external displacement of the robot arm, or execution deviations accumulated during contact and long-horizon control. In these situations, a VLA may continue to produce locally plausible actions even though the evolving trajectory is no longer supported by its demonstrations. Enabling the policy to recognize OOD and then either actively recover or remain stable can therefore substantially improve task completion and deployment reliability.
 
-Absolute waypoint policies occupy the complementary side of this geometry. By predicting a future end-effector pose directly, they place probability mass on a global state-space trajectory manifold. If the current robot state is perturbed, the difference between a predicted absolute waypoint and the live pose can be interpreted as a projection direction back toward the demonstrated manifold. Yet absolute control is brittle as a primary action representation: it is sensitive to calibration, state-estimation noise, and embodiment-specific coordinate conventions. Thus, relative actions are strong local charts but weak global anchors, while absolute waypoints are strong global anchors but weak default controllers.
+Existing approaches commonly formulate OOD detection as an auxiliary prediction problem, introducing an external monitor, critic, verifier, or predictive model and training it with curated nominal and OOD rollouts \cite{faildetect}. Collecting and annotating OOD data is costly because the space of possible visual, object, and robot-state shifts is combinatorial. Recovery introduces a second data bottleneck: interactive imitation learning typically requires a human operator to monitor policy rollouts and provide takeover or corrective trajectories from OOD states \cite{dagger,sirius,intervengen}. Beyond their data and supervision cost, these pipelines learn detection and recovery as separate modules, so the signal used to declare OOD is not necessarily aligned with the action required to leave it. We instead seek a single policy that uses information endogenous to its own action prediction process to jointly identify OOD and recover, without collecting additional OOD or intervention data.
 
-DUET is motivated by this dual-manifold view. Instead of choosing one representation, we train a single VLA policy with two action branches: a relative branch that learns a local tangent field for nominal execution and an absolute branch that predicts state-manifold projection targets for global recovery. The key requirement is that the absolute branch must not observe the current robot state. If it does, it can learn the shortcut ``absolute waypoint = current state + delta,'' which collapses the global waypoint branch into another local controller and destroys recovery under OOD states. DUET enforces a stateless absolute branch while still allowing the relative branch to use the current state through both a numerical state encoder and, optionally, a state text segment appended to the VLM prompt.
+DUET realizes this idea by learning the same demonstrated behavior in two complementary action spaces, as illustrated in Fig.~\ref{fig:teaser}. Relative controls, such as delta operational-space-control commands, form a smooth local tangent field for precise nominal execution. Absolute waypoints instead provide coordinates on a global demonstrated state manifold. Near the demonstration support, the relative tangent action agrees with the projection induced by the absolute waypoint; as execution moves OOD, their geometric inconsistency grows. DUET treats this endogenous disagreement as an intrinsic OOD signal and uses the global waypoint manifold as a stable recovery anchor. Crucially, the absolute branch is stateless with respect to the current robot pose, preventing it from collapsing into the shortcut ``absolute waypoint = current state + delta'' and preserving its role as an observation-conditioned global anchor.
 
-At inference time, the two branches define a self-contained manifold-consistency signal. The absolute waypoint is converted into a correction command by comparing it with the live pose. When this projection direction disagrees with the relative tangent action, or when the live pose lies outside the training state bounds, DUET increases the absolute-branch fusion weight. Once the state returns to the demonstrated manifold, control smoothly shifts back to the relative branch. This closed-loop gate is simple, does not require a separate OOD classifier, and exposes telemetry that can be plotted over time.
+At inference time, DUET converts each absolute waypoint into a correction from the live pose and compares it with the relative tangent action. Tangent--projection disagreement and distance from the training state bounds jointly determine a soft fusion weight. The controller follows the relative branch under nominal conditions, shifts toward manifold projection under OOD, and returns smoothly to relative control after re-entering the demonstrated support. Detection and recovery are therefore two consequences of the same cross-space inconsistency rather than two separately trained capabilities.
 
 This draft makes the following contributions:
 \begin{itemize}
     \item A dual-manifold VLA formulation that interprets relative delta actions as local tangent vectors and stateless absolute waypoints as global state-manifold anchors.
     \item A training recipe that combines residual vector-quantized (RVQ) condition anchoring, classifier-free guidance (CFG), and visual OOD augmentation with gradient truncation on the tangent-field branch.
     \item A closed-loop inference rule that uses tangent-projection disagreement and state-distribution distance to adaptively fuse relative control with absolute recovery.
-    \item An implementation in the StarVLA framework and an ICRA-style experimental plan for LIBERO few-shot manipulation and perturbation recovery.
+    \item An implementation in the StarVLA framework and an evaluation in LIBERO simulation and real-world manipulation across visual, object, and robot-state OOD events.
 \end{itemize}
 
 \section{RELATED WORK}
 
-\subsection{Vision-Language-Action Policies}
-Large VLA models connect visual observations and language instructions to robot actions, often by adapting pretrained VLMs to continuous or discrete action prediction \cite{rt2,openvla,starvla}. RT-2 demonstrated that web-scale vision-language pretraining can transfer semantic knowledge into robotic control \cite{rt2}. OpenVLA provides an open-source VLA model and training recipe \cite{openvla}. StarVLA further emphasizes modular backbones, data loaders, action heads, and deployment interfaces \cite{starvla}. DUET follows this modular view but focuses on a different axis: preserving two action geometries inside one policy and using their disagreement as a recovery signal.
+\subsection{OOD Detection for Robot Policies}
+Runtime OOD detection estimates whether a policy remains within the support of its training distribution. Diff-DAgger uses diffusion uncertainty to request expert intervention \cite{diffdagger}, while Sentinel monitors action inconsistency and task progress \cite{sentinel}. FAIL-Detect treats detection as sequential OOD testing and calibrates policy-derived signals using only successful executions \cite{faildetect}; FIPER similarly combines representation novelty with action uncertainty without failure data \cite{fiper}.
 
-\subsection{Continuous Action Generation}
-Diffusion and flow-matching policies generate continuous action chunks and have shown strong performance in manipulation \cite{diffusionpolicy,pi0,gr00t}. These approaches can model multi-modal action distributions and avoid the discretization bottleneck of tokenized action spaces. DUET uses flow-matching action heads for both the relative tangent field and the absolute waypoint manifold. The absolute branch additionally uses classifier-free guidance \cite{cfg} so that its conditioning strength can be adjusted online.
+VLA-specific methods use internal features or external foundation models. SAFE learns a detector from successful and failed rollouts \cite{safe}, whereas AHA trains a VLM to detect and diagnose failures \cite{aha}. Such methods require additional supervision or a separate detector whose output is not a recovery action. DUET instead detects OOD through disagreement between two action spaces learned within the policy, directly measuring inconsistency between local control and a global manifold anchor.
 
-\subsection{Discrete Latent Bottlenecks}
-Vector quantization learns a discrete latent codebook that can regularize representations and map inputs to a learned manifold \cite{vqvae,rvq}. DUET uses a residual vector quantizer after learned-query pooling of VLM features. We interpret the codebooks as a discrete atlas over demonstrated visual-language conditions: each quantized token sequence selects a local chart from which the stateless absolute branch predicts a waypoint on the state manifold. The residual norm provides an auxiliary OOD score. In this draft, RVQ is used not for compression but as a condition anchor for recovery-oriented absolute prediction.
+\subsection{Recovery from OOD Execution}
+Recovery methods commonly expand the training distribution with expert corrections. DAgger queries experts on policy-induced states \cite{dagger}; intervention-based methods collect human takeovers \cite{eil,sirius}; and IntervenGen transforms limited interventions into corrective trajectories \cite{intervengen}. These approaches reduce compounding errors but still require additional recovery actions.
 
-\subsection{Robustness and Recovery in Robot Learning}
-Robot imitation policies are known to suffer from covariate shift: small errors move the agent into states that are underrepresented in demonstrations. Interactive data aggregation and corrective demonstrations address this by changing the data collection process \cite{dagger}. DUET instead exploits labels already present in datasets such as LIBERO \cite{libero}: relative actions and future absolute end-effector states. The method aims to recover from moderate state perturbations by detecting when the learned local tangent field no longer agrees with a global state-manifold projection.
+Foundation-model systems instead use semantic supervisors. RACER learns from language-annotated recovery trajectories \cite{racer}, while AHA and VLM controllers diagnose OOD and guide downstream correction \cite{aha,vlmrecovery}. Their detection and recovery components remain separately trained or prompted. DUET couples both capabilities without extra recovery data: absolute states from successful demonstrations provide recovery anchors, while cross-space disagreement determines when and how strongly to move toward them.
 
 \section{METHOD}
 
@@ -82,6 +80,13 @@ At time $t$, the robot observes multi-view images $o_t$, a language instruction 
     W_{t+1:t+K} &\in \mathbb{R}^{K \times 7},
 \end{align}
 where $\Delta a$ denotes relative OSC commands and $W$ denotes future absolute end-effector waypoints with dimensions $[x,y,z,r,p,y,g]$. The gripper channel in $W$ is treated as an absolute gripper state during training, but the deployed gripper command is taken from the relative branch.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig2.pdf}
+\caption{DUET architecture. A shared VLM feeds a state-aware relative flow branch and a stateless absolute flow branch anchored by RVQ and refined with CFG. Their cross-space disagreement $D_t$ drives adaptive action selection between local tangent following and global waypoint recovery.}
+\label{fig:architecture}
+\end{figure}
 
 \subsection{Two Action Manifolds}
 Let $\mathcal{M}$ denote the demonstrated end-effector state manifold induced by successful task trajectories, and let $T\mathcal{M}$ denote its local tangent bundle. A relative action policy learns a vector field
@@ -99,16 +104,9 @@ The branch is intentionally stateless with respect to $s_t$, so its prediction i
 DUET aligns these two geometries online. The relative branch supplies a tangent-following command; the absolute branch supplies a manifold-projection command. Their disagreement estimates whether the local tangent field still agrees with the global demonstrated manifold. Low disagreement indicates that local execution is consistent with the task manifold, while high disagreement signals that a projection-dominated recovery action should take over.
 
 \subsection{Dual-Branch Architecture}
-DUET uses a shared Qwen-VL backbone to encode images and instruction tokens. The relative branch attends to the full VLM hidden sequence and receives the normalized current state through a numerical state encoder. The absolute branch receives only RVQ-anchored condition tokens produced from state-free VLM features.
+DUET uses a shared Qwen-VL backbone to encode images and instruction tokens, as shown in Fig.~\ref{fig:architecture}. The relative branch attends to the full VLM hidden sequence and receives the normalized current state through a numerical state encoder. The absolute branch receives only RVQ-anchored condition tokens produced from state-free VLM features.
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.98\textwidth]{figures/duet_architecture.pdf}
-\caption{Core DUET architecture. A shared causal VLM feeds two action geometries: the relative branch learns a state-aware tangent command, while the absolute branch is state-isolated and predicts a global waypoint through RVQ atlas anchoring and CFG flow matching. At deployment, tangent-projection disagreement and state distance produce a soft fusion gate.}
-\label{fig:architecture}
-\end{figure*}
-
-The relative branch is intended to be the primary controller under nominal conditions. It learns a smooth local vector field on the action tangent space using a 16-layer DiT-B flow-matching action head with action dimension $7$ and horizon $8$. The absolute branch predicts a state-manifold projection target using a smaller 8-layer DiT-B flow-matching head with state dimension zero. Its output is clamped in normalized space to $[-1,1]$, matching the min-max normalized absolute-state labels.
+The relative branch is intended to be the primary controller under nominal conditions. It learns a smooth local vector field on the action tangent space using a 16-layer DiT-B flow-matching action head \cite{diffusionpolicy,pi0} with action dimension $7$ and horizon $8$. The absolute branch predicts a state-manifold projection target using a smaller 8-layer DiT-B flow-matching head with state dimension zero. Its output is clamped in normalized space to $[-1,1]$, matching the min-max normalized absolute-state labels.
 
 \subsection{Stateless Absolute Branch}
 The central design invariant is:
@@ -122,7 +120,7 @@ Let $H \in \mathbb{R}^{B \times L \times d_h}$ be the final VLM hidden sequence 
 \begin{equation}
     Z_e = \mathrm{Pool}(H) \in \mathbb{R}^{B \times N \times d_c}.
 \end{equation}
-DUET applies residual vector quantization with $M=3$ quantizers:
+DUET applies residual vector quantization \cite{vqvae,rvq} with $M=3$ quantizers:
 \begin{align}
     R_0 &= Z_e, \\
     Q_m &= \mathrm{VQ}_m(R_{m-1}), \\
@@ -137,7 +135,7 @@ where $\mathrm{sg}$ denotes stop-gradient. The commitment loss is
 The final residual norm $\|R_M\|$ is recorded as an auxiliary OOD score. Intuitively, the quantizer maps arbitrary visual-language conditions to nearby codebook combinations, giving the absolute branch a discrete atlas over demonstrated conditions. The waypoint head then predicts from an anchored chart rather than from an unconstrained continuous condition vector.
 
 \subsection{Classifier-Free Absolute Waypoint Head}
-During training, the absolute head randomly replaces the quantized condition tokens with learnable null tokens with probability $p_{\mathrm{drop}}=0.15$. At inference time, its flow velocity is computed as
+During training, the absolute head applies classifier-free guidance training \cite{cfg} by randomly replacing the quantized condition tokens with learnable null tokens with probability $p_{\mathrm{drop}}=0.15$. At inference time, its flow velocity is computed as
 \begin{equation}
     v = v_{\mathrm{uncond}} + w\left(v_{\mathrm{cond}} - v_{\mathrm{uncond}}\right),
 \end{equation}

@@ -42,6 +42,75 @@ M.~J. Kim, K.~Pertsch, S.~Karamcheti, T.~Xiao, A.~Balakrishna, S.~Nair,
   vision-language-action model developing,''
   \url{https://github.com/starVLA/starVLA}, 2026.
 
+\bibitem{faildetect}
+C.~Xu, T.~K. Nguyen, E.~Dixon, C.~Rodriguez, P.~Miller, R.~Lee, P.~Shah,
+  R.~Ambrus, H.~Nishimura, and M.~Itkina, ``Can we detect failures without
+  failure data? uncertainty-aware runtime failure detection for imitation
+  learning policies,'' in \emph{Proceedings of Robotics: Science and Systems},
+  2025.
+
+\bibitem{dagger}
+S.~Ross, G.~Gordon, and D.~Bagnell, ``A reduction of imitation learning and
+  structured prediction to no-regret online learning,'' in \emph{Proceedings of
+  the Fourteenth International Conference on Artificial Intelligence and
+  Statistics}, 2011.
+
+\bibitem{sirius}
+H.~Liu, S.~Nasiriany, L.~Zhang, Z.~Bao, and Y.~Zhu, ``Robot learning on the
+  job: Human-in-the-loop autonomy and learning during deployment,'' in
+  \emph{Proceedings of Robotics: Science and Systems}, 2023.
+
+\bibitem{intervengen}
+R.~Hoque, A.~Mandlekar, C.~R. Garrett, K.~Goldberg, and D.~Fox,
+  ``{IntervenGen}: Interventional data generation for robust and data-efficient
+  robot imitation learning,'' in \emph{IEEE/RSJ International Conference on
+  Intelligent Robots and Systems}, 2024, pp. 2840--2846.
+
+\bibitem{diffdagger}
+S.-W. Lee, X.~Kang, and Y.-L. Kuo, ``{Diff-DAgger}: Uncertainty estimation with
+  diffusion policy for robotic manipulation,'' in \emph{IEEE International
+  Conference on Robotics and Automation}, 2025.
+
+\bibitem{sentinel}
+C.~Agia, R.~Sinha, J.~Yang, Z.~Cao, R.~Antonova, M.~Pavone, and J.~Bohg,
+  ``Unpacking failure modes of generative policies: Runtime monitoring of
+  consistency and progress,'' in \emph{Proceedings of the Conference on Robot
+  Learning}, ser. Proceedings of Machine Learning Research, vol. 270, 2025, pp.
+  689--723.
+
+\bibitem{fiper}
+R.~R{\"o}mer, A.~Kobras, L.~Worbis, and A.~P. Schoellig, ``Failure prediction
+  at runtime for generative robot policies,'' in \emph{Advances in Neural
+  Information Processing Systems}, 2025.
+
+\bibitem{safe}
+Q.~Gu, Y.~Ju, S.~Sun, I.~Gilitschenski, H.~Nishimura, M.~Itkina, and
+  F.~Shkurti, ``{SAFE}: Multitask failure detection for vision-language-action
+  models,'' in \emph{Advances in Neural Information Processing Systems},
+  vol.~38, 2025.
+
+\bibitem{aha}
+J.~Duan, W.~Pumacay, N.~Kumar, Y.~R. Wang, S.~Tian, W.~Yuan, R.~Krishna,
+  D.~Fox, A.~Mandlekar, and Y.~Guo, ``{AHA}: A vision-language-model for
+  detecting and reasoning over failures in robotic manipulation,'' in
+  \emph{International Conference on Learning Representations}, 2025.
+
+\bibitem{eil}
+J.~Spencer, S.~Choudhury, M.~Barnes, M.~Schmittle, M.~Chiang, P.~Ramadge, and
+  S.~Srinivasa, ``Learning from interventions: Human-robot interaction as both
+  explicit and implicit feedback,'' in \emph{Proceedings of Robotics: Science
+  and Systems}, 2020.
+
+\bibitem{racer}
+Y.~Dai, J.~Lee, N.~Fazeli, and J.~Chai, ``{RACER}: Rich language-guided failure
+  recovery policies for imitation learning,'' in \emph{IEEE International
+  Conference on Robotics and Automation}, 2025, pp. 15\,657--15\,664.
+
+\bibitem{vlmrecovery}
+H.~Chen, Y.~Yao, R.~Liu, C.~Liu, and J.~Ichnowski, ``Automating robot failure
+  recovery using vision-language models with optimized prompts,'' \emph{arXiv
+  preprint arXiv:2409.03966}, 2024.
+
 \bibitem{diffusionpolicy}
 C.~Chi, S.~Feng, Y.~Du, Z.~Xu, E.~Cousineau, B.~Burchfiel, and S.~Song,
   ``Diffusion policy: Visuomotor policy learning via action diffusion,''
@@ -54,15 +123,6 @@ K.~Black, N.~Brown, D.~Driess, A.~Esmail, M.~Equi, C.~Finn, N.~Fusai, L.~Groom,
   ``$\pi_0$: A vision-language-action flow model for general robot control,''
   \emph{arXiv preprint arXiv:2410.24164}, 2024.
 
-\bibitem{gr00t}
-{NVIDIA}, ``{GR00T N1}: An open foundation model for generalist humanoid
-  robots,'' \emph{arXiv preprint}, 2025, tODO: verify final citation before
-  submission.
-
-\bibitem{cfg}
-J.~Ho and T.~Salimans, ``Classifier-free diffusion guidance,'' \emph{arXiv
-  preprint arXiv:2207.12598}, 2022.
-
 \bibitem{vqvae}
 A.~van~den Oord, O.~Vinyals, and K.~Kavukcuoglu, ``Neural discrete
   representation learning,'' in \emph{Advances in Neural Information Processing
@@ -73,11 +133,9 @@ N.~Zeghidour, A.~Luebs, A.~Omran, J.~Skoglund, and M.~Tagliasacchi,
   ``Soundstream: An end-to-end neural audio codec,'' \emph{IEEE/ACM
   Transactions on Audio, Speech, and Language Processing}, 2022.
 
-\bibitem{dagger}
-S.~Ross, G.~Gordon, and D.~Bagnell, ``A reduction of imitation learning and
-  structured prediction to no-regret online learning,'' in \emph{Proceedings of
-  the Fourteenth International Conference on Artificial Intelligence and
-  Statistics}, 2011.
+\bibitem{cfg}
+J.~Ho and T.~Salimans, ``Classifier-free diffusion guidance,'' \emph{arXiv
+  preprint arXiv:2207.12598}, 2022.
 
 \bibitem{libero}
 B.~Liu, Y.~Zhu, C.~Gao, Y.~Feng, Q.~Liu, Y.~Zhu, and P.~Stone, ``{LIBERO}:

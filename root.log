@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  13 JUL 2026 23:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  30 AUG 2026 23:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -289,11 +289,16 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 29.
 (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<figures/duet_teaser.png, id=1, 1678.27pt x 944.52875pt>
-File: figures/duet_teaser.png Graphic file (type png)
-<use figures/duet_teaser.png>
-Package pdftex.def Info: figures/duet_teaser.png  used on input line 39.
-(pdftex.def)             Requested size: 485.65779pt x 273.32983pt.
+<figures/fig1.pdf, id=1, 1897.0875pt x 503.8825pt>
+File: figures/fig1.pdf Graphic file (type pdf)
+<use figures/fig1.pdf>
+Package pdftex.def Info: figures/fig1.pdf  used on input line 39.
+(pdftex.def)             Requested size: 485.65779pt x 128.99194pt.
+
+Underfull \hbox (badness 2050) in paragraph at lines 50--51
+\OT1/ptm/m/n/10 il-lus-trated in Fig. 1[]. Rel-a-tive con-trols, such as delta
+ []
+
 
 Underfull \hbox (badness 3302) in paragraph at lines 57--58
 []\OT1/ptm/m/n/10 A train-ing recipe that com-bines resid-ual vector-
@@ -304,39 +309,35 @@ Underfull \hbox (badness 4927) in paragraph at lines 58--59
 []\OT1/ptm/m/n/10 A closed-loop in-fer-ence rule that uses tangent-
  []
 
-
-Underfull \vbox (badness 1024) has occurred while \output is active []
-
- [1{/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/
-local/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc}
+[1{/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/l
+ocal/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
-] [2 <./figures/duet_teaser.png (PNG copy)>]
-<figures/duet_architecture.pdf, id=21, 764.97795pt x 409.55408pt>
-File: figures/duet_architecture.pdf Graphic file (type pdf)
-<use figures/duet_architecture.pdf>
-Package pdftex.def Info: figures/duet_architecture.pdf  used on input line 106.
-
-(pdftex.def)             Requested size: 495.77003pt x 265.42583pt.
- [3] [4 <./figures/duet_architecture.pdf>]
+]
+<figures/fig2.pdf, id=11, 561.09625pt x 710.655pt>
+File: figures/fig2.pdf Graphic file (type pdf)
+<use figures/fig2.pdf>
+Package pdftex.def Info: figures/fig2.pdf  used on input line 86.
+(pdftex.def)             Requested size: 245.71811pt x 311.20357pt.
+ [2 <./figures/fig1.pdf>] [3 <./figures/fig2.pdf>]
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 2
-28.
+26.
 
 (/usr/local/texlive/2026/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-Underfull \hbox (badness 4429) in paragraph at lines 231--232
+Underfull \hbox (badness 4429) in paragraph at lines 229--230
 []\OT1/ptm/m/n/10 DUET is im-ple-mented as \OT1/pcr/m/n/10 QwenGR00THybrid \OT1
 /ptm/m/n/10 in
  []
 
-[5] (./root.bbl
+[4] (./root.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 41--44
 \OT1/ptm/m/n/8 language-action model de-vel-op-ing,'' $https : / / github . com
  / starVLA /
  []
 
-)
+[5])
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -357,13 +358,13 @@ L3 programming layer <2026-01-19>
  ***********
  ) ) 
 Here is how much of TeX's memory you used:
- 3462 strings out of 467525
- 53066 string characters out of 5418982
- 471823 words of memory out of 5000000
- 32335 multiletter control sequences out of 15000+600000
+ 3474 strings out of 467525
+ 53059 string characters out of 5418982
+ 475398 words of memory out of 5000000
+ 32347 multiletter control sequences out of 15000+600000
  668421 words of font info for 121 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,16n,68p,1712b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 62i,16n,68p,1373b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.p
 fb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pf
 b></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb>
@@ -384,10 +385,10 @@ f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2026/texmf-dist/fon
 ts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/
 urw/times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/
 utmri8a.pfb>
-Output written on root.pdf (6 pages, 2086608 bytes).
+Output written on root.pdf (6 pages, 3886317 bytes).
 PDF statistics:
- 256 PDF objects out of 1000 (max. 8388607)
- 88 compressed objects within 1 object stream
+ 330 PDF objects out of 1000 (max. 8388607)
+ 162 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 

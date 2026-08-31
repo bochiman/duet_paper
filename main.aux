@@ -2,48 +2,67 @@
 \citation{rt2}
 \citation{openvla}
 \citation{starvla}
-\citation{rt2}
-\citation{openvla}
-\citation{starvla}
-\citation{rt2}
-\citation{openvla}
-\citation{starvla}
-\@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCTION}{1}{}\protected@file@percent }
-\citation{diffusionpolicy}
-\citation{pi0}
-\citation{gr00t}
-\citation{cfg}
-\citation{vqvae}
-\citation{rvq}
+\citation{faildetect}
 \citation{dagger}
-\citation{libero}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces DUET aligns two action geometries for recoverable robot control. Relative actions define a local tangent field around the demonstrated trajectory, while stateless absolute waypoints provide a global state-manifold anchor. When a perturbation moves the robot away from the nominal trajectory, tangent-projection disagreement increases and the policy shifts toward manifold-projection recovery.}}{2}{}\protected@file@percent }
+\citation{sirius}
+\citation{intervengen}
+\@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCTION}{1}{}\protected@file@percent }
+\citation{diffdagger}
+\citation{sentinel}
+\citation{faildetect}
+\citation{fiper}
+\citation{safe}
+\citation{aha}
+\citation{dagger}
+\citation{eil}
+\citation{sirius}
+\citation{intervengen}
+\citation{racer}
+\citation{aha}
+\citation{vlmrecovery}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Dual-manifold OOD detection and recovery. The relative and absolute end-effector manifolds coincide in-distribution but diverge under OOD, exposing an endogenous disagreement score $D_t$. Relative actions provide precise local motion but no global return path, whereas absolute waypoints project execution toward a stable demonstrated-manifold anchor.}}{2}{}\protected@file@percent }
 \newlabel{fig:teaser}{{1}{2}{}{figure.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {II}RELATED WORK}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {II-A}Vision-Language-Action Policies}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Continuous Action Generation}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {II-C}Discrete Latent Bottlenecks}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {II-D}Robustness and Recovery in Robot Learning}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-A}OOD Detection for Robot Policies}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Recovery from OOD Execution}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {III}METHOD}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-A}Problem Setup}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Two Action Manifolds}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Two Action Manifolds}{2}{}\protected@file@percent }
+\citation{diffusionpolicy}
+\citation{pi0}
+\citation{vqvae}
+\citation{rvq}
+\citation{cfg}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces DUET architecture. A shared VLM feeds a state-aware relative flow branch and a stateless absolute flow branch anchored by RVQ and refined with CFG. Their cross-space disagreement $D_t$ drives adaptive action selection between local tangent following and global waypoint recovery.}}{3}{}\protected@file@percent }
+\newlabel{fig:architecture}{{2}{3}{}{figure.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-C}Dual-Branch Architecture}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-D}Stateless Absolute Branch}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-E}RVQ Condition Anchoring}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-F}Classifier-Free Absolute Waypoint Head}{3}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Core DUET architecture. A shared causal VLM feeds two action geometries: the relative branch learns a state-aware tangent command, while the absolute branch is state-isolated and predicts a global waypoint through RVQ atlas anchoring and CFG flow matching. At deployment, tangent-projection disagreement and state distance produce a soft fusion gate.}}{4}{}\protected@file@percent }
-\newlabel{fig:architecture}{{2}{4}{}{figure.2}{}}
+\citation{libero}
 \@writefile{toc}{\contentsline {section}{\numberline {IV}TRAINING OBJECTIVE}{4}{}\protected@file@percent }
 \newlabel{eq:training_loss}{{12}{4}{}{equation.12}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-A}OOD Augmentation with Relative Gradient Truncation}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}Optional Learned Gate}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {V}CLOSED-LOOP MANIFOLD ALIGNMENT}{4}{}\protected@file@percent }
-\citation{libero}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Planned closed-loop telemetry visualization for perturbation recovery experiments.}}{5}{}\protected@file@percent }
-\newlabel{fig:telemetry}{{3}{5}{}{figure.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}EXPERIMENTS}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {VI-A}Benchmark and Data}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {VI-B}Implementation Details}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Planned closed-loop telemetry visualization for perturbation recovery experiments.}}{4}{}\protected@file@percent }
+\newlabel{fig:telemetry}{{3}{4}{}{figure.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}EXPERIMENTS}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {VI-A}Benchmark and Data}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {VI-B}Implementation Details}{4}{}\protected@file@percent }
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{rt2}{1}
+\bibcite{openvla}{2}
+\bibcite{starvla}{3}
+\bibcite{faildetect}{4}
+\bibcite{dagger}{5}
+\bibcite{sirius}{6}
+\bibcite{intervengen}{7}
+\bibcite{diffdagger}{8}
+\bibcite{sentinel}{9}
+\bibcite{fiper}{10}
+\bibcite{safe}{11}
 \@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces LIBERO success rates. All quantitative entries are TODO placeholders and must be filled after running evaluation.}}{5}{}\protected@file@percent }
 \newlabel{tab:main_results}{{I}{5}{}{table.1}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Planned ablations. TODO entries should be filled with success rate, recovery rate, and telemetry statistics.}}{5}{}\protected@file@percent }
@@ -52,19 +71,16 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {VI-D}Main Results}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {VI-E}Ablations}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {VII}LIMITATIONS}{5}{}\protected@file@percent }
-\bibstyle{IEEEtran}
-\bibdata{references}
-\bibcite{rt2}{1}
-\bibcite{openvla}{2}
-\bibcite{starvla}{3}
-\bibcite{diffusionpolicy}{4}
-\bibcite{pi0}{5}
-\bibcite{gr00t}{6}
-\bibcite{cfg}{7}
-\bibcite{vqvae}{8}
-\bibcite{rvq}{9}
-\bibcite{dagger}{10}
-\bibcite{libero}{11}
-\@writefile{toc}{\contentsline {section}{\numberline {VIII}CONCLUSION}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}CONCLUSION}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{5}{}\protected@file@percent }
+\bibcite{aha}{12}
+\bibcite{eil}{13}
+\bibcite{racer}{14}
+\bibcite{vlmrecovery}{15}
+\bibcite{diffusionpolicy}{16}
+\bibcite{pi0}{17}
+\bibcite{vqvae}{18}
+\bibcite{rvq}{19}
+\bibcite{cfg}{20}
+\bibcite{libero}{21}
 \gdef \@abspage@last{6}
