@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  31 AUG 2026 13:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  2 SEP 2026 16:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -294,16 +294,11 @@ File: figures/fig1.pdf Graphic file (type pdf)
 <use figures/fig1.pdf>
 Package pdftex.def Info: figures/fig1.pdf  used on input line 39.
 (pdftex.def)             Requested size: 485.65779pt x 128.99194pt.
-
-Underfull \vbox (badness 1024) has occurred while \output is active []
-
  [1{/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/
 local/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-Underfull \vbox (badness 1215) has occurred while \output is active []
-
 <figures/fig2.pdf, id=11, 561.09625pt x 710.655pt>
 File: figures/fig2.pdf Graphic file (type pdf)
 <use figures/fig2.pdf>
@@ -312,8 +307,7 @@ Package pdftex.def Info: figures/fig2.pdf  used on input line 87.
  [2 <./figures/fig1.pdf>] [3 <./figures/fig2.pdf>]
 LaTeX Font Info:    Trying to load font information for U+euf on input line 152
 .
-
-(/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/ueuf.fd
+ (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
 )
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
@@ -354,11 +348,11 @@ L3 programming layer <2026-01-19>
 Here is how much of TeX's memory you used:
  3488 strings out of 467525
  53310 string characters out of 5418982
- 477284 words of memory out of 5000000
+ 477855 words of memory out of 5000000
  32357 multiletter control sequences out of 15000+600000
  669837 words of font info for 127 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,10n,65p,1309b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,10n,65p,1505b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 ></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></
@@ -380,7 +374,7 @@ f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2026/texmf-dist/fon
 ts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/
 urw/times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/
 utmri8a.pfb>
-Output written on main.pdf (5 pages, 3885434 bytes).
+Output written on main.pdf (5 pages, 3886509 bytes).
 PDF statistics:
  332 PDF objects out of 1000 (max. 8388607)
  163 compressed objects within 2 object streams

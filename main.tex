@@ -17,7 +17,7 @@
 \usepackage{url}
 
 \title{\LARGE \bf
-DUET: Endogenous Failure Detection and Recovery via Dual-Action Manifold Alignment
+DUET: Endogenous Failure Detection and Robust Retry with Dual Action Spaces
 }
 
 \author{Anonymous Authors% <-this % stops a space
@@ -31,31 +31,31 @@ DUET: Endogenous Failure Detection and Recovery via Dual-Action Manifold Alignme
 \pagestyle{empty}
 
 \begin{abstract}
-Vision-language-action (VLA) models map vision and language to robot actions. With limited post-training demonstrations, however, they often cannot detect or recover from execution failures that move the robot out of distribution (OOD), such as mis-grasps, dropped objects, unexpected occlusions, and object or robot displacement. Existing solutions rely on external failure detectors and costly intervention or recovery data, leaving detection loosely coupled with control. We introduce DUET (Dual-manifold Unified Execution and Transfer), a dual-action-head module that predicts relative and absolute actions. DUET uses the endogenous disagreement between the two heads as its primary failure signal, complemented by state-distribution distance. The absolute head excludes the current robot state and predicts RVQ-anchored global waypoints from vision and language, providing stable recovery targets when relative control becomes unreliable. We evaluate DUET in LIBERO simulation and real-world manipulation under diverse failure events. DUET preserves nominal success (\textbf{TODO}\% vs. \textbf{TODO}\% for the relative-only baseline) while achieving \textbf{TODO}\% failure recovery success, outperforming the strongest baseline by \textbf{TODO} percentage points.
+Vision-language-action (VLA) policies map visual observations and language instructions to robot actions. With limited robot post-training data, they can drift from successful behavior during closed-loop execution. We study recoverable execution deviations, where retrying the demonstrated behavior remains feasible, rather than severe failures that require task-level replanning or a new manipulation strategy. Existing solutions often add external failure detectors and collect large amounts of human takeover data, making the resulting systems costly and loosely coupled. We introduce DUET (Dual-manifold Unified Execution and Transfer), a dual-action-head module that predicts both relative actions for smooth nominal control and absolute waypoints for trajectory re-entry. The endogenous disagreement between these action spaces detects when execution has become inconsistent with the demonstrated behavior, while the absolute waypoint-induced correction initiates a retry. Asymmetric training further makes the relative branch sensitive to deviations and the absolute branch robust to visual disturbances. We evaluate DUET in LIBERO simulation and real-world manipulation under recoverable visual, viewpoint, scene, and action disturbances. DUET preserves nominal success (\textbf{TODO}\% vs. \textbf{TODO}\% for the relative-only baseline) while achieving \textbf{TODO}\% retry success, outperforming the strongest baseline by \textbf{TODO} percentage points.
 \end{abstract}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/fig1.pdf}
-\caption{Dual-manifold failure detection and recovery. The relative and absolute end-effector manifolds agree during nominal execution but diverge when a failure drives the system OOD, exposing an endogenous disagreement score $D_t$. Relative actions provide precise local motion, whereas absolute waypoints project execution toward a stable demonstrated-manifold anchor.}
+\caption{Failure-aware retry with dual action spaces. Relative and absolute predictions agree during nominal execution but diverge when a recoverable deviation drives the rollout OOD, exposing an endogenous disagreement score $D_t$. Relative actions provide precise local motion, whereas absolute waypoints bring the robot back toward a demonstrated execution path for retry.}
 \label{fig:teaser}
 \end{figure*}
 
 \section{INTRODUCTION}
 
-Vision-language-action (VLA) policies adapt pretrained vision-language models to map visual observations and language instructions directly to robot actions \cite{rt2,openvla,starvla}. Despite their semantic generalization, policies post-trained on limited robot demonstrations remain vulnerable to failures during closed-loop execution. We focus on failures that drive the visual observation, robot--object configuration, or induced trajectory out of distribution (OOD) relative to successful demonstrations. They include policy-induced errors, such as an off-center grasp or an accidentally dropped object, as well as external events, such as transient occlusion or unexpected displacement of an object or the robot arm. After such events, a VLA may continue to produce locally plausible actions even though its trajectory is no longer supported by the demonstrations. Detecting these failures and actively recovering from them can therefore substantially improve task success and deployment reliability.
+Vision-language-action (VLA) policies adapt pretrained vision-language models to map visual observations and language instructions directly to robot actions \cite{rt2,openvla,starvla}. They are attractive because one policy can connect semantic instructions to continuous manipulation. Yet a policy trained with a small amount of robot data can leave the support of successful behavior during execution. We refer to this condition as an execution failure: the observation, robot--object configuration, or induced trajectory becomes out of distribution (OOD) with respect to the successful demonstrations. The cause may be an off-center grasp, a reachable object displacement, or a partial object slip, but it may also be external, such as an unexpected occlusion, viewpoint change, or displacement of the object or robot arm. In these cases, the policy may continue issuing locally plausible commands without recognizing that the current rollout should be retried. Detecting such deviations and returning to a demonstrated execution path can improve robustness without requiring a new task planner.
 
-Existing approaches commonly introduce an external monitor, critic, verifier, or predictive model for failure detection \cite{faildetect}, and rely on large amounts of human takeover data collected during failed executions to learn recovery \cite{dagger,sirius,intervengen}. This process is costly because operators must continuously monitor rollouts and provide corrective actions across diverse visual, object, and robot-state failures. Moreover, detection and recovery are learned separately, so a failure alarm is not necessarily aligned with the action needed to recover. We instead seek a single policy that uses endogenous action information to detect and recover from OOD failures without additional failure or intervention data.
+Mainstream approaches commonly introduce an external monitor, critic, verifier, or predictive model for failure detection \cite{faildetect}. When recovery is also required, they typically collect large amounts of human takeover data in which an operator intervenes and demonstrates a corrective action \cite{dagger,sirius,intervengen}. This creates substantial data and deployment cost, especially when the disturbances span visual observations, object configurations, and robot poses. More importantly, the detector only indicates that execution has gone wrong, while the recovery controller is trained as a separate capability; their decisions need not be consistent. We ask whether the policy can use its own action predictions to recognize a recoverable OOD deviation and retry the learned behavior without additional failure labels or takeover demonstrations.
 
-DUET takes disagreement between different action spaces as an endogenous signal for failure detection, as illustrated in Fig.~\ref{fig:teaser}. In our preliminary experiments, policies trained with relative actions produced smoother and more stable motions during nominal execution, but struggled to recover once a grasp or motion deviated because state-relative commands provide no explicit return target. In contrast, policies trained with absolute actions could redirect the robot toward trajectories supported by the demonstration distribution and retry after a failure. This complementary behavior motivates DUET to learn the same demonstrated behavior with a relative action head and an absolute action head. The relative head serves as the nominal controller, while the absolute head provides global recovery anchors. The two action spaces agree under in-domain execution but necessarily diverge when a failure or OOD event drives the robot away from the demonstrated trajectory, thereby coupling failure detection and recovery through the same signal.
+DUET is motivated by a simple asymmetry that we observed in preliminary experiments. Relative-action policies produce smooth and stable motion around the demonstrated trajectory, but once a grasp or pose deviates, a local command provides no explicit target for returning to the previous behavior. Absolute-action policies are less suited to fine local control, yet their predicted waypoints can point back toward a reachable portion of the demonstrated trajectory and make a retry possible. DUET therefore learns the same successful behavior in two action spaces: a relative head for nominal execution and an absolute head for trajectory re-entry. We use the disagreement between their predictions as an endogenous signal of OOD execution. The disagreement is expected to remain small when both heads recognize the same in-distribution behavior and to increase when the current rollout is no longer compatible with that behavior.
 
-At inference time, DUET converts the predicted absolute waypoint into a correction from the live pose and compares it with the relative action. The two predictions remain consistent along successful trajectories but diverge when a failure drives execution OOD. Their disagreement, together with distance from the training state distribution, determines a soft fusion weight: DUET follows the smooth relative controller during nominal execution, shifts toward the absolute recovery target after failure, and returns to relative control after re-entering the demonstrated support. The same cross-space signal therefore both detects failure and determines the recovery direction.
+At inference time, DUET converts the absolute waypoint into a correction from the live pose and compares it with the relative action. A soft gate keeps relative control in the nominal regime and shifts toward the waypoint-induced correction when the disagreement indicates a recoverable deviation, allowing the robot to re-approach the demonstrated behavior and retry. The gate returns to relative control after the two predictions realign. This is a failure-aware retry mechanism, not a general recovery planner: DUET does not claim to solve irreversible failures, unreachable dropped objects, hardware faults, or cases that require discovering a new task strategy.
 
 Our contributions are threefold:
 \begin{itemize}
-    \item We propose DUET, a dual-action-head VLA that learns relative and absolute action spaces from successful demonstrations and uses their endogenous disagreement to detect OOD-induced failures without an external detector.
-    \item We design a stateless, RVQ-anchored absolute action head and an adaptive closed-loop controller that converts cross-space disagreement into stable recovery while preserving precise relative control under nominal conditions.
-    \item We validate DUET on diverse simulated and real-world failures, including mis-grasps, object drops, occlusions, and unexpected displacements.
+    \item We formulate failure-aware retry as detecting recoverable OOD execution deviations and re-entering the support of successful behavior, separating this problem from severe failure recovery and task-level replanning.
+    \item We propose DUET, a dual-action-head VLA that uses endogenous disagreement between relative and absolute action spaces to detect deviations and to activate an absolute waypoint-based retry while preserving smooth nominal control.
+    \item We evaluate DUET in simulation and on a real robot across diverse visual, viewpoint, scene, and action disturbances, measuring both nominal robustness and retry success without additional human takeover data.
 \end{itemize}
 
 \section{RELATED WORK}
@@ -65,10 +65,10 @@ Runtime failure detection estimates whether a policy remains within the support 
 
 VLA-specific methods use internal features or external foundation models. SAFE learns a detector from successful and failed rollouts \cite{safe}, whereas AHA trains a VLM to detect and diagnose failures \cite{aha}. Such methods require additional supervision or a separate detector whose output is not a recovery action. DUET instead detects failures through disagreement between two action spaces learned within the policy, using OOD manifold inconsistency as both an alarm and a recovery signal.
 
-\subsection{Recovery from Execution Failures}
-Recovery methods commonly expand the training distribution with expert corrections. DAgger queries experts on policy-induced states \cite{dagger}; intervention-based methods collect human takeovers \cite{eil,sirius}; and IntervenGen transforms limited interventions into corrective trajectories \cite{intervengen}. These approaches reduce compounding errors but still require additional recovery actions.
+\subsection{Retry and Recovery from Execution Failures}
+Recovery methods commonly expand the training distribution with expert corrections. DAgger queries experts on policy-induced states \cite{dagger}; intervention-based methods collect human takeovers \cite{eil,sirius}; and IntervenGen transforms limited interventions into corrective trajectories \cite{intervengen}. These approaches reduce compounding errors but still require additional recovery actions. DUET targets the narrower setting in which the original behavior remains feasible and a rollout can be retried after re-entering its demonstrated support.
 
-Foundation-model systems instead use semantic supervisors. RACER learns from language-annotated recovery trajectories \cite{racer}, while AHA and VLM controllers diagnose failures and guide downstream correction \cite{aha,vlmrecovery}. Their detection and recovery components remain separately trained or prompted. DUET couples both capabilities without extra recovery data: absolute states from successful demonstrations provide recovery anchors, while cross-space disagreement determines when and how strongly to move toward them.
+Foundation-model systems instead use semantic supervisors. RACER learns from language-annotated recovery trajectories \cite{racer}, while AHA and VLM controllers diagnose failures and guide downstream correction \cite{aha,vlmrecovery}. Their detection and recovery components remain separately trained or prompted. DUET couples detection with a retry action without extra recovery data: absolute states from successful demonstrations provide re-entry anchors, while cross-space disagreement determines when and how strongly to move toward them.
 
 \section{METHOD}
 
@@ -139,7 +139,7 @@ DUET instead specializes the branches through asymmetric visual augmentation. Th
 \end{equation}
 This gradient truncation preserves relative-head sensitivity while training the absolute branch as the robust reference, making cross-space disagreement more discriminative under visual OOD. For CFG training, the absolute head also replaces its quantized condition with learned null tokens on a subset of samples and learns both conditional and marginal waypoint flows.
 
-\subsection{Joint Failure Detection and Recovery}
+\subsection{Joint Failure Detection and Retry}
 At deployment, the policy returns both unnormalized action chunks. Let the live pose be $p_t=(x_t,R_t)$ and the pose component of the current absolute waypoint be $\hat{w}_{p,t}=(\hat{x}_t,\hat{R}_t)$. DUET implements the transport map in Eq.~\eqref{eq:transport_map} as
 \begin{equation}
     c_t=\operatorname{clip}\!\left(
@@ -169,18 +169,18 @@ The resulting failure score and recovery weight are
     q_t &= D_t + \lambda S_t, \\
     \alpha_t &= \sigma(k(q_t-\tau)).
 \end{align}
-DUET then interpolates between local execution and global recovery while retaining relative gripper control:
+DUET then interpolates between local execution and trajectory re-entry while retaining relative gripper control:
 \begin{align}
     a_t &= [a_{p,t},a_{g,t}], \\
     a_{p,t} &= (1-\alpha_t)\hat{\delta a}_{p,t} + \alpha_t c_t, \\
     a_{g,t} &= \hat{\delta a}_{g,t},
     \label{eq:fused_action}
 \end{align}
-where $[\hat{\delta a}_{p,t},\hat{\delta a}_{g,t}]$ is the relative-head command. Thus relative control dominates along the demonstrated support, while a rising failure score shifts $a_p$ toward the absolute recovery direction; control returns smoothly after the two representations realign. When requesting a new chunk, the previous fusion weight also softens the absolute-head CFG scale,
+where $[\hat{\delta a}_{p,t},\hat{\delta a}_{g,t}]$ is the relative-head command. Thus relative control dominates along the demonstrated support, while a rising failure score shifts $a_p$ toward the absolute re-entry direction; control returns smoothly after the two representations realign. When requesting a new chunk, the previous fusion weight also softens the absolute-head CFG scale,
 \begin{equation}
     w_t = w_{\max} - (w_{\max}-w_{\min})\alpha_{t-1}.
 \end{equation}
-The disagreement $D_t$ therefore determines \emph{when} recovery is needed, while the vector $c_t$ determines \emph{how} to recover.
+The disagreement $D_t$ therefore determines \emph{when} a retry should begin, while the vector $c_t$ determines \emph{how} to re-enter the demonstrated behavior.
 
 \section{EXPERIMENTS}
 
@@ -191,7 +191,7 @@ We evaluate on LIBERO \cite{libero}, using the StarVLA LeRobot data pipeline. Th
 DUET is implemented as \texttt{QwenGR00THybrid} in StarVLA. The backbone is Qwen-VL with hidden dimension $2048$. The relative branch uses a 16-layer DiT-B flow-matching head. The absolute branch uses an 8-layer DiT-B flow-matching head with $16$ RVQ condition tokens of output dimension $1024$. RVQ uses three residual quantizers with codebook size $512$ and code dimension $256$. We use visual augmentation probability $p_{\mathrm{aug}}=0.3$, CFG condition-dropout probability $p_{\mathrm{drop}}=0.15$, and disable the optional learned gate by default. Training uses AdamW and the schedule specified in the repository configuration.
 
 \subsection{Failure Detection and Recovery Protocol}
-We evaluate both policy-induced and externally induced failures. The former include off-center grasps and accidental object drops; the latter include camera occlusion and unexpected displacement of objects or the robot arm. For controlled simulation, we additionally inject action-space perturbations with fixed start time, duration, and magnitude. We record detection accuracy and latency, recovery success and time, action traces, dual-branch disagreement, state-distance score, fusion weight, and CFG scale.
+We evaluate recoverable policy-induced and externally induced failures. The former include off-center grasps, partial slips, and reachable object displacements; the latter include camera occlusion, viewpoint changes, and moderate displacement of the object or robot arm. For controlled simulation, we additionally inject action-space perturbations with fixed start time, duration, and magnitude. We record detection accuracy and latency, retry success and time, action traces, dual-branch disagreement, state-distance score, fusion weight, and CFG scale.
 
 \begin{figure}[t]
 \centering
@@ -208,7 +208,7 @@ Expected curves: injected perturbation interval, disagreement $D_t$, state dista
 \subsection{Main Results}
 
 \begin{table}[t]
-\caption{LIBERO nominal and failure recovery success rates. All quantitative entries are TODO placeholders and must be filled after evaluation.}
+\caption{LIBERO nominal and failure-aware retry success rates. All quantitative entries are TODO placeholders and must be filled after evaluation.}
 \label{tab:main_results}
 \centering
 \resizebox{\columnwidth}{!}{%
@@ -225,7 +225,7 @@ DUET adaptive & TODO & TODO & TODO \\
 }
 \end{table}
 
-Table~\ref{tab:main_results} will report nominal and failure recovery success rates. Relative-only control should remain competitive during nominal execution but be less robust after failures, while DUET should improve recovery by increasing the manifold-projection weight only when needed.
+Table~\ref{tab:main_results} will report nominal and failure-aware retry success rates. Relative-only control should remain competitive during nominal execution but be less robust after recoverable deviations, while DUET should improve retry success by increasing the trajectory re-entry weight only when needed.
 
 \subsection{Ablations}
 
@@ -249,15 +249,15 @@ Fixed $\alpha=1$ & TODO & TODO \\
 \end{tabular}
 \end{table}
 
-The ablations in Table~\ref{tab:ablations} isolate condition anchoring, guidance adaptation, branch specialization, state prompt injection, adaptive fusion, and an optional learned gate trained with synthetic state perturbations. Additional metrics include failure-detection accuracy and latency, mean recovery time, maximum displacement after failure, and area under the $\alpha_t$ curve.
+The ablations in Table~\ref{tab:ablations} isolate condition anchoring, guidance adaptation, branch specialization, state prompt injection, adaptive fusion, and an optional learned gate trained with synthetic state perturbations. Additional metrics include failure-detection accuracy and latency, mean retry time, maximum deviation after the injected disturbance, and area under the $\alpha_t$ curve.
 
 \section{LIMITATIONS}
 
-DUET assumes access to absolute state labels aligned with the relative action chunks. This is natural in LIBERO and many robot logs, but may require additional calibration or state estimation on real hardware. The closed-loop gate currently uses simple min-max state statistics as a coarse proxy for distance to the demonstrated state manifold, which may be insufficient for highly multi-modal workspaces. The absolute branch is deliberately stateless; while this supports recovery, it may reduce waypoint accuracy in tasks where the current robot state contains task-relevant information not recoverable from images. Finally, all quantitative claims remain pending until the planned simulation and real-world failure experiments are completed.
+DUET assumes access to absolute state labels aligned with the relative action chunks. This is natural in LIBERO and many robot logs, but may require additional calibration or state estimation on real hardware. The closed-loop gate currently uses simple min-max state statistics as a coarse proxy for distance to the demonstrated state manifold, which may be insufficient for highly multi-modal workspaces. The absolute branch is deliberately stateless; while this supports trajectory re-entry, it may reduce waypoint accuracy in tasks where the current robot state contains task-relevant information not recoverable from images. Most importantly, DUET is designed for recoverable deviations and retries, not irreversible failures, hardware faults, or task-level replanning. Finally, all quantitative claims remain pending until the planned simulation and real-world disturbance experiments are completed.
 
 \section{CONCLUSION}
 
-We presented DUET, a dual-branch VLA policy for endogenous failure detection and recovery. By aligning a local relative-action tangent field with a stateless, RVQ-anchored absolute-waypoint manifold, DUET uses cross-space disagreement to detect when execution becomes OOD and to activate a closed-loop recovery direction. This unifies failure detection and recovery without an external detector or additional recovery demonstrations.
+We presented DUET, a dual-branch VLA policy for endogenous failure detection and robust retry. By learning relative actions for smooth nominal control and absolute waypoints for trajectory re-entry, DUET uses cross-space disagreement to detect recoverable OOD deviations and to activate a retry direction without an external detector or additional human takeover demonstrations. Its scope is deliberately limited: when the task remains feasible, DUET can bring execution back toward demonstrated behavior; it is not a general planner for irreversible failures.
 
 \section*{ACKNOWLEDGMENT}
 

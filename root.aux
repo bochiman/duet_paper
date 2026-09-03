@@ -6,11 +6,11 @@
 \citation{dagger}
 \citation{sirius}
 \citation{intervengen}
+\@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCTION}{1}{}\protected@file@percent }
 \citation{diffdagger}
 \citation{sentinel}
 \citation{faildetect}
 \citation{fiper}
-\@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCTION}{1}{}\protected@file@percent }
 \citation{safe}
 \citation{aha}
 \citation{dagger}
@@ -20,11 +20,11 @@
 \citation{racer}
 \citation{aha}
 \citation{vlmrecovery}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Dual-manifold failure detection and recovery. The relative and absolute end-effector manifolds agree during nominal execution but diverge when a failure drives the system OOD, exposing an endogenous disagreement score $D_t$. Relative actions provide precise local motion, whereas absolute waypoints project execution toward a stable demonstrated-manifold anchor.}}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Failure-aware retry with dual action spaces. Relative and absolute predictions agree during nominal execution but diverge when a recoverable deviation drives the rollout OOD, exposing an endogenous disagreement score $D_t$. Relative actions provide precise local motion, whereas absolute waypoints bring the robot back toward a demonstrated execution path for retry.}}{2}{}\protected@file@percent }
 \newlabel{fig:teaser}{{1}{2}{}{figure.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {II}RELATED WORK}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {II-A}Failure Detection for Robot Policies}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Recovery from Execution Failures}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Retry and Recovery from Execution Failures}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {III}METHOD}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-A}Problem Formulation}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Dual Action Manifolds}{2}{}\protected@file@percent }
@@ -39,8 +39,8 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-C}Dual-Head Architecture}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-D}Disagreement-Preserving Learning}{3}{}\protected@file@percent }
 \newlabel{eq:training_loss}{{7}{3}{}{equation.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {III-E}Joint Failure Detection and Recovery}{3}{}\protected@file@percent }
 \citation{libero}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-E}Joint Failure Detection and Retry}{4}{}\protected@file@percent }
 \newlabel{eq:recovery_vector}{{9}{4}{}{equation.9}{}}
 \newlabel{eq:disagreement}{{10}{4}{}{equation.10}{}}
 \newlabel{eq:fused_action}{{16}{4}{}{equation.16}{}}
@@ -48,7 +48,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-A}Benchmark and Data}{4}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Planned closed-loop telemetry visualization for perturbation recovery experiments.}}{4}{}\protected@file@percent }
 \newlabel{fig:telemetry}{{3}{4}{}{figure.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces LIBERO nominal and failure recovery success rates. All quantitative entries are TODO placeholders and must be filled after evaluation.}}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces LIBERO nominal and failure-aware retry success rates. All quantitative entries are TODO placeholders and must be filled after evaluation.}}{4}{}\protected@file@percent }
 \newlabel{tab:main_results}{{I}{4}{}{table.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}Implementation Details}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-C}Failure Detection and Recovery Protocol}{4}{}\protected@file@percent }
