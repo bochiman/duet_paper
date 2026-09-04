@@ -406,7 +406,7 @@ Table~\ref{tab:ablations} separates inference-time and training-time ablations. 
 Training ablations require independent checkpoints with the same data and optimization budget. RVQ-to-MLP tests discrete manifold anchoring; symmetric augmentation allows the relative head to train on perturbed images; and state-aware ABS gives the absolute branch direct proprioception, testing whether state exclusion prevents a shortcut. No completed runs currently support these rows, so the table records the preregistered comparisons rather than expected outcomes. We evaluate components on clean execution and representative Robot-state and Action-execution shifts; the World-state drop is not used to establish recovery quality because the waypoint itself may be invalid.
 
 \begin{table*}[t]
-\caption{Planned component ablations. Every entry marked TODO requires a full matched run; no conclusion is inferred from an untrained or test-time-mismatched substitute.}
+\caption{Component ablations, success (\%). Full DUET and DUET-Rel are four-suite averages (clean $N{=}2000$; robot-state teleport medium $N{=}2000$; action-execution medium$+$severe $N{=}4000$). Entries marked $^\dagger$ are Object-only ($N{=}500$); the matched Object Full-DUET rates are $99.2\%$ clean and $84.4\%$ action-execution medium. Every TODO requires a matched run.}
 \label{tab:ablations}
 \centering
 \resizebox{0.96\textwidth}{!}{%
@@ -415,11 +415,11 @@ Training ablations require independent checkpoints with the same data and optimi
 Type & Variant & Checkpoint & Clean & Robot-state & Action-execution & Isolates \\
 \midrule
 \multirow{5}{*}{Inference}
-& Full DUET & shared & TODO & TODO & TODO & Complete controller \\
-& DUET-Rel ($\alpha=0$) & shared & TODO & TODO & TODO & Absolute recovery branch \\
+& Full DUET & shared & 96.9 & 61.7 & 64.6 & Complete controller \\
+& DUET-Rel ($\alpha=0$) & shared & 93.8 & 40.0 & 27.9 & Absolute recovery branch \\
 & Absolute-only ($\alpha=1$) & shared & TODO & TODO & TODO & Cost of losing local control \\
 & Fixed fusion ($\alpha=0.5$) & shared & TODO & TODO & TODO & Adaptive switching \\
-& No adaptive CFG & shared & TODO & TODO & TODO & Marginal fallback \\
+& No adaptive CFG$^\dagger$ & shared & 98.2 & TODO & 83.2 & Marginal fallback \\
 \midrule
 \multirow{3}{*}{Training}
 & RVQ $\rightarrow$ MLP & retrained & TODO & TODO & TODO & Discrete anchoring \\
@@ -430,7 +430,7 @@ Type & Variant & Checkpoint & Clean & Robot-state & Action-execution & Isolates 
 \end{table*}
 
 \subsection{Summary of Findings}
-\textbf{Q1 remains open}: the external reported rows establish the standard LIBERO range, but the matched DUET and DUET-Rel clean benchmark is still pending. \textbf{Q2 is supported across the evaluated shifts}: DUET improves robot-state teleport by $21.7$~pp, vertical World-state drop by $6.0$~pp, action-execution shift by $36.7$~pp, cached visual dropout by $8.8$ to $17.3$~pp, and the separate external-force stress test by $3.73$~pp (Table~\ref{tab:ood_overall}). \textbf{Q3 remains open}: Table~\ref{tab:ablations} defines the required causal ablations, but their results must be supplied before component-level claims are made.
+\textbf{Q1}: on suite-specific $10$k checkpoints, DUET averages $93.8\%$ versus $96.9\%$ for DUET-Rel and $96.9\%$ reported for $\pi_{0.5}$; the clean cost of adaptive fusion is concentrated on Goal and LIBERO-10. \textbf{Q2 is supported across the evaluated shifts}: DUET improves robot-state teleport by $21.7$~pp, vertical World-state drop by $6.0$~pp, action-execution shift by $36.7$~pp, cached visual dropout by $8.8$ to $17.3$~pp, and the separate external-force stress test by $3.73$~pp (Table~\ref{tab:ood_overall}). \textbf{Q3 is only partly answered}: disabling the absolute branch explains the OOD gain, while holding CFG at $w{=}1$ does not change Object clean or action-medium success; absolute-only, fixed-$\alpha$, and all training ablations remain unrun.
 
 \section{LIMITATIONS}
 
