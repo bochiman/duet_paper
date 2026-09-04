@@ -1,0 +1,124 @@
+\relax 
+\citation{rt2}
+\citation{openvla}
+\citation{starvla}
+\citation{faildetect}
+\citation{dagger}
+\citation{sirius}
+\citation{intervengen}
+\@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCTION}{1}{}\protected@file@percent }
+\citation{diffdagger}
+\citation{sentinel}
+\citation{faildetect}
+\citation{fiper}
+\citation{safe}
+\citation{aha}
+\citation{dagger}
+\citation{eil}
+\citation{sirius}
+\citation{intervengen}
+\citation{racer}
+\citation{aha}
+\citation{vlmrecovery}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Failure-aware retry with dual action spaces. Relative and absolute predictions agree during nominal execution but diverge when a recoverable deviation drives the rollout OOD, exposing an endogenous disagreement score $D_t$. Relative actions provide precise local motion, whereas absolute waypoints bring the robot back toward a demonstrated execution path for retry.}}{2}{}\protected@file@percent }
+\newlabel{fig:teaser}{{1}{2}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {II}RELATED WORK}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-A}Failure Detection for Robot Policies}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Recovery from Execution Failures}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}METHOD}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-A}Problem Formulation}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Dual Action Manifolds}{2}{}\protected@file@percent }
+\citation{diffusionpolicy}
+\citation{pi0}
+\citation{vqvae}
+\citation{rvq}
+\citation{cfg}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces DUET in four stages: a shared vision-language encoder, relative and absolute action heads, cross-space failure detection, and closed-loop recovery. The relative head provides state-aware local control; the explicitly state-free absolute head uses RVQ-anchored conditions to predict global waypoints. Their disagreement determines the transition between nominal execution and recovery.}}{3}{}\protected@file@percent }
+\newlabel{fig:architecture}{{2}{3}{}{figure.2}{}}
+\newlabel{eq:transport_map}{{5}{3}{}{equation.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-C}Dual-Head Architecture}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-D}Disagreement-Preserving Learning}{3}{}\protected@file@percent }
+\newlabel{eq:training_loss}{{7}{3}{}{equation.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-E}Joint Failure Detection and Recovery}{3}{}\protected@file@percent }
+\citation{faildetect}
+\citation{rnd}
+\citation{sentinel}
+\citation{faildetect}
+\citation{rnd}
+\citation{faildetect}
+\citation{faildetect}
+\citation{sentinel}
+\citation{libero}
+\newlabel{eq:recovery_vector}{{9}{4}{}{equation.9}{}}
+\newlabel{eq:disagreement}{{10}{4}{}{equation.10}{}}
+\newlabel{eq:fused_action}{{16}{4}{}{equation.16}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}EXPERIMENTS}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-A}Comparison with Failure Detectors}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}Evaluation Questions and Protocol}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Failure-detection comparison. TPR, TNR, balanced accuracy (Bal.-Acc.), AUROC, and Loc.@16 are higher-is-better; detection delay is lower-is-better. Bold values indicate the best result in each column.}}{5}{}\protected@file@percent }
+\newlabel{tab:detector_baselines}{{I}{5}{}{table.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Nominal task success (\%) on LIBERO. External rows are reported results and are included only for benchmark context. StarVLA uses joint $30$k training; DUET uses suite-specific $10$k checkpoints.}}{5}{}\protected@file@percent }
+\newlabel{tab:benchmark}{{II}{5}{}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-C}Nominal LIBERO Performance}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-D}OOD Detection and Failure-Aware Retry}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.1}Evaluation Scope and Perturbation Taxonomy}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.2}Failure Detection Quality}{5}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Perturbation taxonomy. The final column states the assumption under which an absolute waypoint can support trajectory re-entry.}}{6}{}\protected@file@percent }
+\newlabel{tab:ood_taxonomy}{{III}{6}{}{table.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Closed-loop task success under the matched OOD protocols. Each row aggregates only the stated scope; heterogeneous severities and blackout horizons are not pooled into a single grand average.}}{6}{}\protected@file@percent }
+\newlabel{tab:ood_overall}{{IV}{6}{}{table.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Controller dynamics on the Object suite under (a) end-effector teleport, (b) vertical grasp drop, (c) action perturbation, and (d) camera blackout with a cached waypoint. Traces are aligned to the actual injection time and show means with pointwise bootstrap 95\% confidence intervals over successfully injected episodes. Shading denotes the perturbation or forced-hold window.}}{6}{}\protected@file@percent }
+\newlabel{fig:ood_mechanism_grid}{{3}{6}{}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.3}Retry under Recoverable Behavioral Shifts}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-D.3.a}Robot-state shift.}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces End-effector teleport on the Object suite. Top: a successful retry, with relative control before the displacement, absolute waypoint correction immediately afterward, and a return to relative control after re-entry. Bottom: mean disagreement $D_t$, residual weight $r_t$, and fusion weight $\alpha _t$ over $484$ successfully injected episodes, aligned to the injection time; bands are pointwise bootstrap 95\% confidence intervals.}}{6}{}\protected@file@percent }
+\newlabel{fig:teleport_mechanism}{{4}{6}{}{figure.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Failure detection on frozen DUET-Rel trajectories. Recall is measured at a threshold calibrated to $1\%$ clean-window FPR; delay is event-level, and false alarms are measured over full clean rollouts. Values are placeholders until analysis is complete.}}{7}{}\protected@file@percent }
+\newlabel{tab:detection}{{V}{7}{}{table.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Closed-loop task success (\%) under behavioral perturbations. DUET and DUET-Rel use the same checkpoint. Teleport and grasp drop use residual-weighted disagreement; action perturbation uses the default score.}}{7}{}\protected@file@percent }
+\newlabel{tab:behavioral}{{VI}{7}{}{table.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-D.3.b}Action-execution shift.}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.4}Boundary Case: World-State Shift}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.5}Interaction Stress Test}{7}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces External-force interaction stress test (fixed-step, $100\%$ injection, $N{=}500$ per cell).}}{8}{}\protected@file@percent }
+\newlabel{tab:force}{{VII}{8}{}{table.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Camera-blackout handling. An observation-validity guard skips inference on black frames; DUET follows the last reliable waypoint with $\alpha _t=1$ and resumes the adaptive gate when vision returns. The lower panel aggregates $500$ Object-suite episodes aligned to blackout onset.}}{8}{}\protected@file@percent }
+\newlabel{fig:camera_blackout_mechanism}{{5}{8}{}{figure.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.6}Transient Observation Loss}{8}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Task success (\%) under camera blackout. DUET holds the last reliable absolute waypoint. Step-$15$ medium uses $2000$ paired episodes; step-$23$ aggregates eight suite--severity groups.}}{8}{}\protected@file@percent }
+\newlabel{tab:visual}{{VIII}{8}{}{table.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-E}Real-Robot Evaluation}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-E.0.a}Platform and protocol.}{8}{}\protected@file@percent }
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{rt2}{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Reserved layout for the Franka real-robot setup and three evaluation scenes: (a) pick-and-place, (b) drawer opening, and (c) whiteboard wiping. The final panels should mark the disturbance direction and injection phase so that the recoverability assumption is visually explicit.}}{9}{}\protected@file@percent }
+\newlabel{fig:real_robot_setup}{{6}{9}{}{figure.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-F}Discussion}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}LIMITATIONS}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}CONCLUSION}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{9}{}\protected@file@percent }
+\bibcite{openvla}{2}
+\bibcite{starvla}{3}
+\bibcite{faildetect}{4}
+\bibcite{dagger}{5}
+\bibcite{sirius}{6}
+\bibcite{intervengen}{7}
+\bibcite{diffdagger}{8}
+\bibcite{sentinel}{9}
+\bibcite{fiper}{10}
+\bibcite{safe}{11}
+\bibcite{aha}{12}
+\bibcite{eil}{13}
+\bibcite{racer}{14}
+\bibcite{vlmrecovery}{15}
+\bibcite{diffusionpolicy}{16}
+\bibcite{pi0}{17}
+\bibcite{vqvae}{18}
+\bibcite{rvq}{19}
+\bibcite{cfg}{20}
+\bibcite{rnd}{21}
+\bibcite{libero}{22}
+\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Real-robot evaluation. Success entries are reported as successes/trials (\%); retry success conditions only on trials meeting the prespecified injection criteria. Values and disturbance definitions are placeholders pending physical experiments.}}{10}{}\protected@file@percent }
+\newlabel{tab:real_robot}{{IX}{10}{}{table.9}{}}
+\gdef \@abspage@last{10}

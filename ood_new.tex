@@ -185,6 +185,29 @@ The disagreement $D_t$ therefore determines \emph{when} recovery is needed, whil
 
 \section{EXPERIMENTS}
 
+\subsection{Comparison with Failure Detectors}
+Because DUET produces an explicit runtime failure score, we first compare its detection quality with representative detectors that require no failure examples for training. We implement logpZO, RND, and PCA-kmeans following the FAIL-Detect framework \cite{faildetect}; logpZO is the flow-based density score introduced by FAIL-Detect, RND adapts random network distillation \cite{rnd} to observation--action novelty, and PCA-kmeans measures the distance from an observation embedding to clustered successful features. We additionally compare with STAC, which detects failures through temporal inconsistency between overlapping action predictions \cite{sentinel}. Table~\ref{tab:detector_baselines} reports discrimination, detection latency, and temporal localization under the same evaluation protocol.
+
+\begin{table*}[t]
+\caption{Failure-detection comparison. TPR, TNR, balanced accuracy (Bal.-Acc.), AUROC, and Loc.@16 are higher-is-better; detection delay is lower-is-better. Bold values indicate the best result in each column.}
+\label{tab:detector_baselines}
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+Method & TPR $\uparrow$ & TNR $\uparrow$ & Bal.-Acc. $\uparrow$ & AUROC $\uparrow$ & Delay (steps) $\downarrow$ & Delay (s) $\downarrow$ & Loc.@16 $\uparrow$ \\
+\midrule
+DUET & \textbf{0.900} & 0.265 & 0.582 & \textbf{0.845} & 38.3 & 1.91 & 0.523 \\
+logpZO~\cite{faildetect} & 0.889 & 0.243 & 0.566 & 0.817 & 22.7 & 1.14 & \textbf{0.569} \\
+RND~\cite{rnd,faildetect} & 0.842 & \textbf{0.361} & \textbf{0.602} & 0.549 & 26.1 & 1.31 & 0.330 \\
+PCA-kmeans~\cite{faildetect} & 0.884 & 0.283 & 0.583 & 0.625 & \textbf{20.3} & \textbf{1.01} & 0.503 \\
+STAC~\cite{sentinel} & 0.839 & 0.311 & 0.575 & 0.494 & 25.8 & 1.29 & 0.260 \\
+\bottomrule
+\end{tabular}}
+\end{table*}
+
+DUET obtains the highest TPR and AUROC, indicating the strongest overall ranking of failed versus nominal execution in this comparison. Its lower TNR and longer detection delay reveal a complementary trade-off: DUET is more sensitive to failures, whereas RND rejects nominal alarms more effectively and PCA-kmeans triggers earlier. DUET also attains the second-highest Loc.@16 behind logpZO. We therefore treat detection quality as a separate empirical claim from the closed-loop retry results reported below.
+
 \subsection{Evaluation Questions and Protocol}
 Our evaluation follows the distinction made in the introduction between nominal execution, retryable deviations, and failures that invalidate the demonstrated behavior. We ask: \textbf{Q1: Nominal execution.} Does activating the dual-action controller retain standard task performance when no disturbance occurs? \textbf{Q2: Failure detection.} Does cross-action disagreement identify execution deviations with few nominal false alarms and low latency? \textbf{Q3: Trajectory re-entry.} When execution leaves the demonstrated path but that path remains reachable, does the detected disagreement improve task completion over relative control alone, and where does waypoint-based retry cease to apply? \textbf{Q4: Physical deployment.} Do the nominal-control and retry behaviors transfer to real manipulation across tasks with different contact structures?
 

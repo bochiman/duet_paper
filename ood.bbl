@@ -1,0 +1,190 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{#1}
+\csname url@rmstyle\endcsname
+\providecommand{\newblock}{\relax}
+\providecommand{\bibinfo}[2]{#2}
+\providecommand\BIBentrySTDinterwordspacing{\spaceskip=0pt\relax}
+\providecommand\BIBentryALTinterwordstretchfactor{4}
+\providecommand\BIBentryALTinterwordspacing{\spaceskip=\fontdimen2\font plus
+\BIBentryALTinterwordstretchfactor\fontdimen3\font minus
+  \fontdimen4\font\relax}
+\providecommand\BIBforeignlanguage[2]{{%
+\expandafter\ifx\csname l@#1\endcsname\relax
+\typeout{** WARNING: IEEEtran.bst: No hyphenation pattern has been}%
+\typeout{** loaded for the language `#1'. Using the pattern for}%
+\typeout{** the default language instead.}%
+\else
+\language=\csname l@#1\endcsname
+\fi
+#2}}
+
+\bibitem{rt2}
+A.~Brohan, N.~Brown, J.~Carbajal, Y.~Chebotar, X.~Chen, K.~Choromanski,
+  T.~Ding, D.~Driess, A.~Dubey, C.~Finn, P.~Florence, C.~Fu, M.~G. Arenas,
+  K.~Gopalakrishnan, K.~Han, K.~Hausman, A.~Herzog, J.~Hsu, B.~Ichter,
+  A.~Irpan, N.~Joshi, R.~Julian, D.~Kalashnikov, Y.~Kuang, I.~Leal, K.-H. Lee,
+  S.~Levine, Y.~Lu, H.~Michalewski, I.~Mordatch, K.~Pertsch, K.~Rao,
+  K.~Reymann, M.~Ryoo, G.~Salazar, P.~Sanketi, P.~Sermanet, J.~Singh, A.~Singh,
+  R.~Soricut, H.~Tran, V.~Vanhoucke, Q.~Vuong, A.~Wahid, S.~Welker,
+  P.~Wohlhart, J.~Wu, F.~Xia, T.~Xiao, P.~Xu, S.~Xu, T.~Yu, and B.~Zitkovich,
+  ``{RT-2}: Vision-language-action models transfer web knowledge to robotic
+  control,'' \emph{arXiv preprint arXiv:2307.15818}, 2023.
+
+\bibitem{kim2024openvla}
+M.~J. Kim, K.~Pertsch, S.~Karamcheti, T.~Xiao, A.~Balakrishna, S.~Nair,
+  R.~Rafailov, E.~P. Foster, P.~R. Sanketi, Q.~Vuong, T.~Kollar, B.~Burchfiel,
+  R.~Tedrake, D.~Sadigh, S.~Levine, P.~Liang, and C.~Finn, ``Openvla: An
+  open-source vision-language-action model,'' in \emph{Proceedings of the 8th
+  Conference on Robot Learning}, ser. Proceedings of Machine Learning Research,
+  vol. 270.\hskip 1em plus 0.5em minus 0.4em\relax PMLR, 2024, pp. 2679--2713.
+
+\bibitem{2026IRAL...11.3182G}
+J.~{Gao}, S.~{Belkhale}, S.~{Dasari}, A.~{Balakrishna}, D.~{Shah}, and
+  D.~{Sadigh}, ``{A Taxonomy for Evaluating Generalist Robot Manipulation
+  Policies},'' \emph{IEEE Robotics and Automation Letters}, vol.~11, no.~3, pp.
+  3182--3189, Jan. 2026.
+
+\bibitem{liu2024runtime}
+H.~Liu, S.~Dass, R.~Mart{\'i}n-Mart{\'i}n, and Y.~Zhu, ``Model-based runtime
+  monitoring with interactive imitation learning,'' in \emph{2024 IEEE
+  International Conference on Robotics and Automation (ICRA)}, 2024, pp.
+  4154--4161.
+
+\bibitem{agia2025sentinel}
+C.~Agia, R.~Sinha, J.~Yang, Z.~Cao, R.~Antonova, M.~Pavone, and J.~Bohg,
+  ``Unpacking failure modes of generative policies: Runtime monitoring of
+  consistency and progress,'' in \emph{Proceedings of the 8th Conference on
+  Robot Learning}, ser. Proceedings of Machine Learning Research, vol.
+  270.\hskip 1em plus 0.5em minus 0.4em\relax PMLR, 2025, pp. 689--723.
+
+\bibitem{xu2025faildetect}
+C.~Xu, T.~K. Nguyen, E.~Dixon, C.~Rodriguez, P.~Miller, R.~Lee, P.~Shah, R.~A.
+  Ambrus, H.~Nishimura, and M.~Itkina, ``Can we detect failures without failure
+  data? uncertainty-aware runtime failure detection for imitation learning
+  policies,'' in \emph{Proceedings of Robotics: Science and Systems}, Los
+  Angeles, CA, USA, June 2025.
+
+\bibitem{duan2025aha}
+J.~Duan, W.~Pumacay, N.~Kumar, Y.~R. Wang, S.~Tian, W.~Yuan, R.~Krishna,
+  D.~Fox, A.~Mandlekar, and Y.~Guo, ``Aha: A vision-language-model for
+  detecting and reasoning over failures in robotic manipulation,'' in
+  \emph{International Conference on Learning Representations}, 2025.
+
+\bibitem{hoque2024intervengen}
+R.~Hoque, A.~Mandlekar, C.~R. Garrett, K.~Goldberg, and D.~Fox, ``Intervengen:
+  Interventional data generation for robust and data-efficient robot imitation
+  learning,'' in \emph{2024 IEEE/RSJ International Conference on Intelligent
+  Robots and Systems (IROS)}, 2024, pp. 2840--2846.
+
+\bibitem{aljalbout2024actionspace}
+E.~Aljalbout, F.~Frank, M.~Karl, and P.~van~der Smagt, ``On the role of the
+  action space in robot manipulation learning and sim-to-real transfer,''
+  \emph{IEEE Robotics and Automation Letters}, vol.~9, no.~6, pp. 5895--5902,
+  2024.
+
+\bibitem{feng2026demystifying}
+Y.~Feng, J.~Zheng, Z.~Wang, D.~Liu, J.~Li, J.~Pang, T.~Wang, and X.~Zhan,
+  ``Demystifying action space design for robotic manipulation policies,''
+  \emph{arXiv preprint arXiv:2602.23408}, 2026.
+
+\bibitem{diffdagger}
+S.-W. Lee, X.~Kang, and Y.-L. Kuo, ``{Diff-DAgger}: Uncertainty estimation with
+  diffusion policy for robotic manipulation,'' in \emph{IEEE International
+  Conference on Robotics and Automation}, 2025.
+
+\bibitem{sentinel}
+C.~Agia, R.~Sinha, J.~Yang, Z.~Cao, R.~Antonova, M.~Pavone, and J.~Bohg,
+  ``Unpacking failure modes of generative policies: Runtime monitoring of
+  consistency and progress,'' in \emph{Proceedings of the Conference on Robot
+  Learning}, ser. Proceedings of Machine Learning Research, vol. 270, 2025, pp.
+  689--723.
+
+\bibitem{faildetect}
+C.~Xu, T.~K. Nguyen, E.~Dixon, C.~Rodriguez, P.~Miller, R.~Lee, P.~Shah,
+  R.~Ambrus, H.~Nishimura, and M.~Itkina, ``Can we detect failures without
+  failure data? uncertainty-aware runtime failure detection for imitation
+  learning policies,'' in \emph{Proceedings of Robotics: Science and Systems},
+  2025.
+
+\bibitem{fiper}
+R.~R{\"o}mer, A.~Kobras, L.~Worbis, and A.~P. Schoellig, ``Failure prediction
+  at runtime for generative robot policies,'' in \emph{Advances in Neural
+  Information Processing Systems}, 2025.
+
+\bibitem{safe}
+Q.~Gu, Y.~Ju, S.~Sun, I.~Gilitschenski, H.~Nishimura, M.~Itkina, and
+  F.~Shkurti, ``{SAFE}: Multitask failure detection for vision-language-action
+  models,'' in \emph{Advances in Neural Information Processing Systems},
+  vol.~38, 2025.
+
+\bibitem{aha}
+J.~Duan, W.~Pumacay, N.~Kumar, Y.~R. Wang, S.~Tian, W.~Yuan, R.~Krishna,
+  D.~Fox, A.~Mandlekar, and Y.~Guo, ``{AHA}: A vision-language-model for
+  detecting and reasoning over failures in robotic manipulation,'' in
+  \emph{International Conference on Learning Representations}, 2025.
+
+\bibitem{dagger}
+S.~Ross, G.~Gordon, and D.~Bagnell, ``A reduction of imitation learning and
+  structured prediction to no-regret online learning,'' in \emph{Proceedings of
+  the Fourteenth International Conference on Artificial Intelligence and
+  Statistics}, 2011.
+
+\bibitem{eil}
+J.~Spencer, S.~Choudhury, M.~Barnes, M.~Schmittle, M.~Chiang, P.~Ramadge, and
+  S.~Srinivasa, ``Learning from interventions: Human-robot interaction as both
+  explicit and implicit feedback,'' in \emph{Proceedings of Robotics: Science
+  and Systems}, 2020.
+
+\bibitem{sirius}
+H.~Liu, S.~Nasiriany, L.~Zhang, Z.~Bao, and Y.~Zhu, ``Robot learning on the
+  job: Human-in-the-loop autonomy and learning during deployment,'' in
+  \emph{Proceedings of Robotics: Science and Systems}, 2023.
+
+\bibitem{intervengen}
+R.~Hoque, A.~Mandlekar, C.~R. Garrett, K.~Goldberg, and D.~Fox,
+  ``{IntervenGen}: Interventional data generation for robust and data-efficient
+  robot imitation learning,'' in \emph{IEEE/RSJ International Conference on
+  Intelligent Robots and Systems}, 2024, pp. 2840--2846.
+
+\bibitem{racer}
+Y.~Dai, J.~Lee, N.~Fazeli, and J.~Chai, ``{RACER}: Rich language-guided failure
+  recovery policies for imitation learning,'' in \emph{IEEE International
+  Conference on Robotics and Automation}, 2025, pp. 15\,657--15\,664.
+
+\bibitem{vlmrecovery}
+H.~Chen, Y.~Yao, R.~Liu, C.~Liu, and J.~Ichnowski, ``Automating robot failure
+  recovery using vision-language models with optimized prompts,'' \emph{arXiv
+  preprint arXiv:2409.03966}, 2024.
+
+\bibitem{diffusionpolicy}
+C.~Chi, S.~Feng, Y.~Du, Z.~Xu, E.~Cousineau, B.~Burchfiel, and S.~Song,
+  ``Diffusion policy: Visuomotor policy learning via action diffusion,''
+  \emph{The International Journal of Robotics Research}, 2024.
+
+\bibitem{pi0}
+K.~Black, N.~Brown, D.~Driess, A.~Esmail, M.~Equi, C.~Finn, N.~Fusai, L.~Groom,
+  K.~Hausman, B.~Ichter, J.~Jakubczak, T.~Jones, A.~Khazatsky, S.~Levine,
+  A.~Li-Bell, Y.~Lu, S.~Nair, K.~Pertsch, Q.~V. Xu, F.~Xia, and T.~Xiao,
+  ``$\pi_0$: A vision-language-action flow model for general robot control,''
+  \emph{arXiv preprint arXiv:2410.24164}, 2024.
+
+\bibitem{vqvae}
+A.~van~den Oord, O.~Vinyals, and K.~Kavukcuoglu, ``Neural discrete
+  representation learning,'' in \emph{Advances in Neural Information Processing
+  Systems}, 2017.
+
+\bibitem{rvq}
+N.~Zeghidour, A.~Luebs, A.~Omran, J.~Skoglund, and M.~Tagliasacchi,
+  ``Soundstream: An end-to-end neural audio codec,'' \emph{IEEE/ACM
+  Transactions on Audio, Speech, and Language Processing}, 2022.
+
+\bibitem{cfg}
+J.~Ho and T.~Salimans, ``Classifier-free diffusion guidance,'' \emph{arXiv
+  preprint arXiv:2207.12598}, 2022.
+
+\bibitem{libero}
+B.~Liu, Y.~Zhu, C.~Gao, Y.~Feng, Q.~Liu, Y.~Zhu, and P.~Stone, ``{LIBERO}:
+  Benchmarking knowledge transfer for lifelong robot learning,'' in
+  \emph{Advances in Neural Information Processing Systems}, 2023.
+
+\end{thebibliography}

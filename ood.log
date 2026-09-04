@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  4 SEP 2026 15:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  4 SEP 2026 15:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**main.tex
-(./main.tex
+**ood.tex
+(./ood.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
 (./ieeeconf.cls
@@ -237,8 +237,8 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count304
 )
-(./main.aux)
-\openout1 = `main.aux'.
+(./ood.aux)
+\openout1 = `ood.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
 LaTeX Font Info:    ... okay on input line 27.
@@ -295,45 +295,59 @@ File: figures/fig1.pdf Graphic file (type pdf)
 Package pdftex.def Info: figures/fig1.pdf  used on input line 39.
 (pdftex.def)             Requested size: 485.65779pt x 128.99194pt.
 
-Underfull \vbox (badness 1024) has occurred while \output is active []
+Underfull \hbox (badness 4673) in paragraph at lines 45--46
+[]\OT1/ptm/m/n/10 Vision-language-action (VLA) mod-els have re-cently
+ []
 
- [1{/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/
-local/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc}
+[1{/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/l
+ocal/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-Underfull \vbox (badness 1215) has occurred while \output is active []
+Underfull \hbox (badness 3635) in paragraph at lines 59--61
+[]\OT1/ptm/m/n/10 We eval-u-ate DUET un-der robot-state per-tur-ba-tions,
+ []
 
-<figures/fig2.pdf, id=11, 561.09625pt x 710.655pt>
+[2 <./figures/fig1.pdf>]
+<figures/fig2.pdf, id=178, 561.09625pt x 710.655pt>
 File: figures/fig2.pdf Graphic file (type pdf)
 <use figures/fig2.pdf>
-Package pdftex.def Info: figures/fig2.pdf  used on input line 87.
+Package pdftex.def Info: figures/fig2.pdf  used on input line 92.
 (pdftex.def)             Requested size: 245.71811pt x 311.20357pt.
- [2 <./figures/fig1.pdf>] [3 <./figures/fig2.pdf>]
-LaTeX Font Info:    Trying to load font information for U+euf on input line 152
+ [3 <./figures/fig2.pdf>]
+LaTeX Font Info:    Trying to load font information for U+euf on input line 157
 .
 
 (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
-)
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
-88.
+) [4]
+<figures/fig_ood_mechanism_grid.pdf, id=237, 557.68304pt x 354.3235pt>
+File: figures/fig_ood_mechanism_grid.pdf Graphic file (type pdf)
+<use figures/fig_ood_mechanism_grid.pdf>
+Package pdftex.def Info: figures/fig_ood_mechanism_grid.pdf  used on input line
+ 256.
+(pdftex.def)             Requested size: 245.71811pt x 156.11908pt.
+<figures/fig3_teleport_mechanism.pdf, id=238, 586.59103pt x 369.781pt>
+File: figures/fig3_teleport_mechanism.pdf Graphic file (type pdf)
+<use figures/fig3_teleport_mechanism.pdf>
+Package pdftex.def Info: figures/fig3_teleport_mechanism.pdf  used on input lin
+e 300.
+(pdftex.def)             Requested size: 245.71811pt x 154.9007pt.
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 3
+10.
 
 (/usr/local/texlive/2026/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)
-Underfull \hbox (badness 4429) in paragraph at lines 191--192
-[]\OT1/ptm/m/n/10 DUET is im-ple-mented as \OT1/pcr/m/n/10 QwenGR00THybrid \OT1
-/ptm/m/n/10 in
- []
-
-[4] (./main.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 41--44
-\OT1/ptm/m/n/8 language-action model de-vel-op-ing,'' $https : / / github . com
- / starVLA /
- []
-
-)
+) [5 <./figures/fig_ood_mechanism_grid.pdf> <./figures/fig3_teleport_mechanism.
+pdf>]
+<figures/fig_camera_blackout_mechanism.pdf, id=298, 586.59103pt x 340.87302pt>
+File: figures/fig_camera_blackout_mechanism.pdf Graphic file (type pdf)
+<use figures/fig_camera_blackout_mechanism.pdf>
+Package pdftex.def Info: figures/fig_camera_blackout_mechanism.pdf  used on inp
+ut line 348.
+(pdftex.def)             Requested size: 245.71811pt x 142.79118pt.
+ [6]
+(./ood.bbl [7 <./figures/fig_camera_blackout_mechanism.pdf>] [8])
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -345,45 +359,49 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[5] (./main.aux)
+[9
+
+] (./ood.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 3488 strings out of 467525
- 53310 string characters out of 5418982
- 477284 words of memory out of 5000000
- 32357 multiletter control sequences out of 15000+600000
- 669837 words of font info for 127 fonts, out of 8000000 for 9000
+ 3524 strings out of 467525
+ 54569 string characters out of 5418982
+ 486921 words of memory out of 5000000
+ 32391 multiletter control sequences out of 15000+600000
+ 670740 words of font info for 126 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,10n,65p,1309b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
-></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
-</usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></
-usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></us
-r/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/
-local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/lo
-cal/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/loca
+ 57i,12n,65p,1308b,321s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb>
+</usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
+/usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
+usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></us
+r/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/
+local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/lo
+cal/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/loca
 l/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/
 texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/tex
 live/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texliv
 e/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2
 026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2026
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2026/te
-xmf-dist/fonts/type1/public/amsfonts/euler/eufm10.pfb></usr/local/texlive/2026/
-texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2
-026/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2026/texm
-f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2026/texmf-dist/fon
-ts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/
-urw/times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/
-utmri8a.pfb>
-Output written on main.pdf (5 pages, 3885434 bytes).
+texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2026/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2026/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2026/texmf-
+dist/fonts/type1/public/amsfonts/euler/eufm10.pfb></usr/local/texlive/2026/texm
+f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2026/
+texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2026/texmf-di
+st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/t
+ype1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/
+times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmr
+i8a.pfb>
+Output written on ood.pdf (9 pages, 4214464 bytes).
 PDF statistics:
- 332 PDF objects out of 1000 (max. 8388607)
- 163 compressed objects within 2 object streams
+ 445 PDF objects out of 1000 (max. 8388607)
+ 229 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 

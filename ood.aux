@@ -1,0 +1,116 @@
+\relax 
+\citation{rt2}
+\citation{kim2024openvla}
+\citation{2026IRAL...11.3182G}
+\citation{liu2024runtime}
+\citation{agia2025sentinel}
+\citation{xu2025faildetect}
+\citation{duan2025aha}
+\citation{hoque2024intervengen}
+\citation{aljalbout2024actionspace}
+\citation{feng2026demystifying}
+\@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCTION}{1}{}\protected@file@percent }
+\citation{diffdagger}
+\citation{sentinel}
+\citation{faildetect}
+\citation{fiper}
+\citation{safe}
+\citation{aha}
+\citation{dagger}
+\citation{eil}
+\citation{sirius}
+\citation{intervengen}
+\citation{racer}
+\citation{aha}
+\citation{vlmrecovery}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Dual-manifold failure detection and recovery. The relative and absolute end-effector manifolds agree during nominal execution but diverge when a failure drives the system OOD, exposing an endogenous disagreement score $D_t$. Relative actions provide precise local motion, whereas absolute waypoints project execution toward a stable demonstrated-manifold anchor.}}{2}{}\protected@file@percent }
+\newlabel{fig:teaser}{{1}{2}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {II}RELATED WORK}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-A}Failure Detection for Robot Policies}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Recovery from Execution Failures}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}METHOD}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-A}Problem Formulation}{2}{}\protected@file@percent }
+\citation{diffusionpolicy}
+\citation{pi0}
+\citation{vqvae}
+\citation{rvq}
+\citation{cfg}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces DUET in four stages: a shared vision-language encoder, relative and absolute action heads, cross-space failure detection, and closed-loop recovery. The relative head provides state-aware local control; the explicitly state-free absolute head uses RVQ-anchored conditions to predict global waypoints. Their disagreement determines the transition between nominal execution and recovery.}}{3}{}\protected@file@percent }
+\newlabel{fig:architecture}{{2}{3}{}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Dual Action Manifolds}{3}{}\protected@file@percent }
+\newlabel{eq:transport_map}{{5}{3}{}{equation.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-C}Dual-Head Architecture}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-D}Disagreement-Preserving Learning}{3}{}\protected@file@percent }
+\newlabel{eq:training_loss}{{7}{3}{}{equation.7}{}}
+\citation{libero}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-E}Joint Failure Detection and Recovery}{4}{}\protected@file@percent }
+\newlabel{eq:recovery_vector}{{9}{4}{}{equation.9}{}}
+\newlabel{eq:disagreement}{{10}{4}{}{equation.10}{}}
+\newlabel{eq:fused_action}{{16}{4}{}{equation.16}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}EXPERIMENTS}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-A}Experimental Questions and Protocol}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}Standard LIBERO Benchmark and Baselines}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Standard LIBERO success (\%). External rows are reported results; StarVLA uses joint $30$k training, whereas DUET uses suite-specific $10$k checkpoints.}}{5}{}\protected@file@percent }
+\newlabel{tab:benchmark}{{I}{5}{}{table.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Aggregate DUET dynamics for four OOD protocols on the Object suite: (a) end-effector teleport, (b) vertical grasp drop, (c) action perturbation, and (d) camera blackout with a cached waypoint. Traces are aligned to the actual injection step and show the mean with pointwise bootstrap 95\% confidence intervals over successfully injected episodes. Shading marks the perturbation or forced-hold window.}}{5}{}\protected@file@percent }
+\newlabel{fig:ood_mechanism_grid}{{3}{5}{}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-C}OOD Robustness}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-C.1}OOD Taxonomy}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Robot-state shift (end-effector teleport) on the Object suite. Top: four frames from a successful episode, showing relative control before the jump, an immediate switch to absolute recovery after the arm is displaced, and return to relative control once the pose residual collapses. Bottom: mean $D_t$, residual weight $r_t=\operatorname  {clip}(\|c_{t,\mathrm  {xyz}}\|/0.05,0,1)$, and $\alpha _t$ over $484$ successfully injected episodes, aligned at the actual injection step, with pointwise bootstrap 95\% confidence intervals. Shading marks the perturbation window.}}{5}{}\protected@file@percent }
+\newlabel{fig:teleport_mechanism}{{4}{5}{}{figure.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-C.2}Behavioral OOD}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-C.2.a}Robot-State Shift.}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-C.2.b}World-State Shift.}{5}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces OOD families and shift loci. The absolute waypoint is useful only when the demonstrated world reference remains valid.}}{6}{}\protected@file@percent }
+\newlabel{tab:ood_taxonomy}{{II}{6}{}{table.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Closed-loop success (\%) on behavioral OOD. DUET-Rel and DUET share a checkpoint. Teleport and vertical drop use residual-weighted disagreement; action perturbation uses the default disagreement gate.}}{6}{}\protected@file@percent }
+\newlabel{tab:behavioral}{{III}{6}{}{table.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces External-force stress test (fixed-step, $100\%$ injection, $N{=}500$ per cell). Not grouped with end-effector teleport.}}{6}{}\protected@file@percent }
+\newlabel{tab:force}{{IV}{6}{}{table.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-C.2.c}Action-Execution Shift.}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-C.3}Additional Interaction Stress Test}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-C.4}Transient Visual OOD}{6}{}\protected@file@percent }
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{rt2}{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Camera-blackout mechanism. DUET detects the invalid observation, skips dual-head inference on black frames, executes the correction to the last reliable absolute waypoint with $\alpha _t=1$, and resumes the adaptive gate when vision returns. The lower panel aggregates $500$ Object-suite episodes aligned at blackout onset.}}{7}{}\protected@file@percent }
+\newlabel{fig:camera_blackout_mechanism}{{5}{7}{}{figure.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Transient visual OOD (camera blackout). DUET holds the last reliable absolute waypoint. Step-$15$ medium uses $2000$ paired episodes; step-$23$ aggregates eight suite$\times $severity groups.}}{7}{}\protected@file@percent }
+\newlabel{tab:visual}{{V}{7}{}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-D}Ablation Studies}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-E}Summary of Findings}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}LIMITATIONS}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}CONCLUSION}{7}{}\protected@file@percent }
+\bibcite{kim2024openvla}{2}
+\bibcite{2026IRAL...11.3182G}{3}
+\bibcite{liu2024runtime}{4}
+\bibcite{agia2025sentinel}{5}
+\bibcite{xu2025faildetect}{6}
+\bibcite{duan2025aha}{7}
+\bibcite{hoque2024intervengen}{8}
+\bibcite{aljalbout2024actionspace}{9}
+\bibcite{feng2026demystifying}{10}
+\bibcite{diffdagger}{11}
+\bibcite{sentinel}{12}
+\bibcite{faildetect}{13}
+\bibcite{fiper}{14}
+\bibcite{safe}{15}
+\bibcite{aha}{16}
+\bibcite{dagger}{17}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Overall task success under the matched OOD protocols reported in this section. Each row aggregates only its stated scope; heterogeneous severities and horizons are not pooled into a single grand average.}}{8}{}\protected@file@percent }
+\newlabel{tab:ood_overall}{{VI}{8}{}{table.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Planned component ablations. Every entry marked TODO requires a full matched run; no conclusion is inferred from an untrained or test-time-mismatched substitute.}}{8}{}\protected@file@percent }
+\newlabel{tab:ablations}{{VII}{8}{}{table.7}{}}
+\@writefile{toc}{\contentsline {section}{References}{8}{}\protected@file@percent }
+\bibcite{eil}{18}
+\bibcite{sirius}{19}
+\bibcite{intervengen}{20}
+\bibcite{racer}{21}
+\bibcite{vlmrecovery}{22}
+\bibcite{diffusionpolicy}{23}
+\bibcite{pi0}{24}
+\bibcite{vqvae}{25}
+\bibcite{rvq}{26}
+\bibcite{cfg}{27}
+\bibcite{libero}{28}
+\gdef \@abspage@last{9}
