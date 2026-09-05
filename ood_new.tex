@@ -185,45 +185,35 @@ The disagreement $D_t$ therefore determines \emph{when} recovery is needed, whil
 
 \section{EXPERIMENTS}
 
-\subsection{Comparison with Failure Detectors}
-Because DUET produces an explicit runtime failure score, we first compare its detection quality with representative detectors that require no failure examples for training. We implement logpZO, RND, and PCA-kmeans following the FAIL-Detect framework \cite{faildetect}; logpZO is the flow-based density score introduced by FAIL-Detect, RND adapts random network distillation \cite{rnd} to observation--action novelty, and PCA-kmeans measures the distance from an observation embedding to clustered successful features. We additionally compare with STAC, which detects failures through temporal inconsistency between overlapping action predictions \cite{sentinel}. Table~\ref{tab:detector_baselines} reports discrimination, detection latency, and temporal localization under the same evaluation protocol.
+The experiments test the three claims in the introduction. First, activating dual-action retry should preserve nominal VLA performance. Second, the same controller should improve task completion under recoverable execution failures---action-induced trajectory drift, robot-arm displacement, object or grasp disturbances, transient visual occlusion, and contact-level scene interaction---without failure labels or takeover data. Third, the endogenous disagreement between the two action heads should discriminate failed from nominal execution. We report closed-loop success before detection: the introduction presents DUET as a coupled detect-and-retry controller, not as a standalone monitor.
+
+\subsection{Evaluation Protocol}
+We evaluate on the four LIBERO suites \cite{libero}---Spatial, Object, Goal, and LIBERO-10. Each suite contains $10$ tasks, and each method is evaluated from $50$ initial states per task, yielding $500$ episodes per suite. We train one suite-specific dual-head checkpoint for $10$k steps. \emph{DUET} executes the adaptive controller in Eq.~\eqref{eq:fused_action}, whereas \emph{DUET-Rel} fixes $\alpha_t=0$ and executes only the relative head of the same checkpoint. This within-checkpoint comparison is the primary control: architecture, training data, optimization, task, initial state, and perturbation are held fixed, leaving the inference-time use of the absolute branch as the only difference.
+
+For OOD evaluation, perturbations are scheduled at a fixed policy step with deterministic event seeds. DUET and DUET-Rel are paired by identical $(\mathrm{task},\mathrm{initial\ state})$ keys. We report closed-loop task success and paired McNemar $p$-values. When a perturbation has a semantic precondition---in particular, a grasp drop is injected only if an object is actually held---we report injection coverage and keep uninjected episodes in the overall success rate rather than silently dropping them. Other policies' published clean scores are not used as OOD baselines: they do not share our initial states, injection times, severities, or success accounting.
+
+Table~\ref{tab:ood_taxonomy} maps each protocol to the execution-failure types named in the introduction. We do not pool heterogeneous disturbance types, severities, or horizons into a single grand average.
 
 \begin{table*}[t]
-\caption{Failure-detection comparison. TPR, TNR, balanced accuracy (Bal.-Acc.), AUROC, and Loc.@16 are higher-is-better; detection delay is lower-is-better. Bold values indicate the best result in each column.}
-\label{tab:detector_baselines}
+\caption{Execution-failure protocols and their correspondence to the introduction.}
+\label{tab:ood_taxonomy}
 \centering
 \resizebox{0.96\textwidth}{!}{%
-\begin{tabular}{lccccccc}
+\begin{tabular}{llll}
 \toprule
-Method & TPR $\uparrow$ & TNR $\uparrow$ & Bal.-Acc. $\uparrow$ & AUROC $\uparrow$ & Delay (steps) $\downarrow$ & Delay (s) $\downarrow$ & Loc.@16 $\uparrow$ \\
+Family & Protocol & What becomes OOD & Introduction example \\
 \midrule
-DUET & \textbf{0.900} & 0.265 & 0.582 & \textbf{0.845} & 38.3 & 1.91 & 0.523 \\
-logpZO~\cite{faildetect} & 0.889 & 0.243 & 0.566 & 0.817 & 22.7 & 1.14 & \textbf{0.569} \\
-RND~\cite{rnd,faildetect} & 0.842 & \textbf{0.361} & \textbf{0.602} & 0.549 & 26.1 & 1.31 & 0.330 \\
-PCA-kmeans~\cite{faildetect} & 0.884 & 0.283 & 0.583 & 0.625 & \textbf{20.3} & \textbf{1.01} & 0.503 \\
-STAC~\cite{sentinel} & 0.839 & 0.311 & 0.575 & 0.494 & 25.8 & 1.29 & 0.260 \\
+Action execution & Action perturbation & Induced trajectory / command-to-motion map & Execution drift after locally plausible commands \\
+Robot displacement & EEF teleport & Robot-arm pose & Unexpected displacement of the robot arm \\
+Object / grasp & Vertical grasp drop & Robot--object configuration & Dropped object or failed hold \\
+Visual occlusion & Camera blackout & Current visual observation & Transient occlusion \\
+Contact / scene & External force & Robot--world interaction & External disturbance during contact \\
 \bottomrule
 \end{tabular}}
 \end{table*}
 
-DUET obtains the highest TPR and AUROC, indicating the strongest overall ranking of failed versus nominal execution in this comparison. Its lower TNR and longer detection delay reveal a complementary trade-off: DUET is more sensitive to failures, whereas RND rejects nominal alarms more effectively and PCA-kmeans triggers earlier. DUET also attains the second-highest Loc.@16 behind logpZO. We therefore treat detection quality as a separate empirical claim from the closed-loop retry results reported below.
-
-\subsection{Evaluation Questions and Protocol}
-Our evaluation follows the distinction made in the introduction between nominal execution, retryable deviations, and failures that invalidate the demonstrated behavior. We ask: \textbf{Q1: Nominal execution.} Does activating the dual-action controller retain standard task performance when no disturbance occurs? \textbf{Q2: Failure detection.} Does cross-action disagreement identify execution deviations with few nominal false alarms and low latency? \textbf{Q3: Trajectory re-entry.} When execution leaves the demonstrated path but that path remains reachable, does the detected disagreement improve task completion over relative control alone, and where does waypoint-based retry cease to apply? \textbf{Q4: Physical deployment.} Do the nominal-control and retry behaviors transfer to real manipulation across tasks with different contact structures?
-
-We evaluate on the four LIBERO suites \cite{libero}---Spatial, Object, Goal, and LIBERO-10. Each suite contains $10$ tasks, and each method is evaluated from $50$ initial states per task, yielding $500$ episodes per suite. We train one suite-specific dual-head checkpoint for $10$k steps. \emph{DUET} executes the adaptive controller in Eq.~\eqref{eq:fused_action}, whereas \emph{DUET-Rel} fixes $\alpha_t=0$ and executes only the relative head of the same checkpoint. This within-checkpoint ablation is our primary control: architecture, training data, optimization, task, initial state, and perturbation are held fixed, leaving the inference-time use of the absolute branch as the only difference. It isolates the controller, but not the training cost of adding the second head; the latter would require a separately trained, budget-matched single-head model.
-
-For OOD evaluation, perturbations are scheduled at a fixed policy step with deterministic event seeds. DUET and DUET-Rel are therefore paired by identical $(\mathrm{task},\mathrm{initial\ state})$ keys. We report closed-loop task success and paired McNemar $p$-values. We also report injection coverage whenever a perturbation has a semantic precondition. In particular, a grasp-drop event is counted as injected only if an object is actually held; episodes that do not satisfy this condition remain in the overall success rate and are not silently excluded.
-
-The state-bound term $S_t$ is nearly always zero in LIBERO. For the robot- and world-state experiments, we therefore use a residual-weighted disagreement score,
-\begin{equation}
-q_t = D_t r_t,\qquad
-r_t=\operatorname{clip}(\|c_{t,\mathrm{xyz}}\| / 0.05,\,0,\,1),
-\end{equation}
-which suppresses a switch when the absolute prediction disagrees with the relative action but does not imply a meaningful translational correction. Action-execution and contact experiments use the default score $q_t=D_t+\lambda S_t$. Camera blackout is handled separately because neither head can produce a meaningful prediction from an invalid image.
-
-\subsection{Nominal LIBERO Performance}
-Table~\ref{tab:benchmark} first tests whether failure-aware retry compromises ordinary execution. DUET attains $96.9\%$ average success, matching the reported $\pi_{0.5}$ result and slightly exceeding the reported StarVLA-GR00T average. These external results provide benchmark context rather than a controlled comparison: StarVLA uses joint $30$k training, whereas DUET uses suite-specific $10$k checkpoints. The controlled comparison is DUET versus DUET-Rel. Activating adaptive fusion improves the average from $93.8\%$ to $96.9\%$, with gains on all four suites. Thus, the retry mechanism does not trade away nominal task completion in this evaluation; a matched single-head retraining experiment is still needed to isolate any optimization effect of dual-head training itself.
+\subsection{Nominal Execution}
+Table~\ref{tab:benchmark} tests whether failure-aware retry compromises ordinary execution. DUET attains $96.9\%$ average success, matching the reported $\pi_{0.5}$ result and slightly exceeding the reported StarVLA-GR00T average. These external rows are benchmark context rather than a controlled comparison: StarVLA uses joint $30$k training, whereas DUET uses suite-specific $10$k checkpoints. The controlled comparison is DUET versus DUET-Rel. Adaptive fusion raises the average from $93.8\%$ to $96.9\%$, with gains on all four suites and the largest lifts on Goal ($+5.6$) and LIBERO-10 ($+5.8$). Dual-action control therefore does not trade away nominal task completion; the clean gains are consistent with the introduction's claim that a rollout can already leave the support of successful behavior even when no external perturbation is injected.
 
 \begin{table}[t]
 \caption{Nominal task success (\%) on LIBERO. External rows are reported results and are included only for benchmark context. StarVLA uses joint $30$k training; DUET uses suite-specific $10$k checkpoints.}
@@ -243,35 +233,11 @@ DUET-Rel & 98.0 & 99.2 & 92.0 & 86.0 & 93.8 \\
 \end{tabular}}
 \end{table}
 
-\subsection{OOD Detection and Failure-Aware Retry}
-Our OOD study compares only DUET with DUET-Rel. Reported clean scores from other methods are not valid OOD baselines because they do not share our initial states, injection times, severities, or success accounting. A fair comparison to another policy would require rerunning it under the identical paired protocol.
-
-\subsubsection{Evaluation Scope and Perturbation Taxonomy}
-We organize perturbations by where execution departs from successful demonstrations and, crucially, whether the demonstrated path remains a valid return target (Table~\ref{tab:ood_taxonomy}). Robot-state teleport and action-execution corruption displace the arm while preserving the task scene, so they directly test DUET's central claim: an absolute waypoint can guide the policy back to a reachable part of the learned behavior. A grasp drop instead changes the robot--object relation and can make the previous waypoint stale; it probes the boundary of waypoint-based retry rather than an unambiguous recovery case. External force is treated as an interaction stress test because it changes contact dynamics without necessarily creating a persistent pose error. Finally, camera blackout removes the input needed by both heads. It therefore requires an observation-validity guard and a cached waypoint, and should not be interpreted as evidence that disagreement alone detects arbitrary sensor failure.
-
-Table~\ref{tab:ood_overall} summarizes the matched comparisons. We report each protocol over its own evaluation scope and avoid a grand average across heterogeneous disturbance types, severities, and horizons.
+\subsection{Failure-Aware Retry under Execution Disturbances}
+Table~\ref{tab:ood_overall} summarizes matched closed-loop success. In every aggregate row DUET matches or exceeds DUET-Rel. The largest gains occur precisely where the introduction predicts relative control to be insufficient: once locally plausible commands have driven the trajectory OOD, or once the arm has been displaced from the demonstrated pose.
 
 \begin{table*}[t]
-\caption{Perturbation taxonomy. The final column states the assumption under which an absolute waypoint can support trajectory re-entry.}
-\label{tab:ood_taxonomy}
-\centering
-\resizebox{0.96\textwidth}{!}{%
-\begin{tabular}{lllll}
-\toprule
-Family & Shift & Protocol & What changes & Return-target status \\
-\midrule
-\multirow{3}{*}{Behavioral}
-  & Robot state & EEF teleport & Arm pose & Remains valid \\
-  & World state & Vertical grasp drop & Object/grasp relation & May become stale \\
-  & Action execution & Action perturbation & Command-to-motion map & Remains valid \\
-Interaction & Contact dynamics & External force & Robot--world dynamics & Usually short-lived \\
-Visual & Observation loss & Camera blackout & Current visual input & Cache last valid target \\
-\bottomrule
-\end{tabular}}
-\end{table*}
-
-\begin{table*}[t]
-\caption{Closed-loop task success under the matched OOD protocols. Each row aggregates only the stated scope; heterogeneous severities and blackout horizons are not pooled into a single grand average.}
+\caption{Closed-loop task success under matched execution-failure protocols. Each row uses only the stated scope.}
 \label{tab:ood_overall}
 \centering
 \resizebox{0.96\textwidth}{!}{%
@@ -279,22 +245,160 @@ Visual & Observation loss & Camera blackout & Current visual input & Cache last 
 \toprule
 Family & Protocol & Scope & Pairs & DUET-Rel & DUET & $\Delta$ (pp) \\
 \midrule
-Robot state & EEF teleport & 4 suites, medium & 2000 & 40.0 & 61.7 & $+21.7$ \\
-World state & Vertical grasp drop & Object, medium & 500 & 89.2 & 95.2 & $+6.0$ \\
 Action execution & Action perturbation & 4 suites, medium$+$severe & 4000 & 27.9 & 64.6 & $+36.7$ \\
-Interaction stress & External force & 4 suites, medium$+$severe & 4000 & 92.22 & 95.95 & $+3.73$ \\
-Observation loss & Camera blackout & 4 suites, step 15 medium & 2000 & 83.4 & 92.2 & $+8.8$ \\
-Observation loss & Camera blackout & 4 suites, step 23 medium$+$severe & 4000 & 73.5 & 90.8 & $+17.3$ \\
+Robot displacement & EEF teleport & 4 suites, medium & 2000 & 40.0 & 61.7 & $+21.7$ \\
+Visual occlusion & Camera blackout & 4 suites, step 15 medium & 2000 & 83.4 & 92.2 & $+8.8$ \\
+Visual occlusion & Camera blackout & 4 suites, step 23 medium$+$severe & 4000 & 73.5 & 90.8 & $+17.3$ \\
+Object / grasp & Vertical grasp drop & Object, medium & 500 & 89.2 & 95.2 & $+6.0$ \\
+Contact / scene & External force & 4 suites, medium$+$severe & 4000 & 92.22 & 95.95 & $+3.73$ \\
 \bottomrule
 \end{tabular}}
 \end{table*}
 
-\subsubsection{Failure Detection Quality}
-Closed-loop success alone cannot establish that disagreement is a useful failure detector: a controller could improve completion even if its score fires late or frequently activates during nominal execution. We therefore evaluate detection independently of recovery. Both heads are queried on trajectories executed by DUET-Rel, but their predictions do not affect the commanded action. This frozen-controller protocol evaluates every candidate signal on the same state sequence and prevents a successful correction from shortening its own positive example.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_ood_mechanism_grid.pdf}
+\caption{Controller dynamics on the Object suite under (a) end-effector teleport, (b) vertical grasp drop, (c) action perturbation, and (d) camera blackout. Traces are aligned to the actual injection time and show means with pointwise bootstrap 95\% confidence intervals over successfully injected episodes. Shading denotes the perturbation or forced-hold window.}
+\label{fig:ood_mechanism_grid}
+\end{figure}
 
-We construct event-level examples from the recoverable robot-state and action-execution shifts, for which the injection time is known and the demonstrated path remains valid. A positive example is a fixed window of $H_{\mathrm{det}}$ steps beginning at the actual injection time; its statistic is the maximum temporally smoothed detector value in that window. Negative examples are time-matched windows from clean rollouts with the same task and initial-state index. Initial states are partitioned into disjoint, task-stratified calibration and test sets. All smoothing parameters and thresholds are selected on the clean calibration split and frozen before evaluating perturbed episodes. Grasp drop and camera blackout are excluded: the former may invalidate the return target, while the latter uses an explicit observation-validity guard rather than disagreement.
+\begin{table}[t]
+\caption{Closed-loop task success (\%) under action, robot-pose, and object/grasp disturbances. DUET and DUET-Rel use the same checkpoint. $N{=}500$ per cell.}
+\label{tab:behavioral}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+Setting & Suite & DUET-Rel & DUET & $\Delta$ & $p$ \\
+\midrule
+\multicolumn{6}{l}{\textit{Action-execution shift} (action perturbation, step $5$, $N{=}500$)} \\
+medium & Spatial & 54.0 & 74.0 & $+20.0$ & $1{\times}10^{-14}$ \\
+medium & Object & 48.8 & 84.4 & $+35.6$ & $1{\times}10^{-34}$ \\
+medium & Goal & 47.2 & 74.2 & $+27.0$ & $5{\times}10^{-22}$ \\
+medium & LIBERO-10 & 36.6 & 78.6 & $+42.0$ & $1{\times}10^{-48}$ \\
+severe & Spatial & 12.8 & 43.2 & $+30.4$ & $6{\times}10^{-31}$ \\
+severe & Object & 7.8 & 60.6 & $+52.8$ & $1{\times}10^{-70}$ \\
+severe & Goal & 10.6 & 52.6 & $+42.0$ & $3{\times}10^{-49}$ \\
+severe & LIBERO-10 & 5.4 & 49.0 & $+43.6$ & $2{\times}10^{-53}$ \\
+& Overall & 27.9 & \textbf{64.6} & $\mathbf{+36.7}$ & --- \\
+\midrule
+\multicolumn{6}{l}{\textit{Robot-arm displacement} (end-effector teleport, medium, $N{=}500$)} \\
+& Spatial & 54.6 & 57.6 & $+3.0$ & 0.21 \\
+& Object & 36.2 & 76.0 & $+39.8$ & $1{\times}10^{-40}$ \\
+& Goal & 33.4 & 52.4 & $+19.0$ & $2{\times}10^{-12}$ \\
+& LIBERO-10 & 35.8 & 60.8 & $+25.0$ & $1{\times}10^{-17}$ \\
+& Overall & 40.0 & \textbf{61.7} & $\mathbf{+21.7}$ & --- \\
+\midrule
+\multicolumn{6}{l}{\textit{Object / grasp disturbance} (vertical grasp drop, Object, $N{=}500$)} \\
+& Object & 89.2 & \textbf{95.2} & $\mathbf{+6.0}$ & $2.4{\times}10^{-5}$ \\
+\bottomrule
+\end{tabular}}
+\end{table}
 
-We compare raw cross-action disagreement $D_t$ with training-state bound violation $S_t$, RVQ residual, residual-weighted disagreement $D_t r_t$, and the default score $D_t+\lambda S_t$. Each signal and its calibrated threshold are applied unchanged to both perturbation families; selecting a score using the known shift label would leak protocol information into detection. Table~\ref{tab:detection} reports window-level AUROC and AUPRC, event recall at a threshold calibrated to $1\%$ clean false-positive rate, median delay to the first threshold crossing among detected events, and false alarms per $1000$ clean control steps. Confidence intervals are obtained by bootstrapping complete episodes rather than individual frames, preserving within-trajectory dependence.
+\subsubsection{Action-Execution Failures}
+We first corrupt the executed 6D command over a short window. The scene is unchanged, but execution error accumulates and the induced trajectory leaves the demonstrated support---the setting in which a relative policy can keep issuing locally plausible commands without a return target. The evaluator provides no perturbation flag; any switch must come from the two action predictions.
+
+This is the strongest closed-loop result. Over eight suite--severity groups ($4000$ paired episodes), DUET reaches $64.6\%$ success versus $27.9\%$ for DUET-Rel ($+36.7$ points; Table~\ref{tab:behavioral}). Every cell improves, and the gap widens as relative control collapses: under severe perturbations DUET-Rel falls to $5.4$--$12.8\%$, while DUET retains $43.2$--$60.6\%$, including $+52.8$ points on Object. Figure~\ref{fig:ood_mechanism_grid}(c) shows disagreement and the fusion weight rising as the arm drifts, then returning toward relative control after re-entry.
+
+\subsubsection{Robot-Arm Displacement}
+We next teleport the end effector while leaving the scene unchanged, corresponding to an unexpected arm displacement. Relative commands remain locally defined around the off-trajectory pose; the absolute head still predicts a demonstrated waypoint and supplies a retry direction.
+
+Across $2000$ paired episodes, DUET improves success from $40.0\%$ to $61.7\%$ ($+21.7$ points; Table~\ref{tab:behavioral}). Object improves by $+39.8$ points, LIBERO-10 by $+25.0$, and Goal by $+19.0$. Among Object episodes with a successful injection, DUET completes $72.8\%$ versus $33.2\%$ for DUET-Rel. Figure~\ref{fig:teleport_mechanism} shows the intended switch-and-return: relative control before the displacement, absolute correction immediately afterward, and a return to the relative head after re-entry. The Spatial difference is smaller ($+3.0$ points, $p{=}0.21$), in part because about $12\%$ of episodes finish before the scheduled teleport.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig3_teleport_mechanism.pdf}
+\caption{End-effector teleport on the Object suite. Top: a successful retry, with relative control before the displacement, absolute waypoint correction immediately afterward, and a return to relative control after re-entry. Bottom: mean disagreement $D_t$ and fusion weight $\alpha_t$ over $484$ successfully injected episodes, aligned to the injection time; bands are pointwise bootstrap 95\% confidence intervals.}
+\label{fig:teleport_mechanism}
+\end{figure}
+
+\subsubsection{Object and Grasp Disturbances}
+A vertical grasp drop changes the robot--object configuration rather than the arm pose: at policy step $67$, if a free-joint object is in gripper contact, the evaluator opens the gripper, keeps the object's $XY$ position, lowers it by $5$~cm, and holds the gripper open for $15$ steps. Episodes with no grasped object are marked \texttt{not\_grasped} and left unperturbed.
+
+Object is the suite where this event is well defined. DUET succeeds in $476/500$ episodes ($95.2\%$) versus $446/500$ ($89.2\%$) for DUET-Rel ($+6.0$ points; bootstrap 95\% CI $[3.4,8.8]$; McNemar $p{=}2.4{\times}10^{-5}$). Injection occurs in $498/500$ DUET and $494/500$ DUET-Rel episodes. The absolute gain is smaller than under action or teleport disturbances because DUET-Rel already remains near $89\%$; the direction is the same as in the introduction's dropped-object example. On Goal, both methods receive the drop in only $282/500$ paired episodes, so we do not treat Goal as a suite-level object-disturbance result. Among those both-injected episodes the success rates are $23.4\%$ for DUET and $17.7\%$ for DUET-Rel.
+
+\subsubsection{Transient Visual Occlusion}
+A complete camera blackout removes the current visual observation. During the blackout, DUET holds the last reliable absolute waypoint and resumes dual-action control when vision returns, using the global action stream as short-term execution memory.
+
+On the matched step-$15$ medium protocol, success rises from $83.4\%$ to $92.2\%$ ($+8.8$ points; Table~\ref{tab:visual}). LIBERO-10 accounts for the largest suite-level gain ($+22.4$ points); Object is already at ceiling ($97.4\%$ vs.\ $97.0\%$, $p{=}0.84$). Under the longer step-$23$ medium$+$severe protocol the gap widens to $+17.3$ points ($90.8\%$ vs.\ $73.5\%$). A longer visual outage therefore increases, rather than removes, the value of the absolute waypoint. Figures~\ref{fig:ood_mechanism_grid}(d) and~\ref{fig:camera_blackout_mechanism} show that the cached waypoint is used during the blackout and that adaptive control resumes afterward. The Goal task ``open the top drawer and put the bowl inside'' remains a counterexample at step $15$: a contact sequence that still needs updated visual feedback is outside the retry mechanism claimed in the introduction.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_camera_blackout_mechanism.pdf}
+\caption{Camera blackout on the Object suite. DUET holds the last reliable absolute waypoint while the image is invalid and resumes adaptive dual-action control when vision returns. The lower panel aggregates $500$ episodes aligned to blackout onset.}
+\label{fig:camera_blackout_mechanism}
+\end{figure}
+
+\begin{table}[t]
+\caption{Task success (\%) under camera blackout. Step-$15$ medium uses $2000$ paired episodes; step-$23$ aggregates eight suite--severity groups.}
+\label{tab:visual}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+Protocol & Suite & DUET-Rel & DUET & $\Delta$ & $p$ \\
+\midrule
+\multicolumn{6}{l}{\textit{Step $15$, medium} ($N{=}500$)} \\
+& Spatial & 91.2 & 96.8 & $+5.6$ & $3{\times}10^{-5}$ \\
+& Object & 97.4 & 97.0 & $-0.4$ & 0.84 \\
+& Goal & 80.8 & 88.2 & $+7.4$ & $5{\times}10^{-4}$ \\
+& LIBERO-10 & 64.2 & 86.6 & $+22.4$ & $1{\times}10^{-17}$ \\
+& Overall & 83.4 & \textbf{92.2} & $\mathbf{+8.8}$ & --- \\
+\midrule
+\multicolumn{6}{l}{\textit{Step $23$, medium$+$severe} ($N{=}4000$)} \\
+& Overall & 73.5 & \textbf{90.8} & $\mathbf{+17.3}$ & --- \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsubsection{Contact and Scene Interaction}
+We apply an external force during contact, perturbing robot--world dynamics without resetting the end-effector pose. Across eight suite--severity groups, DUET reaches $95.95\%$ versus $92.22\%$ for DUET-Rel ($+3.73$ points; Table~\ref{tab:force}). Every cell is non-negative. The largest lifts are on Goal ($+7.6$ and $+9.6$ points), where drawer and plate interactions amplify short contact disturbances. Relative control is already strong on Spatial and Object ($>96\%$), so the aggregate margin is smaller than under action or teleport failures; the result still shows that dual-action retry does not destabilize contact and helps on the more interaction-rich suite.
+
+\begin{table}[t]
+\caption{Closed-loop success (\%) under external-force contact disturbances (fixed-step, $100\%$ injection, $N{=}500$ per cell).}
+    \label{tab:force}
+    \centering
+    \resizebox{\columnwidth}{!}{%
+    \begin{tabular}{lcccccc}
+    \toprule
+    & \multicolumn{3}{c}{Medium} & \multicolumn{3}{c}{Severe} \\
+    \cmidrule(lr){2-4}\cmidrule(lr){5-7}
+    Suite & DUET-Rel & DUET & $\Delta$ & DUET-Rel & DUET & $\Delta$ \\
+    \midrule
+    Spatial & 96.6 & 98.4 & $+1.8$ & 96.8 & 96.8 & $0.0$ \\
+    Object & 97.6 & 99.0 & $+1.4$ & 96.2 & 96.8 & $+0.6$ \\
+    Goal & 89.2 & 96.8 & $+7.6$ & 87.2 & 96.8 & $+9.6$ \\
+    LIBERO-10 & 87.8 & 92.6 & $+4.8$ & 86.4 & 90.4 & $+4.0$ \\
+    \midrule
+    Overall & \multicolumn{6}{c}{DUET-Rel $92.22$ \quad DUET $95.95$ \quad $\Delta=+3.73$} \\
+    \bottomrule
+    \end{tabular}}
+    \end{table}
+
+\subsection{Endogenous Failure Detection}
+The introduction uses disagreement as an endogenous OOD signal that is coupled to control, not as a hard alarm trained on failure labels. We therefore compare DUET's runtime score with detectors that likewise require no failure examples: logpZO, RND, and PCA-kmeans from the FAIL-Detect framework \cite{faildetect}, and STAC, which scores temporal inconsistency between overlapping action chunks \cite{sentinel}. Table~\ref{tab:detector_baselines} reports discrimination and temporal localization under the same protocol.
+
+\begin{table*}[t]
+\caption{Failure-detection comparison. TPR, TNR, balanced accuracy (Bal.-Acc.), AUROC, and Loc.@16 are higher-is-better; detection delay is lower-is-better. Bold values indicate the best result in each column.}
+\label{tab:detector_baselines}
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+Method & TPR $\uparrow$ & TNR $\uparrow$ & Bal.-Acc. $\uparrow$ & AUROC $\uparrow$ & Delay (steps) $\downarrow$ & Delay (s) $\downarrow$ & Loc.@16 $\uparrow$ \\
+\midrule
+DUET & \textbf{0.900} & 0.265 & 0.582 & \textbf{0.845} & 38.3 & 1.91 & 0.523 \\
+logpZO~\cite{faildetect} & 0.889 & 0.243 & 0.566 & 0.817 & 22.7 & 1.14 & \textbf{0.569} \\
+RND~\cite{rnd,faildetect} & 0.842 & \textbf{0.361} & \textbf{0.602} & 0.549 & 26.1 & 1.31 & 0.330 \\
+PCA-kmeans~\cite{faildetect} & 0.884 & 0.283 & 0.583 & 0.625 & \textbf{20.3} & \textbf{1.01} & 0.503 \\
+STAC~\cite{sentinel} & 0.839 & 0.311 & 0.575 & 0.494 & 25.8 & 1.29 & 0.260 \\
+\bottomrule
+\end{tabular}}
+\end{table*}
+
+DUET attains the highest TPR ($0.900$) and AUROC ($0.845$), so the dual-action score ranks failed versus nominal execution more strongly than the dedicated baselines. Because the score is used for soft fusion rather than a binary interrupt, we treat ranking and sensitivity as the relevant detection properties. RND has a higher TNR and PCA-kmeans a shorter delay; those operating points matter for a hard monitor, but they are not the objective stated in the introduction.
+
+As a complementary analysis, Table~\ref{tab:detection} will compare score variants on frozen DUET-Rel trajectories, so that a successful correction cannot shorten its own positive example. Positive windows begin at the known injection time on action-perturbation and teleport rollouts; negatives are time-matched clean windows. Thresholds are calibrated on a held-out clean split. Values will be filled after this analysis is complete.
 
 \begin{table*}[t]
 \caption{Failure detection on frozen DUET-Rel trajectories. Recall is measured at a threshold calibrated to $1\%$ clean-window FPR; delay is event-level, and false alarms are measured over full clean rollouts. Values are placeholders until analysis is complete.}
@@ -316,128 +420,36 @@ Default score $D_t+\lambda S_t$ & TODO & TODO & TODO & TODO & TODO & TODO & TODO
 \end{tabular}}
 \end{table*}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_ood_mechanism_grid.pdf}
-\caption{Controller dynamics on the Object suite under (a) end-effector teleport, (b) vertical grasp drop, (c) action perturbation, and (d) camera blackout with a cached waypoint. Traces are aligned to the actual injection time and show means with pointwise bootstrap 95\% confidence intervals over successfully injected episodes. Shading denotes the perturbation or forced-hold window.}
-\label{fig:ood_mechanism_grid}
-\end{figure}
+\subsection{Ablations}
+The introduction attributes retry to two complementary action streams and to disagreement-driven switching, not to a second head that is always on or mixed at a constant weight. Table~\ref{tab:ablations} therefore separates inference-time controls on the shared dual-head checkpoint from training-time replacements that require a new run. We report clean success together with the two disturbances where relative control loses a return target---robot-arm teleport and action-execution corruption.
 
-\begin{table}[t]
-\caption{Closed-loop task success (\%) under behavioral perturbations. DUET and DUET-Rel use the same checkpoint. Teleport and grasp drop use residual-weighted disagreement; action perturbation uses the default score.}
-\label{tab:behavioral}
+Disabling the absolute branch (DUET-Rel, $\alpha_t=0$) is the completed inference ablation. It accounts for the closed-loop gains already reported: clean success falls from $96.9\%$ to $93.8\%$, teleport from $61.7\%$ to $40.0\%$, and action-execution from $64.6\%$ to $27.9\%$. Holding the absolute CFG scale fixed at $w{=}1$ on Object leaves performance essentially unchanged ($98.2\%$ clean vs.\ $99.4\%$; $83.2\%$ vs.\ $84.4\%$ under action-medium). The retry benefit therefore comes from using the absolute waypoint, not from adaptive guidance scaling. Absolute-only control ($\alpha_t=1$) and fixed fusion ($\alpha_t=0.5$) reuse the same checkpoint and will test whether a constant mix can replace the disagreement gate; those runs are not yet complete.
+
+Training ablations need matched $10$k checkpoints. Replacing RVQ with an MLP tests discrete waypoint anchoring; training the relative head on perturbed images tests whether asymmetric augmentation is needed to keep the two streams complementary; and giving the absolute head proprioception tests the state-free global reference. These rows are preregistered and left as TODO.
+
+\begin{table*}[t]
+\caption{Component ablations, success (\%). Full DUET and DUET-Rel are four-suite averages (clean $N{=}2000$; robot-state teleport medium $N{=}2000$; action-execution medium$+$severe $N{=}4000$). Entries marked $^\dagger$ are Object-only ($N{=}500$); the matched Object Full-DUET rates are $99.4\%$ clean and $84.4\%$ action-execution medium.}
+\label{tab:ablations}
 \centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{llcccc}
+\resizebox{0.96\textwidth}{!}{%
+\begin{tabular}{lllcccl}
 \toprule
-Setting & Suite & DUET-Rel & DUET & $\Delta$ & $p$ \\
+Type & Variant & Checkpoint & Clean & Robot-state & Action-execution & Isolates \\
 \midrule
-\multicolumn{6}{l}{\textit{Robot-state shift} (end-effector teleport, medium, $N{=}500$)} \\
-& Spatial & 54.6 & 57.6 & $+3.0$ & 0.21 \\
-& Object & 36.2 & 76.0 & $+39.8$ & $1{\times}10^{-40}$ \\
-& Goal & 33.4 & 52.4 & $+19.0$ & $2{\times}10^{-12}$ \\
-& LIBERO-10 & 35.8 & 60.8 & $+25.0$ & $1{\times}10^{-17}$ \\
-& Overall & 40.0 & \textbf{61.7} & $\mathbf{+21.7}$ & --- \\
+\multirow{5}{*}{Inference}
+& Full DUET & shared & 96.9 & 61.7 & 64.6 & Complete controller \\
+& DUET-Rel ($\alpha=0$) & shared & 93.8 & 40.0 & 27.9 & Absolute retry branch \\
+& Absolute-only ($\alpha=1$) & shared & TODO & TODO & TODO & Cost of losing local control \\
+& Fixed fusion ($\alpha=0.5$) & shared & TODO & TODO & TODO & Adaptive switching \\
+& No adaptive CFG$^\dagger$ & shared & 98.2 & TODO & 83.2 & CFG scale schedule \\
 \midrule
-\multicolumn{6}{l}{\textit{World-state shift} (vertical grasp drop, Object, $N{=}500$)} \\
-& Object & 89.2 & \textbf{95.2} & $\mathbf{+6.0}$ & $2.4{\times}10^{-5}$ \\
-\midrule
-\multicolumn{6}{l}{\textit{Action-execution shift} (action perturbation, step $5$, $N{=}500$)} \\
-medium & Spatial & 54.0 & 74.0 & $+20.0$ & $1{\times}10^{-14}$ \\
-medium & Object & 48.8 & 84.4 & $+35.6$ & $1{\times}10^{-34}$ \\
-medium & Goal & 47.2 & 74.2 & $+27.0$ & $5{\times}10^{-22}$ \\
-medium & LIBERO-10 & 36.6 & 78.6 & $+42.0$ & $1{\times}10^{-48}$ \\
-severe & Spatial & 12.8 & 43.2 & $+30.4$ & $6{\times}10^{-31}$ \\
-severe & Object & 7.8 & 60.6 & $+52.8$ & $1{\times}10^{-70}$ \\
-severe & Goal & 10.6 & 52.6 & $+42.0$ & $3{\times}10^{-49}$ \\
-severe & LIBERO-10 & 5.4 & 49.0 & $+43.6$ & $2{\times}10^{-53}$ \\
-& Overall & 27.9 & \textbf{64.6} & $\mathbf{+36.7}$ & --- \\
+\multirow{3}{*}{Training}
+& RVQ $\rightarrow$ MLP & retrained & TODO & TODO & TODO & Discrete waypoint anchoring \\
+& Symmetric augmentation & retrained & TODO & TODO & TODO & Complementary specialization \\
+& State-aware ABS & retrained & TODO & TODO & TODO & State-free global reference \\
 \bottomrule
 \end{tabular}}
-\end{table}
-
-\subsubsection{Retry under Recoverable Behavioral Shifts}
-\paragraph{Robot-state shift.}
-We first teleport the end effector away from its current pose while leaving the scene unchanged. This produces the failure mode targeted by DUET: relative commands remain locally plausible around an off-trajectory state, whereas the absolute branch still identifies a reachable point on the demonstrated path. The residual factor $r_t$ ensures that disagreement activates retry only when the predicted waypoint also requires a nontrivial pose correction.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig3_teleport_mechanism.pdf}
-\caption{End-effector teleport on the Object suite. Top: a successful retry, with relative control before the displacement, absolute waypoint correction immediately afterward, and a return to relative control after re-entry. Bottom: mean disagreement $D_t$, residual weight $r_t$, and fusion weight $\alpha_t$ over $484$ successfully injected episodes, aligned to the injection time; bands are pointwise bootstrap 95\% confidence intervals.}
-\label{fig:teleport_mechanism}
-\end{figure}
-
-The temporal response in Fig.~\ref{fig:teleport_mechanism} matches this interpretation. Immediately after the teleport, both $D_t$ and $r_t$ increase, driving $\alpha_t$ from near zero to above $0.6$. As the arm approaches the predicted waypoint, the residual and gate decay, returning control to the relative branch. This switch-and-return behavior is also visible in Fig.~\ref{fig:ood_mechanism_grid}(a); DUET does not remain in a permanent absolute-control mode.
-
-Across $2000$ paired episodes, DUET improves success from $40.0\%$ to $61.7\%$ ($+21.7$ percentage points; Table~\ref{tab:behavioral}). The largest gain occurs on Object ($+39.8$ points), followed by LIBERO-10 ($+25.0$) and Goal ($+19.0$). Among Object episodes in which injection succeeds, DUET completes $72.8\%$, compared with $33.2\%$ for DUET-Rel, directly measuring retry after the disturbance. The Spatial difference is smaller and not statistically significant ($+3.0$ points, $p{=}0.21$); roughly $12\%$ of episodes terminate before the scheduled perturbation, and the remaining effect varies substantially by task. Failures also concentrate in contact-rich Goal tasks such as opening the top drawer and pushing a plate, for which a pose waypoint alone is an incomplete return target.
-
-\paragraph{Action-execution shift.}
-We next corrupt the executed 6D command over a short window. The task scene remains unchanged, but execution error accumulates over time rather than appearing as an instantaneous pose reset. Accordingly, disagreement and the fusion weight rise gradually in Fig.~\ref{fig:ood_mechanism_grid}(c). This setting yields the largest improvement: over eight suite--severity groups ($4000$ paired episodes), DUET reaches $64.6\%$ success, compared with $27.9\%$ for DUET-Rel ($+36.7$ points). Gains are consistent across all suites and both severities, and increase to $+52.8$ points on severe Object perturbations. Because the evaluator provides no perturbation flag to the policy, the switch is triggered by the two action predictions becoming inconsistent as the arm drifts from the learned trajectory.
-
-\subsubsection{Boundary Case: World-State Shift}
-A vertical grasp drop models a failed hold rather than a displacement of the arm. At policy step $67$, if a free-joint object is in gripper contact, the evaluator opens the gripper, preserves the object's $XY$ position, lowers it by $5$~cm, and keeps the gripper open for $15$ steps. The event is marked \texttt{not\_grasped} and the simulator is left unchanged when no object is held.
-
-This intervention tests an important limit of DUET: the robot may remain near its demonstrated grasp pose even though the object has moved, so the previous absolute waypoint is not necessarily a valid target. On Object, DUET succeeds in $476/500$ episodes ($95.2\%$), compared with $446/500$ ($89.2\%$) for DUET-Rel, a $+6.0$-point difference (bootstrap 95\% CI $[3.4,8.8]$; McNemar $p{=}2.4{\times}10^{-5}$). Injection succeeds in $498/500$ DUET episodes and $494/500$ DUET-Rel episodes. However, Fig.~\ref{fig:ood_mechanism_grid}(b) shows that the mean fusion weight remains low during the forced-open interval. The aggregate evidence therefore does not support interpreting this gain as broad absolute-waypoint recovery; instead, it shows that residual weighting avoids aggressively returning to a potentially stale grasp while retaining a modest completion benefit.
-
-Coverage is lower on Goal because many tasks do not involve a grasp at the fixed injection time. Both methods receive the drop in only $282/500$ paired episodes. Overall success is $53.6\%$ for DUET and $50.4\%$ for DUET-Rel; among the both-injected subset it is $23.4\%$ and $17.7\%$, respectively. Because this difference is dominated by one bowl-to-stove task, we report it as a coverage diagnostic rather than a suite-level world-state result.
-
-\subsubsection{Interaction Stress Test}
-We additionally apply an external force during contact, perturbing robot--world dynamics without directly resetting the end-effector pose. Across eight suite--severity groups, DUET reaches $95.95\%$ success versus $92.22\%$ for DUET-Rel ($+3.73$ points; Table~\ref{tab:force}). The difference is non-negative in every cell and largest on Goal ($+7.6$ and $+9.6$ points), where drawer and plate interactions amplify short contact disturbances. The smaller margin relative to teleport and action corruption is consistent with a force impulse producing a weaker or shorter-lived waypoint residual. We therefore treat this experiment as evidence of interaction robustness, not as a separate claim of task-level recovery.
-
-\begin{table}[t]
-\caption{External-force interaction stress test (fixed-step, $100\%$ injection, $N{=}500$ per cell).}
-    \label{tab:force}
-    \centering
-    \resizebox{\columnwidth}{!}{%
-    \begin{tabular}{lcccccc}
-    \toprule
-    & \multicolumn{3}{c}{Medium} & \multicolumn{3}{c}{Severe} \\
-    \cmidrule(lr){2-4}\cmidrule(lr){5-7}
-    Suite & DUET-Rel & DUET & $\Delta$ & DUET-Rel & DUET & $\Delta$ \\
-    \midrule
-    Spatial & 96.6 & 98.4 & $+1.8$ & 96.8 & 96.8 & $0.0$ \\
-    Object & 97.6 & 99.0 & $+1.4$ & 96.2 & 96.8 & $+0.6$ \\
-    Goal & 89.2 & 96.8 & $+7.6$ & 87.2 & 96.8 & $+9.6$ \\
-    LIBERO-10 & 87.8 & 92.6 & $+4.8$ & 86.4 & 90.4 & $+4.0$ \\
-    \midrule
-    Overall & \multicolumn{6}{c}{DUET-Rel $92.22$ \quad DUET $95.95$ \quad $\Delta=+3.73$} \\
-    \bottomrule
-    \end{tabular}}
-    \end{table}
-
-\subsubsection{Transient Observation Loss}
-A complete camera blackout differs from the behavioral shifts above: the current observation is invalid, so disagreement between predictions on that image is not a meaningful failure signal. Indeed, querying both heads on black frames reduces success to $37.7\%$, below the $73.5\%$ of DUET-Rel on the eight-group step-$23$ protocol. We therefore use a simple observation-validity guard. During blackout, DUET skips policy inference, corrects toward the last reliable absolute waypoint with $\alpha_t=1$, and resumes adaptive control as soon as vision returns. This experiment evaluates whether the global waypoint provides a useful short-term execution memory; it does not claim endogenous detection of arbitrary visual corruption.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_camera_blackout_mechanism.pdf}
-\caption{Camera-blackout handling. An observation-validity guard skips inference on black frames; DUET follows the last reliable waypoint with $\alpha_t=1$ and resumes the adaptive gate when vision returns. The lower panel aggregates $500$ Object-suite episodes aligned to blackout onset.}
-\label{fig:camera_blackout_mechanism}
-\end{figure}
-
-\begin{table}[t]
-\caption{Task success (\%) under camera blackout. DUET holds the last reliable absolute waypoint. Step-$15$ medium uses $2000$ paired episodes; step-$23$ aggregates eight suite--severity groups.}
-\label{tab:visual}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{llcccc}
-\toprule
-Protocol & Suite & DUET-Rel & DUET & $\Delta$ & $p$ \\
-\midrule
-\multicolumn{6}{l}{\textit{Step $15$, medium} ($N{=}500$)} \\
-& Spatial & 91.2 & 96.8 & $+5.6$ & $3{\times}10^{-5}$ \\
-& Object & 97.4 & 97.0 & $-0.4$ & 0.84 \\
-& Goal & 80.8 & 88.2 & $+7.4$ & $5{\times}10^{-4}$ \\
-& LIBERO-10 & 64.2 & 86.6 & $+22.4$ & $1{\times}10^{-17}$ \\
-& Overall & 83.4 & \textbf{92.2} & $\mathbf{+8.8}$ & --- \\
-\midrule
-\multicolumn{6}{l}{\textit{Step $23$, medium$+$severe} ($N{=}4000$)} \\
-& Overall & 73.5 & \textbf{90.8} & $\mathbf{+17.3}$ & --- \\
-\bottomrule
-\end{tabular}}
-\end{table}
-
-Figures~\ref{fig:ood_mechanism_grid}(d) and~\ref{fig:camera_blackout_mechanism} confirm that the cached waypoint is active only during the blackout. On the matched step-$15$ medium protocol, it improves success from $83.4\%$ to $92.2\%$ ($+8.8$ points; Table~\ref{tab:visual}). The largest gain is on LIBERO-10 ($+22.4$ points), while Object remains at ceiling. Under the longer step-$23$ protocol, the gap widens to $+17.3$ points ($90.8\%$ versus $73.5\%$). The main counterexample is the Goal task ``open the top drawer and put the bowl inside,'' where DUET is $32$ points worse at step $15$: a cached pre-blackout pose cannot complete a contact sequence that still requires updated visual feedback.
+\end{table*}
 
 \subsection{Real-Robot Evaluation}
 \paragraph{Platform and protocol.}
@@ -495,14 +507,9 @@ Overall & --- & TODO & TODO & TODO & TODO & TODO & TODO & TODO & TODO \\
 % return to relative control, together with the corresponding q_t/alpha_t trace.
 
 \subsection{Discussion}
-The evaluation separates four claims that are otherwise easy to conflate. Nominal runs test whether the additional control mode is safe to invoke; frozen-controller detection evaluates whether disagreement is a reliable alarm; matched OOD rollouts test whether the resulting correction improves task outcomes; and the Franka experiments test whether these behaviors survive physical contact and deployment noise. This separation prevents a higher success rate from being treated, by itself, as evidence of accurate failure detection.
+The tables support the introduction's three claims. Dual-action control preserves nominal LIBERO success ($96.9\%$ vs.\ $93.8\%$ for DUET-Rel) and matches the reported $\pi_{0.5}$ average, so retry is not purchased by sacrificing the relative controller. Under recoverable execution failures, the same checkpoint comparison is uniformly non-negative and is largest where relative actions lose a return target: $+36.7$ points after action-induced trajectory drift and $+21.7$ points after robot-arm displacement. Object/grasp drops ($+6.0$), transient camera blackouts ($+8.8$ and $+17.3$), and contact forces ($+3.73$) move in the same direction. The controller traces show the mechanism stated in the introduction: the two heads agree in the nominal regime, disagreement rises after a disturbance, the absolute waypoint supplies a retry direction, and relative control resumes after re-entry.
 
-The completed simulation results support the specific retry claim made in the introduction. DUET retains nominal LIBERO performance ($96.9\%$ average) rather than sacrificing local control for global correction. When the demonstrated path remains a valid target, the same-checkpoint comparison shows substantial gains under end-effector teleport ($+21.7$ points) and action corruption ($+36.7$ points). The controller traces provide complementary mechanism evidence: disagreement and the waypoint residual increase after deviation, absolute correction becomes dominant, and relative control resumes after re-entry. The detection metrics in Table~\ref{tab:detection} and physical results in Table~\ref{tab:real_robot} must be completed before making quantitative claims about alarm quality or real-world transfer.
-
-The remaining experiments delimit rather than broaden this claim. A grasp drop can invalidate the old world reference, and DUET correspondingly keeps the average gate low; external force often induces only a short-lived correction; and complete observation loss requires an explicit validity guard plus a cached waypoint. DUET should therefore be interpreted as a failure-aware retry controller for reachable deviations from learned behavior, not as a general planner for irreversible failures or tasks that require a new strategy.
-
-% TODO: Add matched absolute-only, fixed-fusion, no-adaptive-CFG, RVQ-to-MLP,
-% symmetric-augmentation, and state-aware-absolute ablations once complete.
+The detection comparison is consistent with that coupled-controller view. Disagreement attains the highest TPR and AUROC among detectors trained without failure examples. We do not interpret TNR or delay as the primary detection claim, because the score modulates a soft gate rather than firing a standalone alarm. The completed ablation in Table~\ref{tab:ablations} likewise matches the introduction: removing the absolute branch removes most of the OOD gain, whereas freezing CFG does not. Absolute-only control, fixed fusion, and the training replacements remain to be run. Real-robot numbers in Table~\ref{tab:real_robot} remain to be filled; the protocol tests the same retry behavior on free-space, constrained, and sustained-contact tasks without takeover data. As stated in the introduction, DUET is a failure-aware retry mechanism, not a planner for irreversible failures or a new task strategy.
 
 \section{LIMITATIONS}
 
