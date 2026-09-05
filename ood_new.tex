@@ -427,8 +427,12 @@ Disabling the absolute branch (DUET-Rel, $\alpha_t=0$) is the completed inferenc
 
 Training ablations need matched $10$k checkpoints. Replacing RVQ with an MLP tests discrete waypoint anchoring; training the relative head on perturbed images tests whether asymmetric augmentation is needed to keep the two streams complementary; and giving the absolute head proprioception tests the state-free global reference. These rows are preregistered and left as TODO.
 
+
+
+
+
 \begin{table*}[t]
-\caption{Component ablations, success (\%). Full DUET and DUET-Rel are four-suite averages (clean $N{=}2000$; robot-state teleport medium $N{=}2000$; action-execution medium$+$severe $N{=}4000$). Entries marked $^\dagger$ are Object-only ($N{=}500$); the matched Object Full-DUET rates are $99.4\%$ clean and $84.4\%$ action-execution medium.}
+\caption{Component ablations, success (\%). Full DUET and DUET-Rel are four-suite averages (clean $N{=}2000$; robot-state teleport medium $N{=}2000$; action-execution medium$+$severe $N{=}4000$). Entries marked $^\dagger$ are Object-only ($N{=}500$ per protocol; Tables~\ref{tab:abl_abs_only}--\ref{tab:abl_nocfg}). Matched Object Full-DUET rates are $99.2\%$ clean, $76.0\%$ teleport (step~$39$), and $84.4\%$ action-execution medium (step~$5$).}
 \label{tab:ablations}
 \centering
 \resizebox{0.96\textwidth}{!}{%
@@ -439,9 +443,9 @@ Type & Variant & Checkpoint & Clean & Robot-state & Action-execution & Isolates 
 \multirow{5}{*}{Inference}
 & Full DUET & shared & 96.9 & 61.7 & 64.6 & Complete controller \\
 & DUET-Rel ($\alpha=0$) & shared & 93.8 & 40.0 & 27.9 & Absolute retry branch \\
-& Absolute-only ($\alpha=1$) & shared & TODO & TODO & TODO & Cost of losing local control \\
-& Fixed fusion ($\alpha=0.5$) & shared & TODO & TODO & TODO & Adaptive switching \\
-& No adaptive CFG$^\dagger$ & shared & 98.2 & TODO & 83.2 & CFG scale schedule \\
+& Absolute-only ($\alpha=1$)$^\dagger$ & shared & 5.2 & 1.1 & 0.8 & Cost of losing local control \\
+& Fixed fusion ($\alpha=0.5$)$^\dagger$ & shared & 46.2 & 39.4 & 41.0 & Adaptive switching \\
+& No adaptive CFG$^\dagger$ & shared & 88.2 & 52.6 & 57.2 & CFG scale schedule \\
 \midrule
 \multirow{3}{*}{Training}
 & RVQ $\rightarrow$ MLP & retrained & TODO & TODO & TODO & Discrete waypoint anchoring \\
