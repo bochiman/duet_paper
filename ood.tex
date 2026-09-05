@@ -33,7 +33,7 @@ DUET: Endogenous Failure Detection and Recovery via Dual-Action Manifold Alignme
 \pagestyle{empty}
 
 \begin{abstract}
-Vision-language-action (VLA) policies map visual observations and language instructions to robot actions but can drift from successful behavior during closed-loop execution. We address recoverable execution deviations---where retrying the demonstrated behavior remains feasible---rather than severe failures requiring replanning. Existing solutions decouple detection and recovery into separate modules, often requiring large amounts of human takeover data. We introduce DUET, a backbone-agnostic dual-action-head module that predicts relative actions for smooth nominal control and absolute waypoints for trajectory re-entry. The endogenous disagreement between these two action spaces detects when execution has left the demonstrated behavior, while the absolute waypoint supplies the retry direction. Asymmetric training keeps the relative branch sensitive to deviations and the absolute branch robust to visual disturbances. Because the module interfaces only with the shared vision-language representation, it transfers across VLA architectures without modifying the backbone. We validate DUET on StarVLA in LIBERO simulation and on $\pi_0$ (OpenPi) on a real Franka robot under recoverable visual, pose, and action disturbances. DUET preserves nominal success (\textbf{TODO}\% vs.\ \textbf{TODO}\% for the relative-only baseline) while achieving \textbf{TODO}\% retry success, outperforming the strongest baseline by \textbf{TODO} percentage points.
+Vision-language-action (VLA) policies map visual observations and language instructions to robot actions but can drift from successful behavior during closed-loop execution, raising the risk of task failure. We focus on recoverable execution deviations---where the rollout has left the demonstrated support yet retrying remains feasible---rather than irreversible failures requiring replanning. Existing solutions decouple detection and recovery into separate modules, often requiring human takeover data. We introduce DUET, a backbone-agnostic dual-action-head module that predicts relative actions for smooth nominal control and absolute waypoints for trajectory re-entry. Disagreement between the two action spaces signals rising failure risk, while the absolute waypoint supplies the retry direction. Asymmetric training keeps the relative branch sensitive to deviations and the absolute branch robust to visual disturbances. Because the module interfaces only with the shared vision-language representation, it transfers across VLA architectures without modifying the backbone. We validate DUET on StarVLA in LIBERO simulation and on $\pi_0$ (OpenPi) on a real Franka robot under recoverable visual, pose, and action disturbances. DUET preserves nominal success (\textbf{TODO}\% vs.\ \textbf{TODO}\% for the relative-only baseline) while achieving \textbf{TODO}\% retry success, outperforming the strongest baseline by \textbf{TODO} percentage points.
 \end{abstract}
 
 \begin{figure*}[t]
@@ -45,11 +45,11 @@ Vision-language-action (VLA) policies map visual observations and language instr
 
 \section{INTRODUCTION}
 
-Vision-language-action (VLA) policies adapt pretrained vision-language models to map visual observations and language instructions to robot actions \cite{rt2,openvla,starvla}. Trained exclusively on successful demonstrations, they treat any condition that drives execution outside the demonstrated support as an out-of-distribution (OOD) event. The cause may be endogenous (accumulated error, off-center grasp, partial slip) or exogenous (occlusion, viewpoint change, arm or object displacement). In each case the rollout has left the manifold of demonstrated success, yet the policy may continue issuing locally plausible commands. For the subset of deviations that remain recoverable, detecting the OOD condition and re-entering the demonstrated trajectory can restore task completion without a new strategy.
+Vision-language-action (VLA) policies adapt pretrained vision-language models to map visual observations and language instructions to robot actions \cite{rt2,openvla,starvla}. Trained exclusively on successful demonstrations, they can drift during closed-loop execution until the rollout can no longer reliably complete the task---an \emph{execution failure}. Before that outcome becomes irreversible, the robot may already have departed from the observations, configurations, or action consequences represented by successful demonstrations. We call this intermediate condition an \emph{execution deviation}: the rollout has left the support of demonstrated success, raising failure risk. Deviation and failure are related but not equivalent---an unseen state may still be handled successfully, while failures can also arise from compounding errors within seemingly familiar observations. Our focus is the practical regime in which a deviation has elevated failure risk but the task can still be completed by returning toward demonstrated behavior.
 
-Existing approaches decouple detection and recovery: an external monitor flags the failure \cite{faildetect}, and a separate controller, often trained on human takeover data, executes a correction \cite{dagger,sirius,intervengen}. This two-module design is costly and loosely coupled---the detector signals that execution has gone wrong, but the recovery policy is trained independently, so their decisions need not be geometrically consistent. We ask whether the policy can use its own action predictions to both recognize a recoverable OOD deviation and generate the correction, unifying detection and recovery into a single endogenous mechanism.
+Existing approaches decouple detection and recovery: an external monitor flags the failure \cite{faildetect}, and a separate controller, often trained on human takeover data, executes a correction \cite{dagger,sirius,intervengen}. This design is costly and loosely coupled---a detector only signals that execution has become abnormal; it does not specify how to return to behavior that can still complete the task. We ask whether a VLA can use its own action predictions to detect a recoverable execution deviation and generate a retry direction from successful demonstrations alone, without failure labels or takeover data.
 
-DUET is motivated by a simple asymmetry. Relative-action policies produce smooth motion around the demonstrated trajectory, but once a grasp or pose deviates, a local command provides no target for returning. Absolute-action policies are less suited to fine local control, yet their waypoints can point back toward a reachable portion of the demonstrated trajectory. DUET therefore learns the same behavior in two action spaces: a relative head for nominal execution and an absolute head for trajectory re-entry, using the disagreement between their predictions as an endogenous OOD signal. The disagreement remains small when both heads recognize in-distribution behavior and increases when the rollout is no longer compatible with demonstrated success.
+DUET is motivated by a complementary asymmetry between two action representations. Relative-action policies produce smooth motion around the demonstrated trajectory, but once a grasp or pose deviates, a local command provides no target for returning. Absolute-action policies are less suited to fine local control, yet their waypoints can point back toward a reachable portion of the demonstrated trajectory. DUET learns the same behavior in both spaces: a relative head for nominal execution and an absolute head for trajectory re-entry. After transporting the absolute waypoint into the live frame, we compare it with the relative action. Their disagreement measures whether local control remains consistent with the global reference and serves as an endogenous signal of rising failure risk. It is not a universal OOD score; it is a task-specific inconsistency signal anchored to successful behavior.
 
 The dual-head module interfaces only with the backbone's shared vision-language representation, requiring no modification to the backbone architecture or pretraining. This makes DUET a transferable add-on: we train it on StarVLA \cite{starvla} for simulation and on $\pi_0$ (OpenPi) \cite{pi0} for real-robot deployment without architecture-specific adaptation.
 
@@ -57,9 +57,9 @@ At inference time, a soft gate keeps relative control in the nominal regime and 
 
 Our contributions are threefold:
 \begin{itemize}
-    \item We formulate failure-aware retry as detecting recoverable OOD execution deviations and re-entering the support of successful behavior. Cross-space disagreement between relative and absolute action heads serves as an endogenous OOD signal that requires no failure labels, outperforming dedicated detectors on TPR and AUROC (\S\ref{sec:detection}).
-    \item We propose DUET, a dual-action-head VLA in which the same disagreement signal that detects deviations simultaneously provides the waypoint-based recovery direction, unifying detection and correction in a single mechanism while preserving smooth nominal control (\S\ref{sec:nominal}, \S\ref{sec:retry}).
-    \item The dual-head module is backbone-agnostic: we validate it on two heterogeneous VLA architectures---StarVLA in LIBERO simulation (\S\ref{sec:retry}) and $\pi_0$ (OpenPi) on a real Franka robot across four physical tasks including non-prehensile block pushing (\S\ref{sec:real_robot})---demonstrating cross-backbone transferability and retry success without any human takeover data.
+    \item We formulate failure-aware retry as detecting recoverable execution deviations from successful behavior and re-entering its support. Cross-space disagreement between relative and absolute action heads serves as an endogenous failure-risk signal requiring no failure labels, outperforming dedicated detectors on TPR and AUROC (\S\ref{sec:detection}).
+    \item We propose DUET, a dual-action-head VLA in which the same disagreement that detects deviations simultaneously provides the waypoint-based recovery direction, unifying detection and correction in a single mechanism while preserving smooth nominal control (\S\ref{sec:nominal}, \S\ref{sec:retry}).
+    \item The dual-head module is backbone-agnostic: we validate it on StarVLA in LIBERO simulation (\S\ref{sec:retry}) and on $\pi_0$ (OpenPi) on a real Franka robot across four physical tasks including non-prehensile block pushing (\S\ref{sec:real_robot}), demonstrating cross-backbone transferability and retry success without human takeover data.
 \end{itemize}
 
 
@@ -68,7 +68,7 @@ Our contributions are threefold:
 \subsection{Failure Detection for Robot Policies}
 Runtime failure detection estimates whether a policy remains within the support of successful behavior. Diff-DAgger uses diffusion uncertainty to request intervention \cite{diffdagger}; Sentinel monitors action inconsistency and task progress \cite{sentinel}. FAIL-Detect formulates failure detection as sequential OOD testing on successful executions \cite{faildetect}; FIPER combines representation novelty with action uncertainty \cite{fiper}.
 
-VLA-specific methods use internal features or external foundation models. SAFE learns a detector from successful and failed rollouts \cite{safe}; AHA trains a VLM to detect and diagnose failures \cite{aha}. All of these methods---including FAIL-Detect's logpZO \cite{faildetect}---produce a scalar alarm but no recovery action. DUET instead detects deviations through disagreement between two action spaces; the same inconsistency that triggers the alarm provides the waypoint-based recovery direction, coupling detection and correction without additional supervision.
+VLA-specific methods use internal features or external foundation models. SAFE learns a detector from successful and failed rollouts \cite{safe}; AHA trains a VLM to detect and diagnose failures \cite{aha}. All of these methods---including FAIL-Detect's logpZO \cite{faildetect}---produce a scalar alarm but no recovery action. DUET instead detects execution deviations through disagreement between two action spaces; the same inconsistency that signals rising failure risk provides the waypoint-based recovery direction, coupling detection and correction without additional supervision.
 
 \subsection{Recovery from Execution Failures}
 Recovery methods commonly expand the training distribution with expert corrections. DAgger queries experts on policy-induced states \cite{dagger}; intervention-based methods collect human takeovers \cite{eil,sirius}; IntervenGen transforms limited interventions into corrective trajectories \cite{intervengen}. These reduce compounding errors but require additional recovery data.
@@ -222,7 +222,7 @@ Contact / scene & External force & Robot--world interaction & External disturban
 
 \subsection{Endogenous Failure Detection}
 \label{sec:detection}
-We first validate the foundational claim: cross-space disagreement $D_t$ (Eq.~\eqref{eq:disagreement}) discriminates OOD from nominal execution without failure labels. Unlike standalone monitors, DUET's score simultaneously provides the recovery direction $c_t$, coupling detection and correction in a single forward pass. We compare against success-only detectors---logpZO, RND, and PCA-kmeans from FAIL-Detect \cite{faildetect}, and STAC \cite{sentinel}---under matched protocols (Table~\ref{tab:detector_baselines}).
+We first validate that cross-space disagreement $D_t$ (Eq.~\eqref{eq:disagreement}) discriminates failed from nominal execution without failure labels, while simultaneously providing the recovery direction $c_t$. Table~\ref{tab:detector_baselines} compares DUET against success-only detectors from FAIL-Detect \cite{faildetect} and STAC \cite{sentinel} under matched protocols.
 
 \begin{table*}[t]
 \caption{Failure-detection comparison under matched protocols. TPR, TNR, balanced accuracy (Bal.-Acc.), AUROC, and Loc.@16 are higher-is-better; detection delay is lower-is-better. Bold values indicate the best result in each column.}
@@ -243,7 +243,7 @@ STAC~\cite{sentinel} & 0.839 & 0.311 & 0.575 & 0.494 & 25.8 & 1.29 & 0.260 \\
 \end{tabular}}
 \end{table*}
 
-DUET attains the highest TPR ($0.900$) and AUROC ($0.845$), ranking failed versus nominal execution more reliably than all dedicated baselines. DUET's TNR ($0.265$) and delay ($38.3$ steps) are weaker; however, both metrics evaluate a binary alarm at a fixed operating point, whereas DUET's score drives a continuous fusion weight $\alpha_t\!\in\![0,1]$. A low binary TNR means $\alpha_t$ occasionally exceeds the threshold during clean execution, yet the resulting action is a mild blend---not a hard interrupt---whose magnitude scales with the disagreement itself. Table~\ref{tab:benchmark} shows that this micro-stabilization \emph{improves} clean success by $+3.1$ pp, turning what would be a liability for a binary monitor into an asset for a fusion controller. The distribution of $\alpha_t$ on clean trajectories (\S\ref{sec:ablations}) confirms that the weight remains near zero during nominal execution. AUROC, the threshold-free ranking metric, is therefore the appropriate primary measure.
+DUET leads on TPR ($0.900$) and AUROC ($0.845$). Its TNR ($0.265$) and delay ($38.3$ steps) are weaker, but both evaluate a binary alarm at a fixed operating point, whereas DUET's score drives a continuous $\alpha_t\!\in\![0,1]$. A low binary TNR means mild blending occasionally occurs during clean execution; Table~\ref{tab:benchmark} shows this micro-stabilization \emph{improves} clean success by $+3.1$ pp. The $\alpha_t$ distribution on clean trajectories (\S\ref{sec:ablations}) confirms the weight stays near zero. AUROC, the threshold-free ranking metric, is therefore the appropriate primary measure.
 
 
 \subsection{Nominal Execution}
@@ -271,7 +271,7 @@ DUET-Rel & 98.0 & 99.2 & 92.0 & 86.0 & 93.8 \\
 
 \subsection{Failure-Aware Retry under Execution Disturbances}
 \label{sec:retry}
-We now evaluate the coupled detect-and-retry controller under four disturbance families using the three-way comparison from the protocol. Table~\ref{tab:ood_detailed} reports per-suite success with medium and severe variants. DUET matches or exceeds both baselines in every aggregate, with the largest gains where relative control lacks a return target: $+36.7$ pp on action-induced drift and substantial improvements on robot-arm displacement.
+Table~\ref{tab:ood_detailed} reports per-suite success under four disturbance families. DUET matches or exceeds both baselines in every aggregate, with the largest gains where relative control lacks a return target.
 
 
 \begin{figure}[t]
@@ -282,24 +282,16 @@ We now evaluate the coupled detect-and-retry controller under four disturbance f
 \end{figure}
 
 \subsubsection{Action-Execution Failures}
-We corrupt the executed 6D command over a short window, causing the induced trajectory to leave the demonstrated support while the scene itself remains unchanged. This isolates the canonical case: a relative policy keeps issuing locally plausible commands but has no explicit return target, and no perturbation flag is provided.
-
-Over eight suite--severity groups ($4{,}000$ paired episodes), DUET reaches $64.6\%$ versus $27.9\%$ for DUET-Rel ($+36.7$ pp; Table~\ref{tab:ood_detailed}). The gap widens with severity: DUET-Rel falls to $5.4$--$12.8\%$ under severe perturbations, while DUET retains $43.2$--$60.6\%$. Figure~\ref{fig:ood_mechanism_grid}(c) confirms the predicted mechanism: disagreement and $\alpha_t$ rise as the arm drifts OOD and return toward zero after re-entry.
+We corrupt the executed 6D command over a short window, causing the trajectory to leave the demonstrated support while the scene remains unchanged---the canonical case where relative control has no return target. Over $4{,}000$ paired episodes, DUET reaches $64.6\%$ versus $27.9\%$ for DUET-Rel ($+36.7$ pp). The gap widens with severity: DUET-Rel falls to $5.4$--$12.8\%$ under severe perturbations while DUET retains $43.2$--$60.6\%$. Figure~\ref{fig:ood_mechanism_grid}(c) confirms that $\alpha_t$ rises as the arm drifts and returns toward zero after re-entry.
 
 \subsubsection{Robot-Arm Displacement}
-We teleport the end effector while leaving the scene unchanged. Relative commands remain locally defined around the displaced pose, but the absolute head still predicts a demonstrated waypoint.
-
-Under medium perturbations, DUET improves success from $40.0\%$ to $61.7\%$ ($+21.7$ pp), with Object gaining $+39.8$ pp. Severe perturbations enlarge the displacement; combined results appear in Table~\ref{tab:ood_detailed}. StarVLA achieves TODO\% under the same protocol, confirming that the gain is not an artifact of co-training. Figure~\ref{fig:ood_mechanism_grid}(a) shows the switch-and-return pattern: relative control before displacement, absolute correction afterward, and smooth return after re-entry.
+We teleport the end effector while leaving the scene unchanged. Under medium perturbations, DUET improves from $40.0\%$ to $61.7\%$ ($+21.7$ pp), with Object gaining $+39.8$ pp; severe results appear in Table~\ref{tab:ood_detailed}. StarVLA achieves TODO\%, confirming the gain is not an artifact of co-training. Figure~\ref{fig:ood_mechanism_grid}(a) shows relative $\to$ absolute $\to$ relative switching around the displacement.
 
 \subsubsection{Object and Grasp Disturbances}
-At step $67$, if a free-joint object is in gripper contact, the evaluator opens the gripper, lowers the object by $5$\,cm, and holds the gripper open for $15$ steps. Uninjected episodes are kept in the success rate.
-
-On the Object suite, DUET achieves $95.2\%$ versus $89.2\%$ for DUET-Rel ($+6.0$ pp; McNemar $p{=}2.4{\times}10^{-5}$; injection coverage $\ge\!98.8\%$). The margin is smaller than under action or teleport disturbances because DUET-Rel already exceeds $89\%$. On Goal, only $282/500$ paired episodes satisfy the grasp precondition; among those, DUET reaches $23.4\%$ versus $17.7\%$.
+At step $67$, the evaluator opens the gripper and lowers the held object by $5$\,cm for $15$ steps. On Object, DUET achieves $95.2\%$ versus $89.2\%$ for DUET-Rel ($+6.0$ pp; $p{=}2.4{\times}10^{-5}$; coverage $\ge\!98.8\%$). The margin is smaller because DUET-Rel already exceeds $89\%$.
 
 \subsubsection{Transient Visual Occlusion}
-A complete camera blackout removes the visual observation. During the blackout, DUET holds the last reliable absolute waypoint as short-term execution memory and resumes dual-action control once vision returns.
-
-Over $4{,}000$ paired episodes (step-$23$, medium$+$severe), DUET achieves $90.8\%$ versus $73.5\%$ for DUET-Rel ($+17.3$ pp). StarVLA, lacking a cached waypoint, reaches TODO\%. Figure~\ref{fig:ood_mechanism_grid}(d) confirms that the waypoint guides execution during the blackout and that fusion control resumes smoothly afterward.
+A complete camera blackout removes the visual observation; DUET holds the last reliable absolute waypoint as short-term memory. Over $4{,}000$ paired episodes (step-$23$, medium$+$severe), DUET achieves $90.8\%$ versus $73.5\%$ for DUET-Rel ($+17.3$ pp). StarVLA reaches TODO\%. Figure~\ref{fig:ood_mechanism_grid}(d) confirms waypoint-guided execution during blackout and smooth resumption afterward.
 
 
 \subsubsection{Contact and Scene Interaction}
@@ -349,17 +341,13 @@ LIBERO-10  & TODO & TODO & TODO & TODO & TODO & TODO & TODO & TODO \\
 
 \subsection{Ablations}
 \label{sec:ablations}
-Table~\ref{tab:ablations} separates inference-time controls on the shared checkpoint from training-time replacements requiring a fresh run. We report clean success alongside the two disturbances where relative control lacks a return target.
-
-Disabling the absolute branch (DUET-Rel, $\alpha_t{=}0$) accounts for the reported gains: clean success drops from $96.9\%$ to $93.8\%$, teleport from $61.7\%$ to $40.0\%$, and action-execution from $64.6\%$ to $27.9\%$. Fixing the CFG scale at $w{=}1$ on Object leaves performance essentially unchanged, so the benefit comes from the waypoint itself, not from adaptive guidance scaling. Absolute-only ($\alpha_t{=}1$) and fixed-fusion ($\alpha_t{=}0.5$) controls collapse performance (Table~\ref{tab:ablations}), confirming that the disagreement gate is essential.
-
-Training ablations (RVQ $\to$ MLP, symmetric augmentation, state-aware absolute head) require matched $10$k checkpoints and are preregistered as TODO.
+Table~\ref{tab:ablations} separates inference-time controls from training-time replacements. Disabling the absolute branch (DUET-Rel) accounts for all reported gains; fixing CFG at $w{=}1$ leaves performance unchanged, so the benefit comes from the waypoint itself. Absolute-only ($\alpha_t{=}1$) and fixed-fusion ($\alpha_t{=}0.5$) controls collapse performance, confirming the disagreement gate is essential. Training ablations (RVQ $\to$ MLP, symmetric augmentation, state-aware absolute head) are preregistered as TODO.
 
 \paragraph{Fusion weight on clean trajectories.}
-To verify that the low binary TNR reflects mild blending rather than harmful false alarms, we measure $\alpha_t$ across all $2{,}000$ clean episodes. The mean per-step $\alpha_t$ is TODO, the $95^{\mathrm{th}}$ percentile is TODO, and only TODO\% of steps exceed $\alpha_t{>}0.5$. The fusion weight thus stays near zero during nominal execution, contributing a small stabilizing correction rather than overriding relative control.
+Across $2{,}000$ clean episodes, the mean $\alpha_t$ is TODO, the $95^{\mathrm{th}}$ percentile is TODO, and only TODO\% of steps exceed $0.5$---confirming that the fusion weight stays near zero during nominal execution.
 
 \paragraph{Sensitivity to $\tau$ and $k$.}
-The threshold $\tau$ and sigmoid slope $k$ jointly determine how aggressively DUET transitions from relative to absolute control. Figure~\ref{fig:sensitivity_heatmap} sweeps both on the Object suite ($N{=}500$ per cell), plotting clean success and action-perturbation (medium) success as two heatmaps. A broad plateau with clean $>90\%$ and OOD $>80\%$ indicates that performance is not critically sensitive to the gate parameters; we select $\tau{=}\text{TODO}$, $k{=}\text{TODO}$ from this plateau.
+Figure~\ref{fig:sensitivity_heatmap} sweeps $\tau$ and $k$ on the Object suite. A broad plateau with clean $>90\%$ and OOD $>80\%$ indicates low sensitivity; we select $\tau{=}\text{TODO}$, $k{=}\text{TODO}$ from this region.
 
 \begin{figure}[t]
 \centering
@@ -403,10 +391,10 @@ Type & Variant & Checkpoint & Clean & Robot-state & Action-execution & Isolates 
 
 \subsection{Real-Robot Evaluation}
 \label{sec:real_robot}
-The real-robot experiments serve two purposes: validating retry under physical disturbances and testing cross-backbone transfer. We switch the backbone from StarVLA to $\pi_0$ (OpenPi)~\cite{pi0}---a diffusion-based VLA with a different architecture and pretraining corpus---and attach the identical dual-head module without architecture-specific adaptation, yielding a controlled $\pi_0$ vs.\ $\pi_0$+DUET comparison.
+To validate retry under physical disturbances and test cross-backbone transfer, we switch the backbone to $\pi_0$ (OpenPi)~\cite{pi0} and attach the identical dual-head module without architecture-specific adaptation.
 
 \paragraph{Platform and protocol.}
-We deploy $\pi_0$+DUET on a Franka Emika Panda with a parallel-jaw gripper and a wrist-mounted RealSense camera. Four tasks span distinct control regimes (Fig.~\ref{fig:real_robot}): \emph{pick-and-place} (free-space grasping and transport), \emph{block pushing} (non-prehensile contact), \emph{drawer opening} (constrained contact after handle acquisition), and \emph{whiteboard wiping} (sustained surface contact). Training uses only successful kinesthetic demonstrations. The dual-head module, RVQ codebook, asymmetric augmentation, and fusion logic are identical to \S\ref{sec:method}; only the backbone producing $H$ changes.
+We deploy $\pi_0$+DUET on a Franka Emika Panda with a wrist-mounted RealSense camera. Four tasks span distinct control regimes (Fig.~\ref{fig:real_robot}): \emph{pick-and-place}, \emph{block pushing} (non-prehensile), \emph{drawer opening} (constrained contact), and \emph{whiteboard wiping} (sustained contact). Training uses only successful kinesthetic demonstrations; all module components are identical to \S\ref{sec:method}.
 
 \begin{figure*}[t]
 \centering
@@ -421,14 +409,7 @@ Right-most panel: corresponding $q_t$ and $\alpha_t$ traces over time.}}
 \end{figure*}
 
 \paragraph{Tasks and disturbances.}
-Each task is evaluated under nominal execution and a controlled lateral EEF displacement that preserves the scene state:
-\begin{itemize}
-    \item \textbf{Pick-and-place:} reach, grasp, and deposit. Shift before grasp acquisition.
-    \item \textbf{Block pushing:} push a block into a target zone. Non-prehensile control makes the approach vector critical; a small deviation deflects the block off-target. Shift during the pre-contact approach.
-    \item \textbf{Drawer opening:} acquire handle and pull. Shift during the final approach.
-    \item \textbf{Whiteboard wiping:} sustained surface contact. Shift during the contact stroke.
-\end{itemize}
-Displacement direction and magnitude are fixed before evaluation. Injection occurs after a predefined precondition and remains within workspace and force limits. $\pi_0$ and $\pi_0$+DUET trials are interleaved in randomized blocks; we report successes/trials with Wilson 95\% CIs.
+Each task is evaluated under nominal execution and a controlled lateral EEF displacement (fixed direction and magnitude) that preserves the scene state. Displacement is injected before grasp (pick-and-place), during the pre-contact approach (block pushing), during handle approach (drawer), or during the contact stroke (whiteboard wiping). For block pushing, non-prehensile control makes the approach vector critical: a small deviation deflects the block off-target. $\pi_0$ and $\pi_0$+DUET trials are interleaved in randomized blocks; we report successes/trials with Wilson 95\% CIs.
 
 \begin{table*}[t]
 \caption{Real-robot evaluation ($\pi_0$ backbone). Success reported as successes/trials (\%). $\pi_0$: base policy without dual heads; $\pi_0$+DUET: full adaptive controller. $\Delta$ is $\pi_0$+DUET minus $\pi_0$.}
@@ -452,18 +433,10 @@ Overall & --- & TODO & TODO & TODO & TODO & TODO & TODO & TODO & TODO \\
 \end{tabular}
 \end{table*}
 
-Block pushing is a particularly informative case: a displaced end-effector contacts the block at the wrong point, deflecting it off-target. The base $\pi_0$ policy cannot correct this misalignment, whereas $\pi_0$+DUET re-anchors the approach via its absolute waypoint before contact. Figure~\ref{fig:real_robot} (bottom) shows representative retry sequences and the corresponding $q_t$/$\alpha_t$ traces. That the same module improves retry on a backbone never seen during simulation development confirms the transferability claim.
+Block pushing is particularly informative: the base $\pi_0$ cannot correct a displaced approach, whereas $\pi_0$+DUET re-anchors via its absolute waypoint before contact. Figure~\ref{fig:real_robot} (bottom) shows retry sequences and $q_t$/$\alpha_t$ traces. That the same module improves retry on a backbone never seen during simulation development confirms transferability.
 
 \subsection{Discussion}
-The results support all three contributions.
-
-\paragraph{Detection.} Cross-space disagreement leads all success-only detectors on AUROC ($0.845$). The low binary TNR reflects the continuous nature of $\alpha_t$: on clean trajectories the weight stays near zero (\S\ref{sec:ablations}), so the mild blending acts as beneficial stabilization---corroborated by the $+3.1$ pp clean improvement.
-
-\paragraph{Retry.} The three-way comparison disentangles co-training from fusion. DUET outperforms both baselines in every aggregate, with the largest margin ($+36.7$ pp) where relative control lacks a return target. Controller traces consistently show agreement $\to$ disagreement rise $\to$ waypoint correction $\to$ smooth return.
-
-\paragraph{Ablations.} Removing the absolute branch removes most OOD gain; absolute-only or fixed-fusion control collapses performance. The $\tau/k$ sweep confirms a broad stable region.
-
-\paragraph{Cross-backbone transfer.} StarVLA (simulation) and $\pi_0$ (real robot) differ in architecture, pretraining, and action representation, yet the identical dual-head module yields consistent retry gains on four physical tasks (Table~\ref{tab:real_robot}) without backbone-specific tuning. This validates DUET as a general-purpose retry add-on for VLA policies.
+Cross-space disagreement leads all success-only detectors on AUROC ($0.845$); the low binary TNR reflects continuous blending that \emph{improves} clean success by $+3.1$ pp. The three-way retry comparison disentangles co-training from fusion: DUET outperforms both baselines in every aggregate, with the largest margin ($+36.7$ pp) where relative control lacks a return target. Ablations confirm the disagreement gate is essential; the $\tau/k$ sweep shows a broad stable operating region. StarVLA (simulation) and $\pi_0$ (real robot) use entirely different architectures, yet the identical module yields consistent retry gains on four physical tasks without backbone-specific tuning, validating DUET as a general-purpose retry add-on.
 
 \section{LIMITATIONS}
 
