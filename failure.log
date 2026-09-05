@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  5 SEP 2026 17:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  5 SEP 2026 17:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**ood_new.tex
-(./ood_new.tex
+**failure.tex
+(./failure.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
 (./ieeeconf.cls
@@ -237,8 +237,8 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count304
 )
-(./ood_new.aux)
-\openout1 = `ood_new.aux'.
+(./failure.aux)
+\openout1 = `failure.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
 LaTeX Font Info:    ... okay on input line 27.
@@ -349,7 +349,7 @@ Underfull \vbox (badness 3525) has occurred while \output is active []
 Underfull \vbox (badness 3525) has occurred while \output is active []
 
  [8]
-(./ood_new.bbl
+(./failure.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 41--44
 \OT1/ptm/m/n/8 language-action model de-vel-op-ing,'' $https : / / github . com
  / starVLA /
@@ -369,7 +369,7 @@ Before submitting the final camera ready copy, remember to:
 
 [10
 
-] (./ood_new.aux)
+] (./failure.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -406,7 +406,7 @@ st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/t
 ype1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/
 times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmr
 i8a.pfb>
-Output written on ood_new.pdf (10 pages, 4602541 bytes).
+Output written on failure.pdf (10 pages, 4602541 bytes).
 PDF statistics:
  500 PDF objects out of 1000 (max. 8388607)
  246 compressed objects within 3 object streams
