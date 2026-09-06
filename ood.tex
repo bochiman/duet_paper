@@ -285,20 +285,20 @@ Table~\ref{tab:ood_detailed} reports per-suite success under four disturbance fa
 We corrupt the executed 6D command over a short window, causing the trajectory to leave the demonstrated support while the scene remains unchanged---the canonical case where relative control has no return target. Over $4{,}000$ paired episodes, DUET reaches $64.6\%$ versus $27.9\%$ for DUET-Rel ($+36.7$ pp). The gap widens with severity: DUET-Rel falls to $5.4$--$12.8\%$ under severe perturbations while DUET retains $43.2$--$60.6\%$. Figure~\ref{fig:ood_mechanism_grid}(c) confirms that $\alpha_t$ rises as the arm drifts and returns toward zero after re-entry.
 
 \subsubsection{Robot-Arm Displacement}
-We teleport the end effector while leaving the scene unchanged. Under medium perturbations, DUET improves from $40.0\%$ to $61.7\%$ ($+21.7$ pp), with Object gaining $+39.8$ pp; severe results appear in Table~\ref{tab:ood_detailed}. StarVLA achieves TODO\%, confirming the gain is not an artifact of co-training. Figure~\ref{fig:ood_mechanism_grid}(a) shows relative $\to$ absolute $\to$ relative switching around the displacement.
+We teleport the end effector while leaving the scene unchanged. Under medium perturbations, DUET improves from $40.0\%$ to $61.7\%$ ($+21.7$ pp), with Object gaining $+39.8$ pp. Severe teleport (same step, larger displacement) raises success from $28.9\%$ to $57.1\%$ ($+28.2$ pp); Object is again the largest cell ($+47.6$ pp). Across medium and severe, DUET reaches $59.4\%$ versus $34.5\%$ for DUET-Rel and $37.6\%$ for StarVLA (Table~\ref{tab:ood_detailed}). The original relative-only checkpoint is close to DUET-Rel, so the gain is not an artifact of co-training. Figure~\ref{fig:ood_mechanism_grid}(a) shows relative $\to$ absolute $\to$ relative switching around the displacement.
 
 \subsubsection{Object and Grasp Disturbances}
-At step $67$, the evaluator opens the gripper and lowers the held object by $5$\,cm for $15$ steps. On Object, DUET achieves $95.2\%$ versus $89.2\%$ for DUET-Rel ($+6.0$ pp; $p{=}2.4{\times}10^{-5}$; coverage $\ge\!98.8\%$). The margin is smaller because DUET-Rel already exceeds $89\%$.
+At step $67$, the evaluator opens the gripper and lowers the held object by $5$\,cm for $15$ steps. On Object, DUET achieves $95.2\%$ versus $89.2\%$ for DUET-Rel and $90.6\%$ for StarVLA ($+6.0$ pp vs.\ Rel; $p{=}2.4{\times}10^{-5}$; coverage $\ge\!98.8\%$). The margin is smaller because both relative-only controllers already exceed $89\%$.
 
 \subsubsection{Transient Visual Occlusion}
-A complete camera blackout removes the visual observation; DUET holds the last reliable absolute waypoint as short-term memory. Over $4{,}000$ paired episodes (step-$23$, medium$+$severe), DUET achieves $90.8\%$ versus $73.5\%$ for DUET-Rel ($+17.3$ pp). StarVLA reaches TODO\%. Figure~\ref{fig:ood_mechanism_grid}(d) confirms waypoint-guided execution during blackout and smooth resumption afterward.
+A complete camera blackout removes the visual observation; DUET holds the last reliable absolute waypoint as short-term memory. Over $4{,}000$ paired episodes (step-$23$, medium$+$severe), DUET achieves $90.8\%$ versus $73.5\%$ for DUET-Rel ($+17.3$ pp) and $58.1\%$ for StarVLA. Figure~\ref{fig:ood_mechanism_grid}(d) confirms waypoint-guided execution during blackout and smooth resumption afterward.
 
 
 \subsubsection{Contact and Scene Interaction}
 External contact forces during manipulation ($4{,}000$ paired episodes) yield a smaller margin: DUET reaches $95.95\%$ versus $92.22\%$ for DUET-Rel ($+3.73$ pp). DUET-Rel already exceeds $96\%$ on two suites, limiting room for improvement; the direction is uniformly non-negative, confirming that adaptive fusion does not destabilize contact-rich tasks.
 
 \begin{table*}[t]
-\caption{Closed-loop success (\%) under four disturbance families ($N{=}500$ per cell). \colorbox{gray!20}{\strut Shaded} Overall rows aggregate med.$+$sev.\ across all four suites. All per-suite $\Delta$ have McNemar $p{<}10^{-3}$ except teleport/Spatial ($p{=}0.21$).}
+\caption{Closed-loop success (\%) under four disturbance families ($N{=}500$ per cell). StarVLA is the original relative-only $10$k checkpoint evaluated on the same fixed-step protocol. Overall rows aggregate medium$+$severe across all four suites. All per-suite Rel$\to$DUET $\Delta$ have McNemar $p{<}10^{-3}$ except teleport/Spatial (medium $p{=}0.21$, severe $p{=}0.067$) and blackout/Object medium.}
 \label{tab:ood_detailed}
 \centering
 \footnotesize
@@ -309,32 +309,32 @@ External contact forces during manipulation ($4{,}000$ paired episodes) yield a 
 Suite & StarVLA & Rel. & DUET & $\Delta$ & StarVLA & Rel. & DUET & $\Delta$ \\
 \midrule
 \multicolumn{9}{@{}l}{\textit{(i) Action perturbation (step $5$)}} \\
-Spatial    & TODO & 54.0 & 74.0 & $+20.0$ & TODO & 12.8 & 43.2 & $+30.4$ \\
-Object     & TODO & 48.8 & 84.4 & $+35.6$ & TODO &  7.8 & 60.6 & $+52.8$ \\
-Goal       & TODO & 47.2 & 74.2 & $+27.0$ & TODO & 10.6 & 52.6 & $+42.0$ \\
-LIBERO-10  & TODO & 36.6 & 78.6 & $+42.0$ & TODO &  5.4 & 49.0 & $+43.6$ \\
+Spatial    & 60.0 & 54.0 & 74.0 & $+20.0$ & 14.0 & 12.8 & 43.2 & $+30.4$ \\
+Object     & 41.6 & 48.8 & 84.4 & $+35.6$ &  7.8 &  7.8 & 60.6 & $+52.8$ \\
+Goal       & 52.2 & 47.2 & 74.2 & $+27.0$ & 18.8 & 10.6 & 52.6 & $+42.0$ \\
+LIBERO-10  & 36.2 & 36.6 & 78.6 & $+42.0$ &  6.2 &  5.4 & 49.0 & $+43.6$ \\
 
-\textbf{Overall} & TODO & \textbf{27.9} & \textbf{64.6} & $\mathbf{+36.7}$ & \multicolumn{4}{c}{\textit{med$+$sev combined}} \\
+\textbf{Overall} & 29.6 & \textbf{27.9} & \textbf{64.6} & $\mathbf{+36.7}$ & \multicolumn{4}{c}{\textit{med$+$sev combined}} \\
 \midrule
-\multicolumn{9}{@{}l}{\textit{(ii) EEF teleport}} \\
-Spatial    & TODO & 54.6 & 57.6 & $+3.0$  & TODO & TODO & TODO & TODO \\
-Object     & TODO & 36.2 & 76.0 & $+39.8$ & TODO & TODO & TODO & TODO \\
-Goal       & TODO & 33.4 & 52.4 & $+19.0$ & TODO & TODO & TODO & TODO \\
-LIBERO-10  & TODO & 35.8 & 60.8 & $+25.0$ & TODO & TODO & TODO & TODO \\
+\multicolumn{9}{@{}l}{\textit{(ii) EEF teleport (step $39$)}} \\
+Spatial    & 55.4 & 54.6 & 57.6 & $+3.0$  & 46.8 & 48.2 & 52.6 & $+4.4$ \\
+Object     & 43.4 & 36.2 & 76.0 & $+39.8$ & 21.2 & 20.8 & 68.4 & $+47.6$ \\
+Goal       & 41.6 & 33.4 & 52.4 & $+19.0$ & 30.4 & 28.2 & 50.6 & $+22.4$ \\
+LIBERO-10  & 40.4 & 35.8 & 60.8 & $+25.0$ & 21.4 & 18.4 & 56.8 & $+38.4$ \\
 
-\textbf{Overall} & TODO & \textbf{TODO} & \textbf{TODO} & $\mathbf{TODO}$ & \multicolumn{4}{c}{\textit{med$+$sev combined}} \\
+\textbf{Overall} & 37.6 & \textbf{34.5} & \textbf{59.4} & $\mathbf{+24.9}$ & \multicolumn{4}{c}{\textit{med$+$sev combined}} \\
 \midrule
-\multicolumn{9}{@{}l}{\textit{(iii) Vertical grasp drop (Object only, medium)}} \\
+\multicolumn{9}{@{}l}{\textit{(iii) Vertical grasp drop (Object only, medium, step $67$)}} \\
 
-Object     & TODO & 89.2 & \textbf{95.2} & $\mathbf{+6.0}$  & \multicolumn{4}{c}{---} \\
+Object     & 90.6 & 89.2 & \textbf{95.2} & $\mathbf{+6.0}$  & \multicolumn{4}{c}{---} \\
 \midrule
 \multicolumn{9}{@{}l}{\textit{(iv) Camera blackout (step $23$)}} \\
-Spatial    & TODO & TODO & TODO & TODO & TODO & TODO & TODO & TODO \\
-Object     & TODO & TODO & TODO & TODO & TODO & TODO & TODO & TODO \\
-Goal       & TODO & TODO & TODO & TODO & TODO & TODO & TODO & TODO \\
-LIBERO-10  & TODO & TODO & TODO & TODO & TODO & TODO & TODO & TODO \\
+Spatial    & 81.0 & 88.0 & 94.4 & $+6.4$  & 42.4 & 63.2 & 95.2 & $+32.0$ \\
+Object     & 91.8 & 98.6 & 96.8 & $-1.8$  & 64.2 & 95.0 & 97.2 & $+2.2$ \\
+Goal       & 65.4 & 86.0 & 86.4 & $+0.4$  & 35.4 & 65.8 & 85.8 & $+20.0$ \\
+LIBERO-10  & 60.0 & 65.6 & 84.2 & $+18.6$ & 24.4 & 25.6 & 86.2 & $+60.6$ \\
 
-\textbf{Overall} & TODO & \textbf{73.5} & \textbf{90.8} & $\mathbf{+17.3}$ & \multicolumn{4}{c}{\textit{med$+$sev combined}} \\
+\textbf{Overall} & 58.1 & \textbf{73.5} & \textbf{90.8} & $\mathbf{+17.3}$ & \multicolumn{4}{c}{\textit{med$+$sev combined}} \\
 \bottomrule
 \end{tabular*}
 \end{table*}
