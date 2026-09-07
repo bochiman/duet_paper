@@ -374,7 +374,7 @@ TODO: generate with \texttt{matplotlib.pyplot.imshow} or \texttt{seaborn.heatmap
 Type & Variant & Checkpoint & Clean & Robot-state & Action-execution & Isolates \\
 \midrule
 \multirow{5}{*}{Inference}
-\rowcolor{gray!20}
+\rowcolor{gray!20} & Full DUET & shared & 96.9 & 61.7 & 64.6 & Complete controller \\
 & Full DUET & shared & 96.9 & 61.7 & 64.6 & Complete controller \\
 & DUET-Rel ($\alpha=0$) & shared & 93.8 & 40.0 & 27.9 & Absolute retry branch \\
 & Absolute-only ($\alpha=1$)$^\dagger$ & shared & 5.2 & 1.1 & 0.8 & Cost of losing local control \\
