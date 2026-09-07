@@ -39,57 +39,48 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-C}Dual-Head Architecture}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-D}Disagreement-Preserving Learning}{3}{}\protected@file@percent }
 \newlabel{eq:training_loss}{{7}{3}{}{equation.7}{}}
-\citation{libero}
+\citation{faildetect}
+\citation{sentinel}
+\citation{faildetect}
+\citation{rnd}
+\citation{faildetect}
+\citation{faildetect}
+\citation{sentinel}
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-E}Joint Failure Detection and Recovery}{4}{}\protected@file@percent }
 \newlabel{eq:recovery_vector}{{9}{4}{}{equation.9}{}}
 \newlabel{eq:disagreement}{{10}{4}{}{equation.10}{}}
 \newlabel{eq:fused_action}{{16}{4}{}{equation.16}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {IV}EXPERIMENTS}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-A}Evaluation Protocol}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}Nominal Execution}{4}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Execution-failure protocols and their correspondence to the introduction.}}{5}{}\protected@file@percent }
-\newlabel{tab:ood_taxonomy}{{I}{5}{}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}(c1) Anomaly Detection}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-C}(c2) Nominal Execution}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Failure-detection comparison. TPR, TNR, balanced accuracy (Bal.-Acc.), AUROC, and Loc.@16 are higher-is-better; detection delay is lower-is-better. Bold values indicate the best result in each column.}}{5}{}\protected@file@percent }
+\newlabel{tab:detector_baselines}{{I}{5}{}{table.1}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Nominal task success (\%) on LIBERO. External rows are reported results and are included only for benchmark context. StarVLA uses joint $30$k training; DUET uses suite-specific $10$k checkpoints.}}{5}{}\protected@file@percent }
 \newlabel{tab:benchmark}{{II}{5}{}{table.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Controller dynamics on the Object suite under (a) end-effector teleport, (b) vertical grasp drop, (c) action perturbation, and (d) camera blackout. Traces are aligned to the actual injection time and show means with pointwise bootstrap 95\% confidence intervals over successfully injected episodes. Shading denotes the perturbation or forced-hold window.}}{5}{}\protected@file@percent }
 \newlabel{fig:ood_mechanism_grid}{{3}{5}{}{figure.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {IV-C}Failure-Aware Retry under Execution Disturbances}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-C.1}Action-Execution Failures}{5}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces End-effector teleport on the Object suite. Top: a successful retry, with relative control before the displacement, absolute waypoint correction immediately afterward, and a return to relative control after re-entry. Bottom: mean disagreement $D_t$ and fusion weight $\alpha _t$ over $484$ successfully injected episodes, aligned to the injection time; bands are pointwise bootstrap 95\% confidence intervals.}}{5}{}\protected@file@percent }
-\newlabel{fig:teleport_mechanism}{{4}{5}{}{figure.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-C.2}Robot-Arm Displacement}{5}{}\protected@file@percent }
-\citation{faildetect}
-\citation{sentinel}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-D}(c3) Retry Recovery under Execution Disturbances}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.1}Action-Execution Failures}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.2}Robot-Arm Displacement}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.3}Object and Grasp Disturbances}{5}{}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Closed-loop task success under matched execution-failure protocols. Each row uses only the stated scope.}}{6}{}\protected@file@percent }
 \newlabel{tab:ood_overall}{{III}{6}{}{table.3}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Closed-loop task success (\%) under action, robot-pose, and object/grasp disturbances. DUET and DUET-Rel use the same checkpoint. $N{=}500$ per cell.}}{6}{}\protected@file@percent }
 \newlabel{tab:behavioral}{{IV}{6}{}{table.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-C.3}Object and Grasp Disturbances}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-C.4}Transient Visual Occlusion}{6}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Camera blackout on the Object suite. DUET holds the last reliable absolute waypoint while the image is invalid and resumes adaptive dual-action control when vision returns. The lower panel aggregates $500$ episodes aligned to blackout onset.}}{6}{}\protected@file@percent }
-\newlabel{fig:camera_blackout_mechanism}{{5}{6}{}{figure.5}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-C.5}Contact and Scene Interaction}{6}{}\protected@file@percent }
-\citation{faildetect}
-\citation{rnd}
-\citation{faildetect}
-\citation{faildetect}
-\citation{sentinel}
-\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Task success (\%) under camera blackout. Step-$15$ medium uses $2000$ paired episodes; step-$23$ aggregates eight suite--severity groups.}}{7}{}\protected@file@percent }
-\newlabel{tab:visual}{{V}{7}{}{table.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.4}Transient Visual Occlusion}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces End-effector teleport on the Object suite. Top: a successful retry, with relative control before the displacement, absolute waypoint correction immediately afterward, and a return to relative control after re-entry. Bottom: mean disagreement $D_t$ and fusion weight $\alpha _t$ over $484$ successfully injected episodes, aligned to the injection time; bands are pointwise bootstrap 95\% confidence intervals.}}{6}{}\protected@file@percent }
+\newlabel{fig:teleport_mechanism}{{4}{6}{}{figure.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Task success (\%) under camera blackout. Step-$15$ medium uses $2000$ paired episodes; step-$23$ aggregates eight suite--severity groups.}}{6}{}\protected@file@percent }
+\newlabel{tab:visual}{{V}{6}{}{table.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-D.5}Contact and Scene Interaction}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Camera blackout on the Object suite. DUET holds the last reliable absolute waypoint while the image is invalid and resumes adaptive dual-action control when vision returns. The lower panel aggregates $500$ episodes aligned to blackout onset.}}{7}{}\protected@file@percent }
+\newlabel{fig:camera_blackout_mechanism}{{5}{7}{}{figure.5}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Closed-loop success (\%) under external-force contact disturbances (fixed-step, $100\%$ injection, $N{=}500$ per cell).}}{7}{}\protected@file@percent }
 \newlabel{tab:force}{{VI}{7}{}{table.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {IV-D}Endogenous Failure Detection}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-E}Ablations}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-F}Real-Robot Evaluation}{7}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-F.0.a}Platform and protocol.}{7}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Failure-detection comparison. TPR, TNR, balanced accuracy (Bal.-Acc.), AUROC, and Loc.@16 are higher-is-better; detection delay is lower-is-better. Bold values indicate the best result in each column.}}{8}{}\protected@file@percent }
-\newlabel{tab:detector_baselines}{{VII}{8}{}{table.7}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Failure detection on frozen DUET-Rel trajectories. Recall is measured at a threshold calibrated to $1\%$ clean-window FPR; delay is event-level, and false alarms are measured over full clean rollouts. Values are placeholders until analysis is complete.}}{8}{}\protected@file@percent }
-\newlabel{tab:detection}{{VIII}{8}{}{table.8}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Component ablations, success (\%). Full DUET and DUET-Rel are four-suite averages (clean $N{=}2000$; robot-state teleport medium $N{=}2000$; action-execution medium$+$severe $N{=}4000$). Entries marked $^\dagger $ are Object-only ($N{=}500$); the matched Object Full-DUET rates are $99.4\%$ clean and $84.4\%$ action-execution medium.}}{8}{}\protected@file@percent }
-\newlabel{tab:ablations}{{IX}{8}{}{table.9}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Reserved layout for the Franka real-robot setup and three evaluation scenes: (a) pick-and-place, (b) drawer opening, and (c) whiteboard wiping. The final panels should mark the disturbance direction and injection phase so that the recoverability assumption is visually explicit.}}{8}{}\protected@file@percent }
-\newlabel{fig:real_robot_setup}{{6}{8}{}{figure.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-G}Discussion}{7}{}\protected@file@percent }
 \bibstyle{IEEEtran}
 \bibdata{references}
 \bibcite{rt2}{1}
@@ -99,15 +90,18 @@
 \bibcite{dagger}{5}
 \bibcite{sirius}{6}
 \bibcite{intervengen}{7}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Component ablations, success (\%). Full DUET and DUET-Rel are four-suite averages (clean $N{=}2000$; robot-state teleport medium $N{=}2000$; action-execution medium$+$severe $N{=}4000$). Entries marked $^\dagger $ are Object-only ($N{=}500$); the matched Object Full-DUET rates are $99.4\%$ clean and $84.4\%$ action-execution medium.}}{8}{}\protected@file@percent }
+\newlabel{tab:ablations}{{VII}{8}{}{table.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Real-robot evaluation. Success entries are reported as successes/trials (\%); retry success conditions only on trials meeting the prespecified injection criteria. Values and disturbance definitions are placeholders pending physical experiments.}}{8}{}\protected@file@percent }
+\newlabel{tab:real_robot}{{VIII}{8}{}{table.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}LIMITATIONS}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}CONCLUSION}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{8}{}\protected@file@percent }
 \bibcite{diffdagger}{8}
 \bibcite{sentinel}{9}
 \bibcite{fiper}{10}
 \bibcite{safe}{11}
 \bibcite{aha}{12}
-\@writefile{toc}{\contentsline {subsection}{\numberline {IV-G}Discussion}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {V}LIMITATIONS}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VI}CONCLUSION}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{9}{}\protected@file@percent }
 \bibcite{eil}{13}
 \bibcite{racer}{14}
 \bibcite{vlmrecovery}{15}
@@ -116,8 +110,5 @@
 \bibcite{vqvae}{18}
 \bibcite{rvq}{19}
 \bibcite{cfg}{20}
-\bibcite{libero}{21}
-\bibcite{rnd}{22}
-\@writefile{lot}{\contentsline {table}{\numberline {X}{\ignorespaces Real-robot evaluation. Success entries are reported as successes/trials (\%); retry success conditions only on trials meeting the prespecified injection criteria. Values and disturbance definitions are placeholders pending physical experiments.}}{10}{}\protected@file@percent }
-\newlabel{tab:real_robot}{{X}{10}{}{table.10}{}}
-\gdef \@abspage@last{10}
+\bibcite{rnd}{21}
+\gdef \@abspage@last{9}

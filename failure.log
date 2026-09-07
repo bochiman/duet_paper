@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  5 SEP 2026 17:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  6 SEP 2026 17:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -315,47 +315,41 @@ File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
 File: figures/fig_ood_mechanism_grid.pdf Graphic file (type pdf)
 <use figures/fig_ood_mechanism_grid.pdf>
 Package pdftex.def Info: figures/fig_ood_mechanism_grid.pdf  used on input line
- 260.
+ 268.
 (pdftex.def)             Requested size: 245.71811pt x 156.11908pt.
 <figures/fig3_teleport_mechanism.pdf, id=291, 586.59103pt x 369.781pt>
 File: figures/fig3_teleport_mechanism.pdf Graphic file (type pdf)
 <use figures/fig3_teleport_mechanism.pdf>
 Package pdftex.def Info: figures/fig3_teleport_mechanism.pdf  used on input lin
-e 310.
+e 318.
 (pdftex.def)             Requested size: 245.71811pt x 154.9007pt.
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 3
-16.
+24.
  (/usr/local/texlive/2026/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-) [5 <./figures/fig_ood_mechanism_grid.pdf> <./figures/fig3_teleport_mechanism.
-pdf>]
-Underfull \hbox (badness 1888) in paragraph at lines 318--319
+)
+Underfull \hbox (badness 1888) in paragraph at lines 326--327
 \OT1/cmr/m/n/10 [3\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 4\OML/cmm/m/it/10 ; \OT1/cm
 r/m/n/10 8\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 8]$\OT1/ptm/m/n/10 ; Mc-Ne-mar $\OM
 L/cmm/m/it/10 p[]\OT1/cmr/m/n/10 2\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 4[]10[]$\OT
 1/ptm/m/n/10 ). In-jec-tion oc-curs in
  []
 
-<figures/fig_camera_blackout_mechanism.pdf, id=349, 586.59103pt x 340.87302pt>
+[5 <./figures/fig_ood_mechanism_grid.pdf>]
+<figures/fig_camera_blackout_mechanism.pdf, id=321, 586.59103pt x 340.87302pt>
 File: figures/fig_camera_blackout_mechanism.pdf Graphic file (type pdf)
 <use figures/fig_camera_blackout_mechanism.pdf>
 Package pdftex.def Info: figures/fig_camera_blackout_mechanism.pdf  used on inp
-ut line 327.
+ut line 335.
 (pdftex.def)             Requested size: 245.71811pt x 142.79118pt.
-[6 <./figures/fig_camera_blackout_mechanism.pdf>] [7]
-Underfull \vbox (badness 3525) has occurred while \output is active []
-
-
-Underfull \vbox (badness 3525) has occurred while \output is active []
-
- [8]
-(./failure.bbl
+ [6 <./figures/fig3_teleport_mechanism.pdf>] [7 <./figures/fig_camera_blackout_
+mechanism.pdf>] (./failure.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 41--44
 \OT1/ptm/m/n/8 language-action model de-vel-op-ing,'' $https : / / github . com
  / starVLA /
  []
 
-[9])
+[8])
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -367,7 +361,7 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[10
+[9
 
 ] (./failure.aux)
  ***********
@@ -376,13 +370,13 @@ L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 3521 strings out of 467525
- 54556 string characters out of 5418982
- 493553 words of memory out of 5000000
- 32388 multiletter control sequences out of 15000+600000
+ 3517 strings out of 467525
+ 54493 string characters out of 5418982
+ 485993 words of memory out of 5000000
+ 32384 multiletter control sequences out of 15000+600000
  670740 words of font info for 126 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,13n,65p,1744b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,12n,65p,1744b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb>
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
 /usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
@@ -406,10 +400,10 @@ st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/t
 ype1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/
 times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmr
 i8a.pfb>
-Output written on failure.pdf (10 pages, 4602541 bytes).
+Output written on failure.pdf (9 pages, 4595887 bytes).
 PDF statistics:
- 500 PDF objects out of 1000 (max. 8388607)
- 246 compressed objects within 3 object streams
+ 497 PDF objects out of 1000 (max. 8388607)
+ 244 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
  26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
