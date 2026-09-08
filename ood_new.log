@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  5 SEP 2026 17:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  8 SEP 2026 18:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -229,45 +229,85 @@ Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
 \multirow@dima=\skip59
 \bigstrutjot=\dimen183
 )
+(/usr/local/texlive/2026/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
+
+(/usr/local/texlive/2026/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+
+(/usr/local/texlive/2026/texmf-dist/tex/latex/graphics/mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
+Package xcolor Info: Model `RGB' extended on input line 1365.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+)
+(/usr/local/texlive/2026/texmf-dist/tex/latex/colortbl/colortbl.sty
+Package: colortbl 2024/10/29 v1.0k Color table columns (DPC)
+
+(/usr/local/texlive/2026/texmf-dist/tex/latex/tools/array.sty
+Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
+\col@sep=\dimen184
+\ar@mcellbox=\box56
+\extrarowheight=\dimen185
+\NC@list=\toks24
+\extratabsurround=\skip60
+\backup@length=\skip61
+\ar@cellbox=\box57
+)
+\everycr=\toks25
+\minrowclearance=\skip62
+\rownum=\count304
+)
 (/usr/local/texlive/2026/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
+(/usr/local/texlive/2026/texmf-dist/tex/latex/preprint/balance.sty
+Package: balance 1999/02/23 4.3 (PWD)
+\oldvsize=\dimen186
+)
 (/usr/local/texlive/2026/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count304
+\l__color_backend_stack_int=\count305
 )
 (./ood_new.aux)
 \openout1 = `ood_new.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
 
 (/usr/local/texlive/2026/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count305
-\scratchdimen=\dimen184
-\scratchbox=\box56
-\nofMPsegments=\count306
-\nofMParguments=\count307
-\everyMPshowfont=\toks24
-\MPscratchCnt=\count308
-\MPscratchDim=\dimen185
-\MPnumerator=\count309
-\makeMPintoPDFobject=\count310
-\everyMPtoPDFconversion=\toks25
+\scratchcounter=\count306
+\scratchdimen=\dimen187
+\scratchbox=\box58
+\nofMPsegments=\count307
+\nofMParguments=\count308
+\everyMPshowfont=\toks26
+\MPscratchCnt=\count309
+\MPscratchDim=\dimen188
+\MPnumerator=\count310
+\makeMPintoPDFobject=\count311
+\everyMPtoPDFconversion=\toks27
 ) (/usr/local/texlive/2026/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -277,13 +317,13 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Trying to load font information for U+msa on input line 29.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 31.
 
 
 (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 29.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 31.
 
 
 (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -292,70 +332,71 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <figures/fig1.pdf, id=1, 2303.60625pt x 828.09375pt>
 File: figures/fig1.pdf Graphic file (type pdf)
 <use figures/fig1.pdf>
-Package pdftex.def Info: figures/fig1.pdf  used on input line 39.
+Package pdftex.def Info: figures/fig1.pdf  used on input line 41.
 (pdftex.def)             Requested size: 485.65779pt x 174.57451pt.
  [1{/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/
 local/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-<figures/fig2.pdf, id=11, 561.09625pt x 710.655pt>
+<figures/fig2.pdf, id=14, 561.09625pt x 710.655pt>
 File: figures/fig2.pdf Graphic file (type pdf)
 <use figures/fig2.pdf>
-Package pdftex.def Info: figures/fig2.pdf  used on input line 88.
+Package pdftex.def Info: figures/fig2.pdf  used on input line 89.
 (pdftex.def)             Requested size: 245.71811pt x 311.20357pt.
  [2 <./figures/fig1.pdf>] [3 <./figures/fig2.pdf>]
-LaTeX Font Info:    Trying to load font information for U+euf on input line 153
+LaTeX Font Info:    Trying to load font information for U+euf on input line 157
 .
  (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
 )
-[4]
-<figures/fig_ood_mechanism_grid.pdf, id=290, 557.68304pt x 354.3235pt>
+Underfull \vbox (badness 1210) has occurred while \output is active []
+
+<figures/fig_perturbation_showcase.pdf, id=289, 240.66783pt x 275.62807pt>
+File: figures/fig_perturbation_showcase.pdf Graphic file (type pdf)
+<use figures/fig_perturbation_showcase.pdf>
+Package pdftex.def Info: figures/fig_perturbation_showcase.pdf  used on input l
+ine 237.
+(pdftex.def)             Requested size: 245.71811pt x 281.4229pt.
+ [4]
+<figures/fig_ood_overall_success.pdf, id=295, 252.2223pt x 177.0615pt>
+File: figures/fig_ood_overall_success.pdf Graphic file (type pdf)
+<use figures/fig_ood_overall_success.pdf>
+Package pdftex.def Info: figures/fig_ood_overall_success.pdf  used on input lin
+e 344.
+(pdftex.def)             Requested size: 245.71811pt x 172.49509pt.
+
+[5 <./figures/fig_perturbation_showcase.pdf> <./figures/fig_ood_overall_success
+.pdf>]
+<figures/fig_ood_mechanism_grid.pdf, id=368, 252.2223pt x 184.28851pt>
 File: figures/fig_ood_mechanism_grid.pdf Graphic file (type pdf)
 <use figures/fig_ood_mechanism_grid.pdf>
 Package pdftex.def Info: figures/fig_ood_mechanism_grid.pdf  used on input line
- 260.
-(pdftex.def)             Requested size: 245.71811pt x 156.11908pt.
-<figures/fig3_teleport_mechanism.pdf, id=291, 586.59103pt x 369.781pt>
-File: figures/fig3_teleport_mechanism.pdf Graphic file (type pdf)
-<use figures/fig3_teleport_mechanism.pdf>
-Package pdftex.def Info: figures/fig3_teleport_mechanism.pdf  used on input lin
-e 310.
-(pdftex.def)             Requested size: 245.71811pt x 154.9007pt.
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 3
-16.
- (/usr/local/texlive/2026/texmf-dist/tex/latex/psnfss/ot1pcr.fd
-File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-) [5 <./figures/fig_ood_mechanism_grid.pdf> <./figures/fig3_teleport_mechanism.
-pdf>]
-Underfull \hbox (badness 1888) in paragraph at lines 318--319
-\OT1/cmr/m/n/10 [3\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 4\OML/cmm/m/it/10 ; \OT1/cm
-r/m/n/10 8\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 8]$\OT1/ptm/m/n/10 ; Mc-Ne-mar $\OM
-L/cmm/m/it/10 p[]\OT1/cmr/m/n/10 2\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 4[]10[]$\OT
-1/ptm/m/n/10 ). In-jec-tion oc-curs in
- []
+ 354.
+(pdftex.def)             Requested size: 245.71811pt x 179.53575pt.
+<figures/fig_manifold_distance.pdf, id=369, 252.2223pt x 126.4725pt>
+File: figures/fig_manifold_distance.pdf Graphic file (type pdf)
+<use figures/fig_manifold_distance.pdf>
+Package pdftex.def Info: figures/fig_manifold_distance.pdf  used on input line 
+363.
+(pdftex.def)             Requested size: 245.71811pt x 123.2108pt.
+<figures/fig_sensitivity_heatmap.pdf, id=370, 252.2223pt x 124.3044pt>
+File: figures/fig_sensitivity_heatmap.pdf Graphic file (type pdf)
+<use figures/fig_sensitivity_heatmap.pdf>
+Package pdftex.def Info: figures/fig_sensitivity_heatmap.pdf  used on input lin
+e 431.
+(pdftex.def)             Requested size: 245.71811pt x 121.0986pt.
 
-<figures/fig_camera_blackout_mechanism.pdf, id=349, 586.59103pt x 340.87302pt>
-File: figures/fig_camera_blackout_mechanism.pdf Graphic file (type pdf)
-<use figures/fig_camera_blackout_mechanism.pdf>
-Package pdftex.def Info: figures/fig_camera_blackout_mechanism.pdf  used on inp
-ut line 327.
-(pdftex.def)             Requested size: 245.71811pt x 142.79118pt.
-[6 <./figures/fig_camera_blackout_mechanism.pdf>] [7]
-Underfull \vbox (badness 3525) has occurred while \output is active []
+Underfull \vbox (badness 2608) has occurred while \output is active []
 
-
-Underfull \vbox (badness 3525) has occurred while \output is active []
-
- [8]
-(./ood_new.bbl
+ [6 <./figures/fig_ood_mechanism_grid.pdf> <./figures/fig_manifold_distance.pdf
+>] [7 <./figures/fig_sensitivity_heatmap.pdf>] (./ood_new.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 41--44
 \OT1/ptm/m/n/8 language-action model de-vel-op-ing,'' $https : / / github . com
  / starVLA /
  []
 
-[9])
+)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -367,22 +408,20 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[10
-
-] (./ood_new.aux)
+[8] (./ood_new.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 3521 strings out of 467525
- 54556 string characters out of 5418982
- 493553 words of memory out of 5000000
- 32388 multiletter control sequences out of 15000+600000
- 670740 words of font info for 126 fonts, out of 8000000 for 9000
+ 4211 strings out of 467525
+ 65056 string characters out of 5418982
+ 519613 words of memory out of 5000000
+ 33057 multiletter control sequences out of 15000+600000
+ 672866 words of font info for 131 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,13n,65p,1744b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,12n,83p,1424b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb>
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
 /usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
@@ -390,26 +429,27 @@ usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></us
 r/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/
 local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/lo
 cal/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/loca
-l/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/
-texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/tex
-live/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texliv
-e/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2
-026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2026
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2026/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2026/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2026/texmf-
-dist/fonts/type1/public/amsfonts/euler/eufm10.pfb></usr/local/texlive/2026/texm
-f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2026/
-texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2026/texmf-di
-st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/t
-ype1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/
-times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmr
-i8a.pfb>
-Output written on ood_new.pdf (10 pages, 4602541 bytes).
+l/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/
+texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/te
+xlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texli
+ve/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/
+2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/202
+6/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2026/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2026/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2026/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2026/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2026/texmf-dist/
+fonts/type1/public/amsfonts/euler/eufm10.pfb></usr/local/texlive/2026/texmf-dis
+t/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2026/texmf
+-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2026/texmf-dist/font
+s/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/u
+rw/times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/u
+tmri8a.pfb>
+Output written on ood_new.pdf (8 pages, 5370036 bytes).
 PDF statistics:
- 500 PDF objects out of 1000 (max. 8388607)
- 246 compressed objects within 3 object streams
+ 559 PDF objects out of 1000 (max. 8388607)
+ 275 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
 

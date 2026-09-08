@@ -8,11 +8,13 @@
 \citation{intervengen}
 \citation{starvla}
 \citation{pi0}
-\@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCTION}{1}{}\protected@file@percent }
 \citation{diffdagger}
 \citation{sentinel}
 \citation{faildetect}
 \citation{fiper}
+\@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCTION}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}RELATED WORK}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-A}Failure Detection for Robot Policies}{1}{}\protected@file@percent }
 \citation{safe}
 \citation{aha}
 \citation{faildetect}
@@ -28,12 +30,11 @@
 \citation{rvq}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Failure-aware retry with dual action spaces. Relative and absolute predictions agree during nominal execution but diverge when a recoverable deviation drives the rollout OOD, exposing an endogenous disagreement score $D_t$. Relative actions provide precise local motion, whereas absolute waypoints bring the robot back toward a demonstrated execution path for retry.}}{2}{}\protected@file@percent }
 \newlabel{fig:teaser}{{1}{2}{}{figure.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {II}RELATED WORK}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {II-A}Failure Detection for Robot Policies}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Recovery from Execution Failures}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {III}METHOD}{2}{}\protected@file@percent }
 \newlabel{sec:method}{{III}{2}{}{section.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-A}Dual Action Spaces and Architecture}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Disagreement-Preserving Learning}{2}{}\protected@file@percent }
 \citation{cfg}
 \citation{faildetect}
 \citation{rnd}
@@ -45,7 +46,6 @@
 \citation{pi0}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces DUET combines a shared encoder with state-aware relative and RVQ-conditioned absolute heads. Their disagreement guides OOD detection and closed-loop waypoint retry.}}{3}{}\protected@file@percent }
 \newlabel{fig:architecture}{{2}{3}{}{figure.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Disagreement-Preserving Learning}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-C}Endogenous OOD Detection and Retry}{3}{}\protected@file@percent }
 \newlabel{eq:recovery_vector}{{2}{3}{}{equation.2}{}}
 \newlabel{eq:disagreement}{{3}{3}{}{equation.3}{}}
@@ -105,13 +105,13 @@
 \bibcite{safe}{12}
 \bibcite{aha}{13}
 \bibcite{eil}{14}
+\bibcite{racer}{15}
+\bibcite{vlmrecovery}{16}
 \@writefile{toc}{\contentsline {paragraph}{\numberline {IV-F.0.c}Qualitative outcomes.}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-G}Discussion}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {V}LIMITATIONS}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {VI}CONCLUSION}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{References}{7}{}\protected@file@percent }
-\bibcite{racer}{15}
-\bibcite{vlmrecovery}{16}
 \bibcite{vqvae}{17}
 \bibcite{rvq}{18}
 \bibcite{cfg}{19}

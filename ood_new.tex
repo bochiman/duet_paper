@@ -16,6 +16,7 @@
 \usepackage{multirow}
 \usepackage[table]{xcolor}
 \usepackage{url}
+\usepackage{balance}
 
 \title{\LARGE \bf
 DUET: Endogenous Failure Detection and Recovery via Dual-Action Manifold Alignment
@@ -190,31 +191,31 @@ The disagreement $D_t$ therefore determines \emph{when} recovery is needed, whil
 \section{EXPERIMENTS}
 \label{sec:experiments}
 
-The experiments follow the geometry of \S\ref{sec:manifolds}: does $D_t$ rank failures without failure labels (\S\ref{sec:detection}), does the absolute head contract distance to $\mathcal{M}_l$ (\S\ref{sec:manifold}), and does the adaptive gate convert that contraction into task success without harming nominal control (\S\ref{sec:main}--\S\ref{sec:ablations})? A real-robot study on a $\pi_0$ backbone tests transfer (\S\ref{sec:real_robot}).
+\begin{samepage}
+We organize the simulation experiments around three questions:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\topsep}{2pt}
+    \item[\textbf{(Q1)}] \textbf{Endogenous OOD detection:} Can DUET detect deviations using successful demonstrations only?
+    \item[\textbf{(Q2)}] \textbf{Nominal execution:} Does dual-action control preserve normal execution?
+    \item[\textbf{(Q3)}] \textbf{Failure-aware retry:} Can a detected, recoverable deviation be converted into task success?
+\end{itemize}
+We report detection, nominal success, and closed-loop retry separately, followed by mechanism studies and ablations.
+\end{samepage}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_perturbation_showcase.pdf}
-\caption{Before / during / after keyframes on Object, sampled around the injection step: (a) action perturbation, (b) EEF teleport, (c) grasp drop, (d) camera blackout.}
-\label{fig:showcase}
-\end{figure}
-
-\subsection{Benchmark and Data}
-\label{sec:benchmark}
-We evaluate on four LIBERO suites \cite{libero}---Spatial, Object, Goal, and LIBERO-10---with $10$ tasks and $50$ initial states per task ($500$ episodes per suite). Each demonstration supplies both labels: future end-effector states supervise the absolute head; delta OSC commands supervise the relative head. All simulation results use suite-specific $10$k-step checkpoints.
-
-Four controllers share one checkpoint and differ only at inference: \emph{DUET-Rel} ($\alpha_t{=}0$), \emph{DUET} (Eq.~\eqref{eq:fused_action}), absolute-only ($\alpha_t{=}1$), and fixed fusion ($\alpha_t{=}0.5$). The original relative-only StarVLA \cite{starvla} checkpoint is an external control. StarVLA $\to$ DUET-Rel measures co-training; DUET-Rel $\to$ DUET isolates the gate.
-
-\subsection{Implementation Details}
-\label{sec:impl}
-DUET is implemented as \texttt{QwenGR00THybrid} in StarVLA (Qwen-VL, hidden size $2048$). The relative branch is a 16-layer DiT-B flow-matching head; the absolute branch is an 8-layer DiT-B head conditioned on $16$ RVQ tokens (three codebooks, size $512$, dimension $256$). Augmentation probability $p_{\mathrm{aug}}{=}0.3$, CFG dropout $p_{\mathrm{drop}}{=}0.15$, and gate parameters $\lambda{=}1$, $\tau{=}0.5$, $k{=}8$ from the plateau in \S\ref{sec:ablations}.
-
-\subsection{Failure Injection Protocol}
+\subsection{Evaluation Protocol}
 \label{sec:protocol}
-Five families each drive a different quantity OOD (Table~\ref{tab:taxonomy}; Fig.~\ref{fig:showcase}). Perturbations fire at a fixed step under deterministic seeds; DUET and DUET-Rel share $(\mathrm{task},\mathrm{initial\ state})$ keys, so every $\Delta$ is paired with a McNemar $p$-value. Grasp drop requires a held object; we report coverage and keep uninjected episodes. Families are never pooled. External force is a stability check---DUET-Rel already exceeds $96\%$ on two suites---and is reported in text only.
+We evaluate the four LIBERO suites \cite{libero} with $10$ tasks and $50$ initial states per task ($500$ episodes per suite), using suite-specific $10$k-step checkpoints. Successful demonstrations provide future end-effector states for the absolute head and delta OSC commands for the relative head.
+
+StarVLA \cite{starvla} is the external relative-only control. DUET-Rel ($\alpha_t{=}0$) and DUET share a checkpoint, so their difference isolates adaptive retry; StarVLA$\to$DUET-Rel measures co-training. Absolute-only ($\alpha_t{=}1$) and fixed fusion ($\alpha_t{=}0.5$) are inference ablations.
+
+DUET uses Qwen-VL features (size $2048$), 16-/8-layer relative/absolute DiT-B heads, and $16$ RVQ tokens from three codebooks (size $512$, dimension $256$). We set $p_{\mathrm{aug}}{=}0.3$, $p_{\mathrm{drop}}{=}0.15$, $\lambda{=}1$, $\tau{=}0.5$, and $k{=}8$.
+
+Perturbations use fixed steps, deterministic seeds, and matched $(\mathrm{task},\mathrm{initial\ state})$ keys; success differences use McNemar $p$-values. We retain uninjected episodes and report coverage for semantic preconditions. Table~\ref{tab:taxonomy} defines the families; external force is reported separately and families are not pooled.
 
 \begin{table}[t]
-\caption{Execution-failure families and the quantity each drives out of distribution.}
+\caption{Execution-failure families and the quantity driven out of distribution.}
 \label{tab:taxonomy}
 \centering
 \resizebox{\columnwidth}{!}{%
@@ -231,53 +232,44 @@ Contact / scene & External force & Robot--world interaction \\
 \end{tabular}}
 \end{table}
 
-
-\subsection{Endogenous Failure Detection}
-\label{sec:detection}
-Table~\ref{tab:detection} compares $D_t$ (Eq.~\eqref{eq:disagreement}) with success-only detectors from FAIL-Detect \cite{faildetect} and STAC \cite{sentinel} under matched positive/negative windows. Unlike those baselines, $D_t$ also supplies the recovery direction $c_t$.
-
-\begin{table}[t]
-\caption{Failure detection under matched protocols. Higher is better except detection delay. All baselines are trained on successful executions only.}
-\label{tab:detection}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lccccc}
-\toprule
-Method & TPR $\uparrow$ & TNR $\uparrow$ & Bal.-Acc. $\uparrow$ & AUROC $\uparrow$ & Delay $\downarrow$ \\
-\midrule
-\rowcolor{gray!20}
-DUET ($D_t$) & \textbf{0.900} & 0.265 & 0.582 & \textbf{0.845} & 38.3 \\
-logpZO \cite{faildetect} & 0.889 & 0.243 & 0.566 & 0.817 & 22.7 \\
-RND \cite{rnd,faildetect} & 0.842 & \textbf{0.361} & \textbf{0.602} & 0.549 & 26.1 \\
-PCA-kmeans \cite{faildetect} & 0.884 & 0.283 & 0.583 & 0.625 & \textbf{20.3} \\
-Sentinel/STAC \cite{sentinel} & 0.839 & 0.311 & 0.575 & 0.494 & 25.8 \\
-\bottomrule
-\end{tabular}}
-\end{table}
-
-DUET leads on TPR ($0.900$) and AUROC ($0.845$). TNR and delay evaluate a binary alarm at a single threshold; DUET never thresholds $D_t$ but maps it continuously through $\alpha_t\in[0,1]$. The low TNR ($0.265$) thus reflects occasional mild blending on clean rollouts---blending that raises clean success by $3.1$ pp (Table~\ref{tab:nominal}). The $38.3$-step delay measures threshold crossing, not the onset of correction. AUROC, which is threshold-free, is the primary metric.
-
-\subsection{Dual-Manifold Geometry of Recovery}
-\label{sec:manifold}
-Section~\ref{sec:manifolds} predicts that the absolute head contracts $d_{\mathcal{M}}$ (distance to the nearest of $50$ clean trajectories) while the relative head does not. We verify on Object teleport, which displaces the arm without altering the scene (Fig.~\ref{fig:manifold}; $n{=}484$--$498$).
-
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig_manifold_distance.pdf}
-\caption{EEF teleport on Object (medium, step $39$; $n{=}484$--$498$). Left: $d_{\mathcal{M}}$ after injection (mean, bootstrap 95\% CI). Right: re-entry versus task success.}
-\label{fig:manifold}
+\includegraphics[width=\columnwidth]{figures/fig_perturbation_showcase.pdf}
+\caption{Object-suite keyframes before, during, and after (a) action perturbation, (b) EEF teleport, (c) grasp drop, and (d) camera blackout.}
+\label{fig:showcase}
 \end{figure}
 
-All controllers start at comparable $d_0$ ($7.2$, $6.4$, $7.1$\,cm). At $+32$ steps, relative-only closes $0.71$\,cm (re-entry $62.5\%$, median $58$ steps) while DUET closes $4.69$\,cm ($97.9\%$, median $16$ steps; paired gap $-3.98$\,cm, 95\% CI $[-4.41,-3.56]$). Absolute-only re-enters most often ($99.6\%$, median $11$ steps) yet completes no task---it is already off-manifold before injection ($\approx\!4.5$ vs.\ $\approx\!0.3$\,cm). Re-entry alone is insufficient; the heads are complementary and fusion is required.
+\subsection{\textbf{(Q1)} Endogenous OOD Detection}
+\label{sec:detection}
+For \textbf{Q1}, Table~\ref{tab:detection} compares $D_t$ with matched success-only detectors \cite{faildetect,sentinel}. Unlike a separate alarm, $D_t$ also activates correction $c_t$.
 
-\subsection{Main Results}
-\label{sec:main}
+\begin{table*}[!t]
+\caption{Failure detection under matched protocols. All metrics are higher-is-better except delay; bold marks the best value per column.}
+\label{tab:detection}
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+Method & TPR $\uparrow$ & TNR $\uparrow$ & Bal.-Acc. $\uparrow$ & AUROC $\uparrow$ & Delay (steps) $\downarrow$ & Delay (s) $\downarrow$ & Loc.@16 $\uparrow$ \\
+\midrule
+\rowcolor{gray!20}
+DUET ($D_t$) & \textbf{0.900} & 0.265 & 0.582 & \textbf{0.845} & 28.3 & 1.41 & 0.523 \\
+logpZO \cite{faildetect} & 0.889 & 0.243 & 0.566 & 0.817 & 22.7 & 1.14 & \textbf{0.569} \\
+RND \cite{rnd,faildetect} & 0.842 & \textbf{0.361} & \textbf{0.602} & 0.549 & 26.1 & 1.31 & 0.330 \\
+PCA-kmeans \cite{faildetect} & 0.884 & 0.283 & 0.583 & 0.625 & \textbf{20.3} & \textbf{1.01} & 0.503 \\
+STAC \cite{sentinel} & 0.839 & 0.311 & 0.575 & 0.494 & 25.8 & 1.29 & 0.260 \\
+\bottomrule
+\end{tabular}}
+\end{table*}
 
-\paragraph{Nominal execution.}
-DUET averages $96.9\%$ (Table~\ref{tab:nominal}), matching reported $\pi_{0.5}$. The gate lifts the same checkpoint from $93.8\%$ (DUET-Rel) to $96.9\%$, with the largest gains on Goal ($+5.6$) and LIBERO-10 ($+5.8$), suites where even clean rollouts occasionally drift from $\mathcal{M}_l$.
+With delay close to prior methods ($1.41$\,s versus $1.01$--$1.31$\,s), DUET achieves the highest AUROC ($0.845$) and TPR ($0.900$). Its balanced accuracy ($0.582$) remains below RND ($0.602$), so the gain is not uniform across thresholded metrics. Thus \textbf{Q1} is supported: disagreement improves failure ranking and detection without failure labels at modest delay.
+
+\subsection{\textbf{(Q2)} Nominal Execution}
+\label{sec:nominal}
+For \textbf{Q2}, adaptive fusion raises the same checkpoint from $93.8\%$ to $96.9\%$ (Table~\ref{tab:nominal}), with $+5.6$ pp on Goal and $+5.8$ pp on LIBERO-10. External rows provide context only. DUET therefore preserves nominal execution while correcting occasional clean-rollout drift.
 
 \begin{table}[t]
-\caption{Nominal task success (\%) on LIBERO. External rows are reported results included for benchmark context only; StarVLA-GR00T uses joint $30$k training whereas DUET uses suite-specific $10$k checkpoints.}
+\caption{Nominal LIBERO success (\%). External rows are context; StarVLA-GR00T uses joint $30$k training and DUET uses suite-specific $10$k checkpoints.}
 \label{tab:nominal}
 \centering
 \resizebox{\columnwidth}{!}{%
@@ -295,55 +287,12 @@ DUET-Rel ($\alpha_t{=}0$) & 98.0 & 99.2 & 92.0 & 86.0 & 93.8 \\
 \end{tabular}}
 \end{table}
 
-\paragraph{Static gates fail in both directions.}
-Table~\ref{tab:main_results} compares the four controllers. Absolute-only re-enters $\mathcal{M}_l$ (\S\ref{sec:manifold}) but achieves ${\le}\,5.2\%$ task success; fixed fusion ($\alpha_t{=}0.5$) degrades clean performance to $46.2\%$ while still under-correcting failures. Neither constant gate is competitive.
+\subsection{\textbf{(Q3)} Failure-Aware Retry}
+\label{sec:retry}
+For \textbf{Q3}, Table~\ref{tab:ood_detailed} shows that DUET raises shared-checkpoint success from $27.9\%$ to $64.6\%$ under action perturbation, $34.5\%$ to $59.4\%$ after teleport, $89.2\%$ to $95.2\%$ after grasp drop, and $73.5\%$ to $90.8\%$ during blackout. Every aggregate also exceeds StarVLA.
 
-\begin{table}[t]
-\caption{Controller comparison on a shared checkpoint, success (\%). Four-suite rows cover clean $N{=}2000$, robot displacement (teleport medium) $N{=}2000$, and action execution medium$+$severe $N{=}4000$. The static-gate controls were swept on Object only ($N{=}500$ per protocol, action execution medium), so they are listed against the matched Object DUET rates.}
-\label{tab:main_results}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{llccc}
-\toprule
-Controller & Gate & Clean & Robot displ. & Action exec. \\
-\midrule
-\multicolumn{5}{@{}l}{\textit{Four-suite average}} \\
-\rowcolor{gray!20}
-DUET & adaptive $\alpha_t$ & \textbf{96.9} & \textbf{61.7} & \textbf{64.6} \\
-DUET-Rel & $\alpha_t{=}0$ & 93.8 & 40.0 & 27.9 \\
-\midrule
-\multicolumn{5}{@{}l}{\textit{Object suite, matched protocol}} \\
-\rowcolor{gray!20}
-DUET & adaptive $\alpha_t$ & 99.2 & \textbf{76.0} & \textbf{84.4} \\
-DUET-Rel & $\alpha_t{=}0$ & 99.2 & 36.2 & 48.8 \\
-Absolute-only & $\alpha_t{=}1$ & 5.2 & 1.1 & 0.8 \\
-Fixed fusion & $\alpha_t{=}0.5$ & 46.2 & 39.4 & 41.0 \\
-\bottomrule
-\end{tabular}}
-\end{table}
-
-\paragraph{Recovery across families.}
-Table~\ref{tab:ood_detailed} and Fig.~\ref{fig:overall} report per-family success. Figure~\ref{fig:telemetry} shows three gate regimes: it follows $D_t$ under arm-state OOD (a,c), stays silent under world-state change (b), and is overridden under invalid observation (d).
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_ood_mechanism_grid.pdf}
-\caption{$D_t$ and $\alpha_t$ on Object, aligned to injection (mean, pointwise 95\% CI). The gate follows arm-state OOD in (a,c), is silent in (b), and is overridden in (d).}
-\label{fig:telemetry}
-\end{figure}
-
-\emph{Action execution.} The scene is intact, so relative control has no return target. Over $4{,}000$ paired episodes DUET reaches $64.6\%$ vs.\ $27.9\%$ ($+36.7$ pp). Severe perturbation drops DUET-Rel to $5.4$--$12.8\%$ while DUET retains $43.2$--$60.6\%$. StarVLA ($29.6\%$) $\approx$ DUET-Rel, confirming that the gain is from the gate.
-
-\emph{Robot displacement.} Overall $59.4\%$ vs.\ $34.5\%$ (Rel) and $37.6\%$ (StarVLA). Object gains $+39.8$ (med) and $+47.6$ pp (sev). Spatial is under-powered (med $+3.0$, $p{=}0.21$; sev $+4.4$, $p{=}0.067$) because some episodes finish before the step-$39$ injection.
-
-\emph{Object and grasp.} A $5$\,cm drop at step $67$ yields $+6.0$ pp ($p{=}2.4{\times}10^{-5}$, coverage $\ge\!98.8\%$). The arm stays on $\mathcal{M}_l$, so $D_t\!\approx\!0$ (Fig.~\ref{fig:telemetry}(b)); this family bounds the signal rather than testing retry. The residual gain comes from the same mild blending that raises clean success.
-
-\emph{Visual occlusion.} Both heads see the same blank image, so $D_t$ is uninformative and the validity guard holds the last waypoint. Overall $90.8\%$ vs.\ $73.5\%$ ($+17.3$ pp) and $58.1\%$ (StarVLA). Rel already exceeds StarVLA, so asymmetric training contributes independently of the gate. The largest single-cell gain is LIBERO-10 severe ($+60.6$ pp); Object medium is the only regression ($-1.8$ pp, $p{>}0.05$), where Rel already saturates at $98.6\%$.
-
-\emph{Contact and scene.} External force ($4{,}000$ episodes): $95.95\%$ vs.\ $92.22\%$ ($+3.73$ pp), no suite regresses. The small gap confirms that the gate does not harm a nearly saturated baseline.
-
-\begin{table*}[t]
-\caption{Closed-loop success (\%) under the four recovery families ($N{=}500$ per cell). StarVLA is the original relative-only $10$k checkpoint on the same protocol. Overall rows aggregate medium$+$severe over four suites. All Rel$\to$DUET $\Delta$ have McNemar $p{<}10^{-3}$ except teleport/Spatial (medium $p{=}0.21$, severe $p{=}0.067$) and blackout/Object medium. External force is reported in the text.}
+\begin{table*}[!t]
+\caption{Closed-loop success (\%; $N{=}500$ per cell). Overall combines medium$+$severe across suites. Rel$\to$DUET has McNemar $p{<}10^{-3}$ except teleport/Spatial ($p{=}0.21/0.067$) and blackout/Object medium.}
 \label{tab:ood_detailed}
 \centering
 \footnotesize
@@ -380,21 +329,76 @@ LIBERO-10  & 60.0 & 65.6 & 84.2 & $+18.6$ & 24.4 & 25.6 & 86.2 & $+60.6$ \\
 \end{tabular*}
 \end{table*}
 
+\emph{Action execution.} The intact scene offers a return target that relative control lacks. DUET gains $36.7$ pp over $4{,}000$ pairs; under severe shifts it retains $43.2$--$60.6\%$, versus $5.4$--$12.8\%$ for Rel.
+
+\emph{Robot displacement.} Teleport shifts the live pose off-trajectory; DUET gains $24.9$ pp overall and $39.8/47.6$ pp on Object. Spatial is not significant ($p{=}0.21/0.067$), partly because episodes can finish before step $39$.
+
+\emph{Object and grasp.} A $5$\,cm drop changes the robot--object relation but not the arm trajectory. The $+6.0$ pp gain ($p{=}2.4{\times}10^{-5}$; coverage $\geq98.8\%$) over a strong $89.2\%$ Rel baseline makes this a boundary case.
+
+\emph{Visual occlusion.} A blank image corrupts both heads, so the validity guard, not disagreement, drives recovery. DUET gains $17.3$ pp; Object medium is the only regression ($-1.8$ pp, $p{>}0.05$), while LIBERO-10 severe gains $60.6$ pp.
+
+\emph{Contact and scene.} External force is separate: DUET reaches $95.95\%$ versus $92.22\%$ over $4{,}000$ episodes, with no suite regression.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_ood_overall_success.pdf}
-\caption{Paired DUET-Rel $\to$ DUET success gain per family, ordered by $\Delta$. Ochre: relative head; blue: dual-action controller.}
+\caption{Paired DUET-Rel$\to$DUET success gain by family.}
 \label{fig:overall}
 \end{figure}
 
+\paragraph{Mechanism evidence.}
+Figure~\ref{fig:telemetry} shows switch-and-return under arm-state OOD: disagreement raises $\alpha_t$, activates the waypoint correction, then falls after realignment. The gate stays weak for world-state change and is overridden during complete visual dropout.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_ood_mechanism_grid.pdf}
+\caption{$D_t$ and $\alpha_t$ on Object, aligned to injection (mean, pointwise 95\% CI): arm-state OOD (a,c), world-state change (b), and validity-guard override (d).}
+\label{fig:telemetry}
+\end{figure}
+
+On Object teleport (Fig.~\ref{fig:manifold}; $n{=}484$--$498$), DUET closes $4.69$\,cm by $+32$ steps and re-enters in $97.9\%$ (median $16$ steps), versus $0.71$\,cm, $62.5\%$, and $58$ steps for Rel. Absolute-only reaches $99.6\%$ re-entry but zero task success, so re-entry is mechanism evidence rather than the endpoint.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_manifold_distance.pdf}
+\caption{Object EEF teleport (medium, step $39$; $n{=}484$--$498$). Left: distance to the clean-trajectory reference after injection. Right: re-entry and final task success.}
+\label{fig:manifold}
+\end{figure}
+
+Together, final success and switch-and-return answer \textbf{Q3}: DUET helps when deviation is detectable and re-entry remains feasible; grasp changes and invalid vision bound disagreement alone.
+
 \subsection{Ablations}
 \label{sec:ablations}
-Static-gate controls appear in Table~\ref{tab:main_results}. Table~\ref{tab:ablations} isolates the remaining choices: adaptive CFG on Object, and two training replacements on LIBERO-10.
-
-RVQ $\to$ MLP zeros all three protocols: without a discrete atlas the absolute branch is unusable. Symmetric augmentation (removing the gradient truncation of \S\ref{sec:learning}) lowers both clean and OOD success, confirming that complementarity requires asymmetry. Adaptive CFG matters similarly: a hard conditional waypoint is a poor recovery target when the observation is off-distribution.
+Table~\ref{tab:main_results} tests fusion. Absolute-only loses precise execution; fixed fusion damages clean performance and under-corrects disturbances. Only adaptive fusion succeeds in both regimes.
 
 \begin{table}[t]
-\caption{Component ablations, success (\%). Constant-$\alpha_t$ controls are in Table~\ref{tab:main_results}. This table isolates the CFG schedule (Object; $N{=}500$) and two LIBERO-10 retrains ($N{=}500$ clean and displacement, $N{=}1000$ action execution).}
+\caption{Fusion ablations, success (\%). Four-suite rows use $N{=}2000/2000/4000$; static gates use matched Object protocols ($N{=}500$).}
+\label{tab:main_results}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llccc}
+\toprule
+Controller & Gate & Clean & Robot displ. & Action exec. \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Four-suite average}} \\
+\rowcolor{gray!20}
+DUET & adaptive $\alpha_t$ & \textbf{96.9} & \textbf{61.7} & \textbf{64.6} \\
+DUET-Rel & $\alpha_t{=}0$ & 93.8 & 40.0 & 27.9 \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Object suite, matched protocol}} \\
+\rowcolor{gray!20}
+DUET & adaptive $\alpha_t$ & 99.2 & \textbf{76.0} & \textbf{84.4} \\
+DUET-Rel & $\alpha_t{=}0$ & 99.2 & 36.2 & 48.8 \\
+Absolute-only & $\alpha_t{=}1$ & 5.2 & 1.1 & 0.8 \\
+Fixed fusion & $\alpha_t{=}0.5$ & 46.2 & 39.4 & 41.0 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+Table~\ref{tab:ablations} isolates other choices. Removing RVQ disables the absolute branch; symmetric augmentation lowers clean and OOD success; adaptive CFG matters off-distribution.
+
+\begin{table}[t]
+\caption{Component ablations, success (\%). CFG uses Object ($N{=}500$); retrains use LIBERO-10 ($N{=}500/500/1000$).}
 \label{tab:ablations}
 \centering
 \resizebox{\columnwidth}{!}{%
@@ -416,19 +420,18 @@ Symmetric augmentation & 86.8 & 58.6 & 60.9 \\
 \end{tabular}}
 \end{table}
 
-\paragraph{Fusion weight on clean trajectories.}
-Over $2{,}000$ clean episodes ($354{,}609$ steps), mean $\alpha_t{=}0.139$, $95^{\mathrm{th}}$-percentile $0.339$, and only $1.7\%$ of steps exceed $0.5$. This mild blending explains both the $+3.1$ pp clean gain and the low TNR in Table~\ref{tab:detection}.
+\paragraph{Fusion on clean trajectories.}
+Across $2{,}000$ clean episodes, mean $\alpha_t{=}0.139$, its $95^{\mathrm{th}}$ percentile is $0.339$, and only $1.7\%$ of steps exceed $0.5$, showing that relative control remains dominant.
 
 \paragraph{Sensitivity to $\tau$ and $k$.}
-Figure~\ref{fig:sensitivity} sweeps both parameters on Object. A broad plateau (clean ${>}\,90\%$, OOD ${>}\,75\%$) separates under- and over-correction. The operating point $\tau{=}0.5$, $k{=}8$ lies inside it, so the gate requires no per-suite tuning.
+Figure~\ref{fig:sensitivity} shows a broad Object plateau above $90\%$ clean and $75\%$ OOD success. The shared $\tau{=}0.5$, $k{=}8$ lies inside it.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_sensitivity_heatmap.pdf}
-\caption{Sensitivity of (a) clean and (b) action-perturbation success to the gate parameters $\tau$ and $k$ on the Object suite, recomputed post hoc from $500$ clean and $500$ perturbed gate traces. Both panels share one colour scale. The dashed rectangle marks the region where clean $>\!90\%$ and OOD $>\!75\%$ hold simultaneously; the star is the operating point $\tau{=}0.5$, $k{=}8$ used in all other experiments.}
+\caption{Object sensitivity to $\tau,k$ from $500$ clean and $500$ perturbed traces. Rectangle: clean $>90\%$, OOD $>75\%$; star: operating point.}
 \label{fig:sensitivity}
 \end{figure}
-
 \subsection{Real-Robot Evaluation}
 \label{sec:real_robot}
 DUET attaches only to the shared vision-language representation. We replace StarVLA with $\pi_0$ (OpenPi) \cite{pi0}, keeping the heads, fusion rule, and validity guard unchanged.
@@ -456,6 +459,7 @@ Right-most panel: corresponding $q_t$ and $\alpha_t$ traces.}}
 \centering
 \footnotesize
 \setlength{\tabcolsep}{3.2pt}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}l cc cc c@{}}
 \toprule
 & \multicolumn{2}{c}{Nominal} & \multicolumn{2}{c}{OOD (EEF shift)} & \\
@@ -469,7 +473,7 @@ Whiteboard wiping (TODO\,cm) & TODO & TODO & TODO & TODO & TODO \\
 \midrule
 Overall & TODO & TODO & TODO & TODO & TODO \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
 Figure~\ref{fig:real_robot} (bottom) shows the switch-and-return behavior. The disturbance matches the robot-displacement family in simulation; Table~\ref{tab:real_robot} will report whether the $\pi_0$ transfer holds.
@@ -489,6 +493,7 @@ We presented DUET, a dual-branch VLA policy for endogenous failure detection and
 
 TODO: Add acknowledgments, funding, compute resources, and any required dataset or codebase acknowledgments after the author list is finalized.
 
+\balance
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 

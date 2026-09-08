@@ -50,11 +50,11 @@ Vision-language-action (VLA) policies adapt pretrained vision-language models to
 
 Existing approaches decouple detection and recovery: an external monitor flags the failure \cite{faildetect}, and a separate controller, often trained on human takeover data, executes a correction \cite{dagger,sirius,intervengen}. This design is costly and loosely coupled---a detector only signals that execution has become abnormal; it does not specify how to return to behavior that can still complete the task. We ask whether a VLA can use its own action predictions to detect a recoverable execution deviation and generate a retry direction from successful demonstrations alone, without failure labels or takeover data.
 
-DUET is motivated by a complementary asymmetry between two action representations. Relative-action policies produce smooth motion around the demonstrated trajectory, but once a grasp or pose deviates, a local command provides no target for returning. Absolute-action policies are less suited to fine local control, yet their waypoints can point back toward a reachable portion of the demonstrated trajectory. DUET learns the same behavior in both spaces: a relative head for nominal execution and an absolute head for trajectory re-entry. After transporting the absolute waypoint into the live frame, we compare it with the relative action. Their disagreement measures whether local control remains consistent with the global reference and serves as an endogenous signal of rising failure risk. It is not a universal OOD score; it is a task-specific inconsistency signal anchored to successful behavior.
+DUET exploits complementary action representations. Relative actions support smooth local control but provide no return target after displacement; absolute actions are less suitable for fine control but retain a global waypoint. DUET learns the same behavior with a relative head for execution and an absolute head for trajectory re-entry. Comparing the transported waypoint correction with the relative action tests whether local motion remains consistent with the demonstrated reference. Their disagreement is a task-specific inconsistency signal, not a universal OOD score, and the waypoint supplies a retry direction.
 
-The dual-head module interfaces only with the backbone's shared vision-language representation, requiring no modification to the backbone architecture or pretraining. This makes DUET a transferable add-on: we train it on StarVLA \cite{starvla} for simulation and on $\pi_0$ (OpenPi) \cite{pi0} for real-robot deployment without architecture-specific adaptation.
+The module attaches to the backbone's shared vision-language representation without changing its architecture or pretraining. We train it on StarVLA \cite{starvla} in simulation and $\pi_0$ (OpenPi) \cite{pi0} for real-robot deployment.
 
-At inference time, a soft gate keeps relative control in the nominal regime and shifts toward the waypoint-induced correction when disagreement indicates a recoverable deviation; control returns to relative mode after the two predictions realign. DUET is a failure-aware retry mechanism, not a general recovery planner: it does not address irreversible failures, hardware faults, or cases requiring a new task strategy.
+At inference, a soft gate shifts from relative control toward the waypoint correction as disagreement rises, then returns after realignment. DUET addresses recoverable deviations; irreversible failures, hardware faults, and cases requiring a new task strategy remain outside its scope.
 
 Our contributions are threefold:
 \begin{itemize}
@@ -80,7 +80,7 @@ Foundation-model systems use semantic supervisors. RACER learns from language-an
 \label{sec:method}
 
 \subsection{Dual Action Spaces and Architecture}
-Given images $o_t$, instruction $l$, and proprioceptive state $s_t$, DUET predicts relative action and absolute waypoint chunks over a horizon $K$:
+DUET predicts demonstrated behavior in complementary coordinates: relative actions specify local motion from the measured pose, while absolute waypoints retain a scene-conditioned reference. Given images $o_t$, instruction $l$, and proprioceptive state $s_t$, the heads output chunks over a horizon $K$:
 \begin{equation}
 \begin{aligned}
     \hat{\Delta A}_t &= f_{\mathrm{rel}}(o_t,l,s_t)
@@ -89,7 +89,7 @@ Given images $o_t$, instruction $l$, and proprioceptive state $s_t$, DUET predic
     \in \mathbb{R}^{K\times 7}.
 \end{aligned}
 \end{equation}
-Commands decompose as $a_t=[a_{p,t},a_{g,t}]$, with six pose dimensions $a_{p,t}$ and one gripper dimension $a_{g,t}$. Relative outputs are operational-space-control deltas; absolute outputs encode future end-effector poses and gripper states. Only pose commands are fused; deployed gripper control comes from the relative head.
+Commands decompose as $a_t=[a_{p,t},a_{g,t}]$, with six pose dimensions $a_{p,t}$ and one gripper dimension $a_{g,t}$. Relative outputs are operational-space-control deltas; absolute outputs encode matched future poses and gripper states in the absolute frame. Only pose commands are fused; the discrete open/close decision remains with the relative head.
 
 \begin{figure}[!t]
 \centering
@@ -98,14 +98,14 @@ Commands decompose as $a_t=[a_{p,t},a_{g,t}]$, with six pose dimensions $a_{p,t}
 \label{fig:architecture}
 \end{figure}
 
-We model successful end-effector trajectories as a manifold $\mathcal{M}_l\subset SE(3)$. Near this support, relative commands describe local tangent motion in $T_{p_t}\mathcal{M}_l$, while absolute waypoints reference global coordinates on $\mathcal{M}_l$. After a deviation, a relative command continues from the displaced pose, whereas an absolute waypoint supplies a persistent target toward demonstrated behavior. Their transported predictions should align in-domain; OOD execution can expose inconsistency between local continuation and the global reference. This geometric interpretation motivates detection without guaranteeing it.
+We model successful end-effector trajectories as a manifold $\mathcal{M}_l\subset SE(3)$. Near it, relative commands describe local tangent motion in $T_{p_t}\mathcal{M}_l$, while absolute waypoints reference global coordinates on $\mathcal{M}_l$. After a deviation, the relative head continues from the displaced pose, whereas the absolute head preserves a demonstrated target. Transporting that waypoint to the live pose makes the predictions comparable: they align when local continuation agrees with the reference and can separate off-support. This interpretation motivates detection but does not imply that every failure produces disagreement.
 
-Both heads share a VLM encoder (Fig.~\ref{fig:architecture}). The relative head attends to its full hidden sequence and receives $s_t$ through a state encoder. The absolute head excludes explicit proprioception and state tokens from conditioning, preserving an observation-conditioned reference. State tokens, when present, follow visual-language tokens in the causal encoder and are omitted from absolute-branch pooling.
+Both heads share a VLM encoder (Fig.~\ref{fig:architecture}) but use asymmetric conditioning. The relative head attends to the full hidden sequence and receives $s_t$ through a state encoder. The absolute head excludes explicit proprioception; state tokens follow visual-language tokens in the causal encoder and are omitted from its pooling. This prevents the live pose from being copied into the reference while preserving shared task semantics.
 
 \subsection{Disagreement-Preserving Learning}
-Successful demonstrations supply paired delta actions and normalized future states; no failure labels or human takeover actions are required. We optimize a weighted sum of the two flow-matching losses \cite{pi0} and an RVQ commitment loss, without cross-head consistency supervision that could suppress detection evidence. RVQ quantizes pooled state-free visual-language features into a discrete condition atlas learned from demonstrations, anchoring absolute predictions \cite{vqvae,rvq}; its residual is retained only as auxiliary telemetry.
+Each successful demonstration supplies synchronized delta actions and normalized future poses, so the heads learn the same chunk in different coordinates without failure labels or takeover actions. We optimize their flow-matching losses \cite{pi0} with an RVQ commitment loss, but omit cross-head consistency supervision that could suppress later detection evidence. RVQ quantizes pooled state-free visual-language features into a discrete atlas of demonstrated task phases, anchoring absolute predictions to successful behavior \cite{vqvae,rvq}; its residual is retained only as auxiliary telemetry.
 
-Asymmetric augmentation trains the absolute head and RVQ on clean and perturbed observations, but computes relative-head loss only on clean samples, encouraging a robust reference and deviation-sensitive local control. For classifier-free guidance (CFG) \cite{cfg}, condition dropout replaces absolute-head conditions with learned null tokens to learn conditional and marginal waypoint flows.
+Asymmetric augmentation preserves this division of labor. The absolute head and RVQ see clean and perturbed observations, making the reference robust to visual corruption; relative-head loss is computed only on clean samples, keeping local control tied to demonstrations and deviations visible as mismatch. For classifier-free guidance (CFG) \cite{cfg}, condition dropout replaces absolute-head conditions with learned null tokens to learn conditional and marginal waypoint flows.
 
 \subsection{Endogenous OOD Detection and Retry}
 Both branches are unnormalized before comparison in the tangent coordinates of the live pose. For live pose $p_t=(x_t,R_t)$ and predicted waypoint $\hat{w}_{p,t}=(\hat{x}_t,\hat{R}_t)$, the waypoint-induced retry direction is
@@ -123,14 +123,14 @@ where $\operatorname{Log}$ denotes the three-vector rotation logarithm and $\sig
     \operatorname{clip}(\hat{\delta a}_{p,t},-1,1)\right\|_2}{\sqrt{6}}.
     \label{eq:disagreement}
 \end{equation}
-Here $D_t$ supplies scalar detection evidence, while $c_t$ supplies a six-dimensional retry direction. The auxiliary $S_t$ averages coordinatewise distances outside the training pose bounds, normalized by each coordinate's training range. The control score $q_t$ and fusion weight are
+The comparison produces both quantities needed for retry: $D_t$ is scalar detection evidence, while $c_t$ is its six-dimensional correction direction. The auxiliary $S_t$ averages coordinatewise distances outside the training pose bounds, normalized by each coordinate's training range. The control score $q_t$ and fusion weight are
 \begin{equation}
 \begin{aligned}
     q_t &= D_t + \lambda S_t, \\
     \alpha_t &= \sigma(k(q_t-\tau)).
 \end{aligned}
 \end{equation}
-Here $\sigma$ is the sigmoid, $k$ its slope, and $\tau$ the switching threshold; $\lambda$ weights state distance. The executed command is
+Here $\sigma$ is the sigmoid, $k$ its slope, $\tau$ the switching threshold, and $\lambda$ the state-distance weight. Low $q_t$ preserves relative control; rising inconsistency smoothly increases the absolute correction. The executed command is
 \begin{equation}
 \begin{aligned}
     a_{p,t} &= (1-\alpha_t)\hat{\delta a}_{p,t} + \alpha_t c_t, \\
@@ -138,7 +138,7 @@ Here $\sigma$ is the sigmoid, $k$ its slope, and $\tau$ the switching threshold;
 \end{aligned}
     \label{eq:fused_action}
 \end{equation}
-CFG strength follows $w_t=w_{\max}-(w_{\max}-w_{\min})\alpha_{t-1}$ for the next chunk. When the original trajectory remains feasible, rising disagreement shifts control toward $c_t$ for retry, and realignment restores relative execution.
+CFG strength follows $w_t=w_{\max}-(w_{\max}-w_{\min})\alpha_{t-1}$ for the next chunk. When the trajectory remains feasible, rising disagreement shifts control toward $c_t$ for retry; realignment lowers the gate and restores relative execution. The same signal therefore invokes and terminates correction.
 
 \section{EXPERIMENTS}
 
@@ -187,7 +187,7 @@ We organize the experiments around three questions:
     \item[\textbf{(Q2)}] \textbf{Nominal execution:} Does the dual-action mechanism preserve normal task execution?
     \item[\textbf{(Q3)}] \textbf{Failure-aware retry:} When an OOD deviation remains recoverable, can DUET use its detected inconsistency to re-enter successful behavior and complete the task?
 \end{itemize}
-We evaluate these questions with matched LIBERO experiments, controlled execution disturbances, detector-score analysis, component ablations, and a real-robot protocol. Detector quality, nominal task success, and closed-loop retry success are reported separately.
+We use matched LIBERO trials, controlled disturbances, detector analysis, component ablations, and a real-robot protocol, reporting detection, nominal success, and closed-loop retry separately.
 
 \subsection{Evaluation Protocol}
 We evaluate on four LIBERO suites \cite{libero}---Spatial, Object, Goal, and LIBERO-10---with $10$ tasks and $50$ initial states per task ($500$ episodes per suite). Three methods are compared:
@@ -196,9 +196,9 @@ We evaluate on four LIBERO suites \cite{libero}---Spatial, Object, Goal, and LIB
     \item \emph{DUET-Rel}: relative head of the dual-action checkpoint with $\alpha_t{=}0$ (isolates co-training from fusion).
     \item \emph{DUET}: full adaptive controller (Eq.~\eqref{eq:fused_action}).
 \end{itemize}
-StarVLA $\to$ DUET-Rel measures co-training; DUET-Rel $\to$ DUET isolates the retry mechanism. Architecture, data, task, initial state, and perturbation are held fixed within each pair. Simulation uses StarVLA as the backbone; real-robot experiments (\S\ref{sec:real_robot}) switch to $\pi_0$ (OpenPi) \cite{pi0}, testing cross-backbone transfer with identical module design and fusion logic.
+StarVLA $\to$ DUET-Rel measures co-training; DUET-Rel $\to$ DUET isolates retry. Within each pair, architecture, data, task, initial state, and perturbation are fixed. Simulation uses StarVLA; the Franka study (\S\ref{sec:real_robot}) uses a separately trained $\pi_0$ (OpenPi) \cite{pi0} with the same module and fusion logic, testing cross-backbone applicability rather than zero-shot transfer.
 
-Perturbations are scheduled at a fixed policy step with deterministic seeds. DUET and DUET-Rel are paired by identical $(\mathrm{task},\mathrm{initial\ state})$ keys; we report closed-loop task success with McNemar $p$-values. When a perturbation has a semantic precondition (e.g., grasp drop requires a held object), we report injection coverage and retain uninjected episodes. Table~\ref{tab:ood_taxonomy} maps each protocol to the failure types in the introduction; we do not pool heterogeneous disturbances into a single average.
+Perturbations use a fixed policy step and deterministic seeds. DUET and DUET-Rel share $(\mathrm{task},\mathrm{initial\ state})$ keys; paired success is assessed with McNemar $p$-values. For semantic preconditions (e.g., grasp drop requires a held object), we report injection coverage and retain uninjected episodes. Table~\ref{tab:ood_taxonomy} maps protocols to failure types; heterogeneous disturbances are not pooled.
 
 \subsection{\textbf{(Q1)} Endogenous OOD Detection}
 \label{sec:detection}
@@ -388,6 +388,11 @@ DUET & --- & --- & ---\\
 \configframe{(f) D2: failure\\Image pending}
 \captionof{figure}{Two disturbance types (top), successful responses (middle), and failed responses (bottom). Columns correspond to D1 and D2; photographs will identify the method and actual outcome.}
 \label{fig:real_robot_mechanism}
+\par\vspace{2mm}
+\begin{minipage}{\linewidth}
+\normalsize
+Comparisons under D1 and D2 test whether DUET improves task completion after different disturbances. The clean condition tests nominal success. The shared-checkpoint comparison between DUET-Rel and DUET isolates the contribution of online fusion.
+\end{minipage}
 \end{minipage}
 \end{figure*}
 
@@ -486,8 +491,6 @@ DUET & --- & --- & ---\\
 \end{minipage}
 \end{figure*}
 \fi
-
-Comparisons under D1 and D2 test whether DUET improves task completion after different disturbances. The clean condition tests nominal success. The shared-checkpoint comparison between DUET-Rel and DUET isolates the contribution of online fusion.
 
 \subsection{Discussion}
 The simulation results establish the detector and fusion mechanism; the Franka protocol tests whether the same logic improves success under two physical disturbance types while preserving clean success. Qualitative images will illustrate successful and failed responses. The real-robot results remain pending.
