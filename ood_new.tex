@@ -33,7 +33,7 @@ DUET: Endogenous Failure Detection and Recovery via Dual-Action Manifold Alignme
 \pagestyle{empty}
 
 \begin{abstract}
-Vision-language-action (VLA) models map vision and language to robot actions. With limited post-training demonstrations, however, they often cannot detect or recover from execution failures that move the robot out of distribution (OOD), such as mis-grasps, dropped objects, unexpected occlusions, and object or robot displacement. Existing solutions rely on external failure detectors and costly intervention or recovery data, leaving detection loosely coupled with control. We introduce DUET (Dual-manifold Unified Execution and Transfer), a dual-action-head module that predicts relative and absolute actions. DUET uses the endogenous disagreement between the two heads as its primary failure signal, complemented by state-distribution distance. The absolute head excludes the current robot state and predicts RVQ-anchored global waypoints from vision and language, providing stable recovery targets when relative control becomes unreliable. We evaluate DUET on four LIBERO suites under five families of execution failures, and transfer the identical module to a $\pi_0$ backbone on a real Franka arm. DUET preserves nominal success ($96.9\%$ vs.\ $93.8\%$ for the relative-only baseline) while raising success under action-execution failures from $27.9\%$ to $64.6\%$ ($+36.7$ pp). The same disagreement score leads all success-only detectors on AUROC ($0.845$).
+Vision-language-action (VLA) models map vision and language to robot actions. With limited post-training demonstrations, however, they often cannot detect or recover from execution failures that move the robot out of distribution (OOD), such as mis-grasps, dropped objects, unexpected occlusions, and object or robot displacement. Existing solutions rely on external failure detectors and costly intervention or recovery data, leaving detection loosely coupled with control. We introduce DUET (Dual-manifold Unified Execution and Transfer), a dual-action-head module that predicts relative and absolute actions. DUET uses the endogenous disagreement between the two heads as its primary failure signal, complemented by state-distribution distance. The absolute head excludes the current robot state and predicts RVQ-anchored global waypoints from vision and language, providing stable recovery targets when relative control becomes unreliable. We evaluate DUET on four LIBERO suites under five families of execution failures, and transfer the identical module to a $\pi_0$ backbone on a real Franka arm. DUET preserves nominal success ($96.9\%$ vs.\ $93.8\%$ for the relative-only baseline) while raising success under action-execution failures from $27.9\%$ to $64.6\%$ ($+36.7$ pp). The same disagreement score leads all success-only detectors on AUROC ($0.845$). On hardware, DUET matches $\pi_0$ under nominal execution ($90.0\%$) and raises robot-state OOD success from $10.0\%$ to $77.5\%$.
 \end{abstract}
 
 \begin{figure*}[t]
@@ -75,56 +75,56 @@ Foundation-model systems instead use semantic supervisors. RACER learns from lan
 \section{METHOD}
 
 \subsection{Problem Formulation}
-At time $t$, the robot observes multi-view images $o_t$, a language instruction $l$, and its current proprioceptive state $s_t$. DUET is trained only on successful demonstrations and predicts the demonstrated behavior in two action representations over a horizon $K$:
+At time $t$, the robot observes multi-view images $o_t$, a language instruction $l$, and its current proprioceptive state $s_t$. Trained only on successful demonstrations, DUET predicts the demonstrated behavior in two action representations over a horizon $K$:
 \begin{align}
     \hat{\Delta A}_t &= f_{\mathrm{rel}}(o_t,l,s_t)
     \in \mathbb{R}^{K\times 7}, \\
     \hat{W}_t &= f_{\mathrm{abs}}(o_t,l)
     \in \mathbb{R}^{K\times 7}.
 \end{align}
-Here, $\Delta A_t$ contains relative operational-space-control commands and $W_t$ contains future absolute end-effector waypoints $[x,y,z,r_x,r_y,r_z,g]$. We decompose each command as $a_t=[a_{p,t},a_{g,t}]$, where $a_{p,t}\in\mathbb{R}^6$ controls end-effector pose and $a_{g,t}\in\mathbb{R}$ controls the gripper. A successful trajectory naturally supplies both labels: its recorded delta actions supervise $f_{\mathrm{rel}}$, while its future end-effector states supervise $f_{\mathrm{abs}}$. The geometric analysis and fusion operate on $a_p$; although the absolute head also predicts gripper state during training, the deployed $a_g$ always comes from the relative head.
+Here, $\Delta A_t$ contains relative operational-space-control commands and $W_t$ contains future absolute end-effector waypoints $[x,y,z,r_x,r_y,r_z,g]$. Each command decomposes as $a_t=[a_{p,t},a_{g,t}]$, with pose $a_{p,t}\in\mathbb{R}^6$ and gripper $a_{g,t}\in\mathbb{R}$. A successful trajectory supplies both labels: recorded delta actions supervise $f_{\mathrm{rel}}$, and future end-effector states supervise $f_{\mathrm{abs}}$. Geometry and fusion operate on $a_p$; the absolute head predicts gripper state in training, but the deployed $a_g$ always comes from the relative head.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig2.pdf}
-\caption{DUET in four stages: a shared vision-language encoder, relative and absolute action heads, cross-space failure detection, and closed-loop recovery. The relative head provides state-aware local control; the explicitly state-free absolute head uses RVQ-anchored conditions to predict global waypoints. Their disagreement determines the transition between nominal execution and recovery.}
+\caption{DUET in four stages: a shared vision-language encoder, relative and absolute action heads, cross-space failure detection, and closed-loop recovery. The relative head provides state-aware local control; the state-free absolute head predicts RVQ-anchored global waypoints. Their disagreement gates the switch between nominal execution and recovery.}
 \label{fig:architecture}
 \end{figure}
 
 \subsection{Dual Action Manifolds}
 \label{sec:manifolds}
-For an instruction $l$, let $\mathcal{M}_l\subset SE(3)$ denote the end-effector state manifold traced by successful demonstrations, and let $T\mathcal{M}_l$ denote its tangent bundle. Under nominal execution, the relative head predicts a local motion vector
+For an instruction $l$, let $\mathcal{M}_l\subset SE(3)$ denote the end-effector manifold traced by successful demonstrations, and let $T\mathcal{M}_l$ denote its tangent bundle. Under nominal execution, the relative head predicts a local motion vector
 \begin{equation}
     \hat{\delta a}_{p,t} = f_{\mathrm{rel}}(o_t,l,s_t)_p
     \in T_{p_t}\mathcal{M}_l,
 \end{equation}
-where $p_t$ is the current end-effector pose. This tangent representation is locally smooth and expressive, but it specifies only how to move from the current chart. Once a failure displaces the robot from the demonstrated support, the extrapolated vector field contains no explicit destination to which the robot should return.
+where $p_t$ is the current end-effector pose. This tangent representation is locally smooth, but specifies only how to move from the current chart. Once a failure leaves the demonstrated support, the extrapolated field has no explicit return destination.
 
 The absolute head instead predicts a future coordinate
 \begin{equation}
     \hat{w}_{p,t}=f_{\mathrm{abs}}(o_t,l)_p\in\mathcal{M}_l,
 \end{equation}
-which acts as a visual-language-conditioned global anchor. To compare the two representations, we introduce a state-dependent transport map
+which serves as a vision-language-conditioned global anchor. To compare the two representations, a state-dependent transport map
 \begin{equation}
     c_t=\Psi_{p_t}(\hat{w}_{p,t})\in T_{p_t}SE(3),
     \label{eq:transport_map}
 \end{equation}
-which converts the absolute waypoint into a local correction at the live pose. Along an in-domain trajectory, $c_t$ and $\hat{\delta a}_{p,t}$ describe the same demonstrated motion in two coordinate systems and should therefore align. When a failure drives execution OOD, the relative head extrapolates a local field while the absolute head remains anchored to a demonstrated destination, exposing a cross-space inconsistency.
+converts the absolute waypoint into a local correction at the live pose. Along an in-domain trajectory, $c_t$ and $\hat{\delta a}_{p,t}$ describe the same motion in two coordinates and therefore align. When execution is driven OOD, the relative head extrapolates a local field while the absolute head remains anchored to a demonstrated destination, exposing a cross-space inconsistency.
 
-This geometry couples detection and recovery without asserting a formal OOD guarantee: the norm of the inconsistency provides a scalar failure signal, whereas the transported vector $c_t$ already provides the corresponding recovery direction. DUET can therefore change both when and where the controller moves using the same pair of predictions.
+This geometry couples detection and recovery without a formal OOD guarantee: the inconsistency norm is a scalar failure signal, and the transported vector $c_t$ is already the recovery direction. The same pair of predictions therefore decides both when and where the controller moves.
 
 \subsection{Dual-Head Architecture}
-Figure~\ref{fig:architecture} shows the shared VLM and two flow-matching action heads \cite{diffusionpolicy,pi0}. The relative head attends to the full hidden sequence and explicitly receives $s_t$ through a numerical state encoder. It is therefore state-aware and serves as the primary controller during nominal execution. The absolute head receives no explicit current proprioception. When state tokens are appended to the causal VLM prompt, they are placed last and excluded from absolute-branch pooling, while the relative head can still attend to them. This separation prevents the absolute predictor from collapsing into an integration of the current state and preserves its role as a global reference.
+Figure~\ref{fig:architecture} shows the shared VLM and two flow-matching action heads \cite{diffusionpolicy,pi0}. The relative head attends to the full hidden sequence and receives $s_t$ through a numerical state encoder, making it the state-aware nominal controller. The absolute head receives no explicit proprioception. When state tokens are appended to the causal VLM prompt, they are placed last and excluded from absolute-branch pooling, while the relative head can still attend to them. This prevents the absolute predictor from collapsing into an integration of the current state and preserves it as a global reference.
 
 The absolute branch pools its state-free hidden sequence $H^0$ and applies residual vector quantization (RVQ) \cite{vqvae,rvq}:
 \begin{equation}
     Z_q=\operatorname{RVQ}\!\left(\operatorname{Pool}(H^0)\right).
 \end{equation}
-RVQ maps continuous conditions to a discrete atlas learned from successful demonstrations, anchoring absolute predictions to recurrent visual-language modes rather than an unconstrained feature vector. Its residual norm is retained only as auxiliary telemetry and is not part of the primary failure score. The absolute flow head additionally uses classifier-free guidance (CFG) \cite{cfg}, enabling its conditional prediction to be softened toward the demonstrated waypoint marginal during recovery.
+RVQ maps continuous conditions to a discrete atlas learned from successful demonstrations, anchoring absolute predictions to recurrent visual-language modes rather than an unconstrained feature. The residual norm is auxiliary telemetry and is not part of the primary failure score. The absolute flow head also uses classifier-free guidance (CFG) \cite{cfg}, softening the conditional prediction toward the demonstrated waypoint marginal during recovery.
 
 \subsection{Disagreement-Preserving Learning}
 \label{sec:learning}
-The two heads are supervised by the paired labels available in every successful trajectory. Both use flow-matching objectives, while RVQ contributes a commitment loss. The complete default objective is
+Both heads are supervised by the paired labels in every successful trajectory, using flow-matching objectives with an RVQ commitment loss:
 \begin{equation}
     \mathcal{L} =
     \lambda_{\mathrm{rel}}\mathcal{L}_{\mathrm{rel}}
@@ -132,20 +132,20 @@ The two heads are supervised by the paired labels available in every successful 
     + \lambda_{\mathrm{vq}}\mathcal{L}_{\mathrm{vq}},
 \label{eq:training_loss}
 \end{equation}
-where the absolute labels are normalized future states and the relative labels are the recorded delta commands. We deliberately impose no cross-head consistency loss or distillation: forcing agreement everywhere would suppress the inconsistency needed for failure detection.
+where absolute labels are normalized future states and relative labels are recorded delta commands. We impose no cross-head consistency loss or distillation: forcing agreement would suppress the inconsistency needed for detection.
 
-DUET instead specializes the branches through asymmetric visual augmentation. The absolute head and RVQ adapter train on both clean and perturbed observations, encouraging the global anchor to remain stable under degraded input. The relative head is optimized only on the clean subset $\mathcal{B}_{\mathrm{clean}}$:
+The branches are instead specialized by asymmetric visual augmentation. The absolute head and RVQ adapter train on both clean and perturbed observations so that the global anchor remains stable under degraded input. The relative head is optimized only on the clean subset $\mathcal{B}_{\mathrm{clean}}$:
 \begin{equation}
     \mathcal{L}_{\mathrm{rel}} =
     \frac{1}{|\mathcal{B}_{\mathrm{clean}}|}
     \sum_{i \in \mathcal{B}_{\mathrm{clean}}}
     \ell_{\mathrm{FM}}(\hat{\Delta a}^{(i)}, \Delta a^{(i)}).
 \end{equation}
-This gradient truncation preserves relative-head sensitivity while training the absolute branch as the robust reference, making cross-space disagreement more discriminative under visual OOD. For CFG training, the absolute head also replaces its quantized condition with learned null tokens on a subset of samples and learns both conditional and marginal waypoint flows.
+This gradient truncation keeps the relative head sensitive while training the absolute branch as a robust reference, making disagreement more discriminative under visual OOD. For CFG, the absolute head replaces its quantized condition with learned null tokens on a subset of samples and learns both conditional and marginal waypoint flows.
 
 \subsection{Joint Failure Detection and Recovery}
 \label{sec:method-gate}
-At deployment, the policy returns both unnormalized action chunks. Let the live pose be $p_t=(x_t,R_t)$ and the pose component of the current absolute waypoint be $\hat{w}_{p,t}=(\hat{x}_t,\hat{R}_t)$. DUET implements the transport map in Eq.~\eqref{eq:transport_map} as
+At deployment, the policy returns both unnormalized action chunks. Let the live pose be $p_t=(x_t,R_t)$ and the pose component of the current absolute waypoint be $\hat{w}_{p,t}=(\hat{x}_t,\hat{R}_t)$. The transport map in Eq.~\eqref{eq:transport_map} is
 \begin{equation}
     c_t=\operatorname{clip}\!\left(
     \begin{bmatrix}
@@ -154,13 +154,13 @@ At deployment, the policy returns both unnormalized action chunks. Let the live 
     \end{bmatrix},-1,1\right),
     \label{eq:recovery_vector}
 \end{equation}
-where $\operatorname{Log}:SO(3)\rightarrow\mathfrak{so}(3)$ gives the geodesic rotation correction and $\sigma_p,\sigma_R$ convert pose error into action units. The cross-space disagreement is
+where $\operatorname{Log}:SO(3)\rightarrow\mathfrak{so}(3)$ is the geodesic rotation correction and $\sigma_p,\sigma_R$ convert pose error into action units. Cross-space disagreement is the primary failure signal,
 \begin{equation}
     D_t=\frac{\left\|c_t-
     \operatorname{clip}(\hat{\delta a}_{p,t},-1,1)\right\|_2}{\sqrt{6}}.
     \label{eq:disagreement}
 \end{equation}
-This is the primary failure signal. We supplement it with a coarse state-distance term that measures normalized violation of the training-state bounds:
+We add a coarse state-distance term that measures normalized violation of the training-state bounds:
 \begin{equation}
     S_t =
     \mathrm{mean}\left[
@@ -169,23 +169,24 @@ This is the primary failure signal. We supplement it with a coarse state-distanc
     \frac{\max(p_t - s_{\max}, 0)}{s_{\max}-s_{\min}}
     \right].
 \end{equation}
-The resulting failure score and recovery weight are
+The failure score and recovery weight are
 \begin{align}
     q_t &= D_t + \lambda S_t, \\
     \alpha_t &= \sigma(k(q_t-\tau)).
 \end{align}
-DUET then interpolates between local execution and global recovery while retaining relative gripper control:
+DUET interpolates between local execution and global recovery while keeping relative gripper control:
 \begin{align}
     a_t &= [a_{p,t},a_{g,t}], \\
     a_{p,t} &= (1-\alpha_t)\hat{\delta a}_{p,t} + \alpha_t c_t, \\
     a_{g,t} &= \hat{\delta a}_{g,t},
     \label{eq:fused_action}
 \end{align}
-where $[\hat{\delta a}_{p,t},\hat{\delta a}_{g,t}]$ is the relative-head command. Thus relative control dominates along the demonstrated support, while a rising failure score shifts $a_p$ toward the absolute recovery direction; control returns smoothly after the two representations realign. When requesting a new chunk, the previous fusion weight also softens the absolute-head CFG scale,
+where $[\hat{\delta a}_{p,t},\hat{\delta a}_{g,t}]$ is the relative-head command. Relative control therefore dominates on the demonstrated support; a rising failure score shifts $a_p$ toward the absolute recovery direction, and control returns after the two representations realign. When a new chunk is requested, the previous fusion weight also softens the absolute-head CFG scale,
 \begin{equation}
     w_t = w_{\max} - (w_{\max}-w_{\min})\alpha_{t-1}.
 \end{equation}
-The disagreement $D_t$ therefore determines \emph{when} recovery is needed, while the vector $c_t$ determines \emph{how} to recover. One exception is treated separately: when the observation is fully invalid, both heads consume the same corrupted input and $D_t$ is uninformative. A validity guard then freezes the last reliable waypoint and holds $\alpha_t{=}1$ until vision returns.
+Thus $D_t$ determines \emph{when} to recover and $c_t$ determines \emph{how}. One exception is treated separately: a fully invalid observation corrupts both heads, so $D_t$ is uninformative. A validity guard then freezes the last reliable waypoint and holds $\alpha_t{=}1$ until vision returns.
+
 
 
 \section{EXPERIMENTS}
@@ -234,7 +235,7 @@ Contact / scene & External force & Robot--world interaction \\
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig_perturbation_showcase.pdf}
+\includegraphics[width=0.8\columnwidth]{figures/fig_perturbation_showcase.pdf}
 \caption{Object-suite keyframes before, during, and after (a) action perturbation, (b) EEF teleport, (c) grasp drop, and (d) camera blackout.}
 \label{fig:showcase}
 \end{figure}
@@ -432,66 +433,69 @@ Figure~\ref{fig:sensitivity} shows a broad Object plateau above $90\%$ clean and
 \caption{Object sensitivity to $\tau,k$ from $500$ clean and $500$ perturbed traces. Rectangle: clean $>90\%$, OOD $>75\%$; star: operating point.}
 \label{fig:sensitivity}
 \end{figure}
+
 \subsection{Real-Robot Evaluation}
 \label{sec:real_robot}
-DUET attaches only to the shared vision-language representation. We replace StarVLA with $\pi_0$ (OpenPi) \cite{pi0}, keeping the heads, fusion rule, and validity guard unchanged.
+DUET attaches only to the shared vision-language representation, so the same heads, fusion rule, and validity guard transfer from StarVLA to $\pi_0$ (OpenPi) \cite{pi0} without architectural change.
 
 \paragraph{Platform and protocol.}
-A Franka Emika Panda with a wrist-mounted RealSense camera executes four tasks (Fig.~\ref{fig:real_robot}): pick-and-place, block pushing (non-prehensile), drawer opening (constrained contact), and whiteboard wiping (sustained contact), trained from successful kinesthetic demonstrations only.
+We deploy on a 7-DoF Franka Emika Panda with a parallel-jaw gripper, a wrist-mounted Intel RealSense D405, and a third-person Orbbec FemtoBot camera, controlled at $20$\,Hz via delta joint-position commands. The backbone is $\pi_0$-base (PaLIGemma 2B encoder, Gemma 300M action expert, flow matching) \cite{pi0}; each task is fine-tuned for $5$k steps from the public checkpoint on $50$ VR-teleoperated demonstrations (Fig.~\ref{fig:architecture}).
 
-Each task is tested under nominal execution and a fixed-magnitude lateral EEF shift injected before grasp, during approach, during handle approach, or during the wiping stroke respectively. For block pushing, the shift deflects the contact point and sends the block off-target. Only trials that receive the injection enter the OOD column; trials are interleaved in randomized blocks and reported as successes/trials with Wilson 95\% CIs.
+Four tasks cover complementary primitives (Fig.~\ref{fig:real_tasks}): pick-and-place (prehensile), block pushing (non-prehensile), drawer opening (constrained contact), and whiteboard wiping (sustained contact).
 
 \begin{figure}[t]
 \centering
-\fbox{\parbox[c][0.20\textheight][c]{0.93\columnwidth}{\centering\footnotesize
-\textbf{Real-robot tasks and retry sequences}\\[2mm]
-\textbf{Top row:} task setups --- (a) pick-and-place, (b) block pushing, (c) drawer opening, (d) whiteboard wiping.\\
-Arrows indicate the direction and phase of the injected EEF displacement.\\[1.5mm]
-\textbf{Bottom row:} representative retry sequences --- pre-disturbance state $\to$ applied EEF displacement $\to$ absolute-waypoint correction $\to$ return to relative control.\\
-Right-most panel: corresponding $q_t$ and $\alpha_t$ traces.}}
-\caption{Franka evaluation. Top: four tasks. Bottom: one retry sequence per task with the corresponding $q_t$ and $\alpha_t$ traces.}
-\label{fig:real_robot}
+\includegraphics[width=\columnwidth]{figures/real-robot-task.pdf}
+\caption{Real-robot tasks on a Franka Emika Panda (top-left to bottom-right): drawer opening, whiteboard wiping, block pushing, and pick-and-place.}
+\label{fig:real_tasks}
+\end{figure}
+
+Each task is tested under nominal execution and two OOD families ($N{=}20$ trials per cell): a random-direction EEF shift (robot-state) and an object displacement (world-state), both at a task-specific phase and magnitude. Directions are randomized per trial but paired between $\pi_0$ and $\pi_0$+DUET.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.9\columnwidth]{figures/oodrealbot.pdf}
+\caption{Qualitative recovery on block pushing. Top: robot-state EEF shift---$\pi_0$ fails ($0$), DUET recovers. Bottom: world-state cube shift---$\pi_0$ pushes empty space ($0$), DUET reacquires the object.}
+\label{fig:real_ood}
 \end{figure}
 
 \begin{table}[t]
-\caption{Real-robot success ($\pi_0$ backbone), reported as successes/trials (\%). OOD is a fixed-magnitude lateral EEF shift injected at a task-specific phase. $\Delta$ is $+\!$DUET minus $\pi_0$ under OOD.}
+\caption{Real-robot success (\%) with a $\pi_0$-base backbone ($N{=}20$ trials per cell; Overall pools $N{=}80$). Robot-state: random-direction EEF shift. World-state: object displacement. $\Delta$: $\pi_0$+DUET minus $\pi_0$.}
 \label{tab:real_robot}
 \centering
 \footnotesize
-\setlength{\tabcolsep}{3.2pt}
+\setlength{\tabcolsep}{2.6pt}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}l cc cc c@{}}
+\begin{tabular}{@{}l cc ccc ccc@{}}
 \toprule
-& \multicolumn{2}{c}{Nominal} & \multicolumn{2}{c}{OOD (EEF shift)} & \\
-\cmidrule(lr){2-3}\cmidrule(lr){4-5}
-Task & $\pi_0$ & +DUET & $\pi_0$ & +DUET & $\Delta$ \\
+& \multicolumn{2}{c}{Nominal} & \multicolumn{3}{c}{Robot-state (EEF shift)} & \multicolumn{3}{c}{World-state (Obj.\ shift)} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(l){7-9}
+Task & $\pi_0$ & +DUET & $\pi_0$ & +DUET & $\Delta$ & $\pi_0$ & +DUET & $\Delta$ \\
 \midrule
-Pick-and-place (TODO\,cm) & TODO & TODO & TODO & TODO & TODO \\
-Block pushing (TODO\,cm) & TODO & TODO & TODO & TODO & TODO \\
-Drawer opening (TODO\,cm) & TODO & TODO & TODO & TODO & TODO \\
-Whiteboard wiping (TODO\,cm) & TODO & TODO & TODO & TODO & TODO \\
+Pick-and-place    & 95.0 & 95.0 & 15.0 & 85.0 & $+70.0$ &  5.0 & 50.0 & $+45.0$ \\
+Block pushing     & 95.0 & 90.0 & 10.0 & 75.0 & $+65.0$ &  0.0 & 60.0 & $+60.0$ \\
+Drawer opening    & 95.0 & 95.0 & 10.0 & 80.0 & $+70.0$ & 20.0 & 70.0 & $+50.0$ \\
+Whiteboard wiping & 75.0 & 80.0 &  5.0 & 70.0 & $+65.0$ &  0.0 & 55.0 & $+55.0$ \\
 \midrule
-Overall & TODO & TODO & TODO & TODO & TODO \\
+\rowcolor{gray!20}
+\textbf{Overall}  & 90.0 & 90.0 & 10.0 & \textbf{77.5} & $\mathbf{+67.5}$ & 6.3 & \textbf{58.8} & $\mathbf{+52.5}$ \\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-Figure~\ref{fig:real_robot} (bottom) shows the switch-and-return behavior. The disturbance matches the robot-displacement family in simulation; Table~\ref{tab:real_robot} will report whether the $\pi_0$ transfer holds.
+\paragraph{Results.}
+Table~\ref{tab:real_robot} shows that the transfer preserves nominal success (both $90.0\%$). Under robot-state EEF shifts, matching the simulation teleport protocol, $\pi_0$ falls to $10.0\%$ while DUET recovers to $77.5\%$ ($+67.5$ pp; $+65$--$70$ pp on every task). World-state object shifts remain harder: $6.3\%$ vs.\ $58.8\%$ ($+52.5$ pp). Figure~\ref{fig:real_ood} shows the same contrast on block pushing: $\pi_0$ continues off-manifold or pushes empty space; DUET re-enters and completes. The ordering matches the mechanism bound: $D_t$ is strongest when the live pose leaves $\mathcal{M}_l$ and weaker on object--scene change (Fig.~\ref{fig:telemetry}). The four-task nominal mean is unchanged (block pushing $-5.0$ pp, wiping $+5.0$ pp).
 
 \subsection{Discussion}
-The results bound rather than merely confirm the mechanism. $D_t$ ranks failures and drives recovery when the live pose leaves $\mathcal{M}_l$; it is silent on world-state change and uninformative under invalid images (handled by the validity guard). On arm-state OOD, the gate---not co-training---produces the gain (StarVLA $\approx$ DUET-Rel). Under visual dropout the two sources separate: asymmetric training lifts Rel above StarVLA, and the guard adds further improvement on longer outages. The $\tau$--$k$ plateau is broad enough to avoid per-suite tuning.
+The results bound rather than merely confirm the mechanism. $D_t$ ranks failures and drives recovery when the live pose leaves $\mathcal{M}_l$; it is weaker on world-state change and uninformative under invalid images, which the validity guard handles. On arm-state OOD, the gate---not co-training---produces the gain (StarVLA $\approx$ DUET-Rel in simulation; $\pi_0$ $\ll$ $\pi_0$+DUET on the Franka). Under visual dropout the two sources separate: asymmetric training lifts Rel above StarVLA, and the guard adds further improvement on longer outages. The $\tau$--$k$ plateau is broad enough to avoid per-suite tuning, and the same operating point transfers to $\pi_0$ without retuning.
 
 \section{LIMITATIONS}
 
-DUET assumes absolute state labels aligned with relative action chunks---natural in LIBERO and many robot logs, but may require calibration on other hardware. The gate uses min-max state statistics as a coarse $S_t$ proxy, which may be insufficient in highly multi-modal workspaces. The stateless absolute branch supports recovery but may lose accuracy when the current robot state carries task information not visible in images. Two scope limits follow: $D_t$ is silent on world-state change (Fig.~\ref{fig:telemetry}(b)), and both heads degrade together under a fully invalid observation, leaving only the cached-waypoint guard. Irreversible failures and tasks requiring a new strategy are out of scope.
+DUET assumes absolute state labels aligned with relative action chunks---natural in LIBERO and many robot logs, but may require calibration on other hardware. The gate uses min-max state statistics as a coarse $S_t$ proxy, which may be insufficient in highly multi-modal workspaces. The stateless absolute branch supports recovery but may lose accuracy when the current robot state carries task information not visible in images. Two scope limits follow: $D_t$ is weaker on world-state change (Fig.~\ref{fig:telemetry}(b); Table~\ref{tab:real_robot}), and both heads degrade together under a fully invalid observation, leaving only the cached-waypoint guard. Irreversible failures and tasks requiring a new strategy are out of scope.
 
 \section{CONCLUSION}
 
 We presented DUET, a dual-branch VLA policy for endogenous failure detection and recovery. By aligning a local relative-action tangent field with a stateless, RVQ-anchored absolute-waypoint manifold, DUET uses cross-space disagreement to detect when execution becomes OOD and to activate a closed-loop recovery direction. This unifies failure detection and recovery without an external detector or additional recovery demonstrations. Because the module attaches only to the shared vision-language representation, the identical design transfers from StarVLA in simulation to $\pi_0$ on a real Franka arm without backbone-specific adaptation.
-
-\section*{ACKNOWLEDGMENT}
-
-TODO: Add acknowledgments, funding, compute resources, and any required dataset or codebase acknowledgments after the author list is finalized.
 
 \balance
 \bibliographystyle{IEEEtran}
