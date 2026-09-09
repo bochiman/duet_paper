@@ -34,13 +34,16 @@
 \citation{vqvae}
 \citation{rvq}
 \citation{cfg}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces DUET in four stages: a shared vision-language encoder, relative and absolute action heads, cross-space failure detection, and closed-loop recovery. The relative head provides state-aware local control; the explicitly state-free absolute head uses RVQ-anchored conditions to predict global waypoints. Their disagreement determines the transition between nominal execution and recovery.}}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces DUET in four stages: a shared vision-language encoder, relative and absolute action heads, cross-space failure detection, and closed-loop recovery. The relative head provides state-aware local control; the state-free absolute head predicts RVQ-anchored global waypoints. Their disagreement gates the switch between nominal execution and recovery.}}{3}{}\protected@file@percent }
 \newlabel{fig:architecture}{{2}{3}{}{figure.2}{}}
 \newlabel{eq:transport_map}{{5}{3}{}{equation.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-C}Dual-Head Architecture}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-D}Disagreement-Preserving Learning}{3}{}\protected@file@percent }
 \newlabel{sec:learning}{{III-D}{3}{}{subsection.3.4}{}}
 \newlabel{eq:training_loss}{{7}{3}{}{equation.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-E}Joint Failure Detection and Recovery}{3}{}\protected@file@percent }
+\newlabel{sec:method-gate}{{III-E}{3}{}{subsection.3.5}{}}
+\newlabel{eq:recovery_vector}{{9}{3}{}{equation.9}{}}
 \citation{libero}
 \citation{starvla}
 \citation{faildetect}
@@ -50,60 +53,59 @@
 \citation{faildetect}
 \citation{faildetect}
 \citation{sentinel}
-\@writefile{toc}{\contentsline {subsection}{\numberline {III-E}Joint Failure Detection and Recovery}{4}{}\protected@file@percent }
-\newlabel{sec:method-gate}{{III-E}{4}{}{subsection.3.5}{}}
-\newlabel{eq:recovery_vector}{{9}{4}{}{equation.9}{}}
 \newlabel{eq:disagreement}{{10}{4}{}{equation.10}{}}
 \newlabel{eq:fused_action}{{16}{4}{}{equation.16}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Execution-failure families and the quantity driven out of distribution.}}{4}{}\protected@file@percent }
-\newlabel{tab:taxonomy}{{I}{4}{}{table.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {IV}EXPERIMENTS}{4}{}\protected@file@percent }
 \newlabel{sec:experiments}{{IV}{4}{}{section.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-A}Evaluation Protocol}{4}{}\protected@file@percent }
 \newlabel{sec:protocol}{{IV-A}{4}{}{subsection.4.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Execution-failure families and the quantity driven out of distribution.}}{4}{}\protected@file@percent }
+\newlabel{tab:taxonomy}{{I}{4}{}{table.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Object-suite keyframes before, during, and after (a) action perturbation, (b) EEF teleport, (c) grasp drop, and (d) camera blackout.}}{4}{}\protected@file@percent }
+\newlabel{fig:showcase}{{3}{4}{}{figure.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}\textbf  {(Q1)} Endogenous OOD Detection}{4}{}\protected@file@percent }
 \newlabel{sec:detection}{{IV-B}{4}{}{subsection.4.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Failure detection under matched protocols. All metrics are higher-is-better except delay; bold marks the best value per column.}}{5}{}\protected@file@percent }
 \newlabel{tab:detection}{{II}{5}{}{table.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Object-suite keyframes before, during, and after (a) action perturbation, (b) EEF teleport, (c) grasp drop, and (d) camera blackout.}}{5}{}\protected@file@percent }
-\newlabel{fig:showcase}{{3}{5}{}{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Nominal LIBERO success (\%). External rows are context; StarVLA-GR00T uses joint $30$k training and DUET uses suite-specific $10$k checkpoints.}}{5}{}\protected@file@percent }
+\newlabel{tab:nominal}{{III}{5}{}{table.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-C}\textbf  {(Q2)} Nominal Execution}{5}{}\protected@file@percent }
 \newlabel{sec:nominal}{{IV-C}{5}{}{subsection.4.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-D}\textbf  {(Q3)} Failure-Aware Retry}{5}{}\protected@file@percent }
 \newlabel{sec:retry}{{IV-D}{5}{}{subsection.4.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Nominal LIBERO success (\%). External rows are context; StarVLA-GR00T uses joint $30$k training and DUET uses suite-specific $10$k checkpoints.}}{5}{}\protected@file@percent }
-\newlabel{tab:nominal}{{III}{5}{}{table.3}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Paired DUET-Rel$\to $DUET success gain by family.}}{5}{}\protected@file@percent }
 \newlabel{fig:overall}{{4}{5}{}{figure.4}{}}
 \@writefile{toc}{\contentsline {paragraph}{\numberline {IV-D.0.a}Mechanism evidence.}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-E}Ablations}{5}{}\protected@file@percent }
+\newlabel{sec:ablations}{{IV-E}{5}{}{subsection.4.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-E.0.a}Fusion on clean trajectories.}{5}{}\protected@file@percent }
+\citation{pi0}
 \citation{pi0}
 \@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Closed-loop success (\%; $N{=}500$ per cell). Overall combines medium$+$severe across suites. Rel$\to $DUET has McNemar $p{<}10^{-3}$ except teleport/Spatial ($p{=}0.21/0.067$) and blackout/Object medium.}}{6}{}\protected@file@percent }
 \newlabel{tab:ood_detailed}{{IV}{6}{}{table.4}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces $D_t$ and $\alpha _t$ on Object, aligned to injection (mean, pointwise 95\% CI): arm-state OOD (a,c), world-state change (b), and validity-guard override (d).}}{6}{}\protected@file@percent }
 \newlabel{fig:telemetry}{{5}{6}{}{figure.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-E.0.b}Sensitivity to $\tau $ and $k$.}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-F}Real-Robot Evaluation}{6}{}\protected@file@percent }
+\newlabel{sec:real_robot}{{IV-F}{6}{}{subsection.4.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-F.0.a}Platform and protocol.}{6}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Object EEF teleport (medium, step $39$; $n{=}484$--$498$). Left: distance to the clean-trajectory reference after injection. Right: re-entry and final task success.}}{6}{}\protected@file@percent }
 \newlabel{fig:manifold}{{6}{6}{}{figure.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {IV-E}Ablations}{6}{}\protected@file@percent }
-\newlabel{sec:ablations}{{IV-E}{6}{}{subsection.4.5}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-E.0.a}Fusion on clean trajectories.}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-E.0.b}Sensitivity to $\tau $ and $k$.}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-F.0.b}Results.}{6}{}\protected@file@percent }
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{rt2}{1}
 \@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Fusion ablations, success (\%). Four-suite rows use $N{=}2000/2000/4000$; static gates use matched Object protocols ($N{=}500$).}}{7}{}\protected@file@percent }
 \newlabel{tab:main_results}{{V}{7}{}{table.5}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Component ablations, success (\%). CFG uses Object ($N{=}500$); retrains use LIBERO-10 ($N{=}500/500/1000$).}}{7}{}\protected@file@percent }
 \newlabel{tab:ablations}{{VI}{7}{}{table.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {IV-F}Real-Robot Evaluation}{7}{}\protected@file@percent }
-\newlabel{sec:real_robot}{{IV-F}{7}{}{subsection.4.6}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-F.0.a}Platform and protocol.}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-G}Discussion}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}LIMITATIONS}{7}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Object sensitivity to $\tau ,k$ from $500$ clean and $500$ perturbed traces. Rectangle: clean $>90\%$, OOD $>75\%$; star: operating point.}}{7}{}\protected@file@percent }
 \newlabel{fig:sensitivity}{{7}{7}{}{figure.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Franka evaluation. Top: four tasks. Bottom: one retry sequence per task with the corresponding $q_t$ and $\alpha _t$ traces.}}{7}{}\protected@file@percent }
-\newlabel{fig:real_robot}{{8}{7}{}{figure.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}LIMITATIONS}{7}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Real-robot tasks on a Franka Emika Panda (top-left to bottom-right): drawer opening, whiteboard wiping, block pushing, and pick-and-place.}}{7}{}\protected@file@percent }
+\newlabel{fig:real_tasks}{{8}{7}{}{figure.8}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {VI}CONCLUSION}{7}{}\protected@file@percent }
-\bibstyle{IEEEtran}
-\bibdata{references}
-\bibcite{rt2}{1}
 \bibcite{openvla}{2}
 \bibcite{starvla}{3}
 \bibcite{faildetect}{4}
@@ -125,7 +127,9 @@
 \bibcite{cfg}{20}
 \bibcite{libero}{21}
 \bibcite{rnd}{22}
-\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Real-robot success ($\pi _0$ backbone), reported as successes/trials (\%). OOD is a fixed-magnitude lateral EEF shift injected at a task-specific phase. $\Delta $ is $+\!$DUET minus $\pi _0$ under OOD.}}{8}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Qualitative recovery on block pushing. Top: robot-state EEF shift---$\pi _0$ fails ($0$), DUET recovers. Bottom: world-state cube shift---$\pi _0$ pushes empty space ($0$), DUET reacquires the object.}}{8}{}\protected@file@percent }
+\newlabel{fig:real_ood}{{9}{8}{}{figure.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Real-robot success (\%) with a $\pi _0$-base backbone ($N{=}20$ trials per cell; Overall pools $N{=}80$). Robot-state: random-direction EEF shift. World-state: object displacement. $\Delta $: $\pi _0$+DUET minus $\pi _0$.}}{8}{}\protected@file@percent }
 \newlabel{tab:real_robot}{{VII}{8}{}{table.7}{}}
 \@writefile{toc}{\contentsline {section}{References}{8}{}\protected@file@percent }
 \gdef \@abspage@last{8}
