@@ -17,6 +17,7 @@
 \usepackage[table]{xcolor}
 \usepackage{url}
 \usepackage{balance}
+\usepackage{placeins}
 
 \title{\LARGE \bf
 DUET: Endogenous Failure Detection and Recovery via Dual-Action Manifold Alignment
@@ -452,14 +453,16 @@ Four tasks cover complementary primitives (Fig.~\ref{fig:real_tasks}): pick-and-
 
 Each task is tested under nominal execution and two OOD families ($N{=}20$ trials per cell): a random-direction EEF shift (robot-state) and an object displacement (world-state), both at a task-specific phase and magnitude. Directions are randomized per trial but paired between $\pi_0$ and $\pi_0$+DUET.
 
-\begin{figure}[t]
+% Keep Fig. 9 directly below Fig. 8 in the page-seven figure column.
+\begin{figure}[!t]
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/oodrealbot.pdf}
 \caption{Qualitative recovery on block pushing. Top: robot-state EEF shift---$\pi_0$ fails ($0$), DUET recovers. Bottom: world-state cube shift---$\pi_0$ pushes empty space ($0$), DUET reacquires the object.}
 \label{fig:real_ood}
 \end{figure}
 
-\begin{table}[t]
+% Anchor Table VII at the bottom of the page-seven left column.
+\begin{table}[!b]
 \caption{Real-robot success (\%) with a $\pi_0$-base backbone ($N{=}20$ trials per cell; Overall pools $N{=}80$). Robot-state: random-direction EEF shift. World-state: object displacement. $\Delta$: $\pi_0$+DUET minus $\pi_0$.}
 \label{tab:real_robot}
 \centering
@@ -489,6 +492,8 @@ Table~\ref{tab:real_robot} shows that the transfer preserves nominal success (bo
 \subsection{Discussion}
 The results bound rather than merely confirm the mechanism. $D_t$ ranks failures and drives recovery when the live pose leaves $\mathcal{M}_l$; it is weaker on world-state change and uninformative under invalid images, which the validity guard handles. On arm-state OOD, the gate---not co-training---produces the gain (StarVLA $\approx$ DUET-Rel in simulation; $\pi_0$ $\ll$ $\pi_0$+DUET on the Franka). Under visual dropout the two sources separate: asymmetric training lifts Rel above StarVLA, and the guard adds further improvement on longer outages. The $\tau$--$k$ plateau is broad enough to avoid per-suite tuning, and the same operating point transfers to $\pi_0$ without retuning.
 
+\FloatBarrier
+
 \section{LIMITATIONS}
 
 DUET assumes absolute state labels aligned with relative action chunks---natural in LIBERO and many robot logs, but may require calibration on other hardware. The gate uses min-max state statistics as a coarse $S_t$ proxy, which may be insufficient in highly multi-modal workspaces. The stateless absolute branch supports recovery but may lose accuracy when the current robot state carries task information not visible in images. Two scope limits follow: $D_t$ is weaker on world-state change (Fig.~\ref{fig:telemetry}(b); Table~\ref{tab:real_robot}), and both heads degrade together under a fully invalid observation, leaving only the cached-waypoint guard. Irreversible failures and tasks requiring a new strategy are out of scope.
@@ -496,10 +501,6 @@ DUET assumes absolute state labels aligned with relative action chunks---natural
 \section{CONCLUSION}
 
 We presented DUET, a dual-branch VLA policy for endogenous failure detection and recovery. By aligning a local relative-action tangent field with a stateless, RVQ-anchored absolute-waypoint manifold, DUET uses cross-space disagreement to detect when execution becomes OOD and to activate a closed-loop recovery direction. This unifies failure detection and recovery without an external detector or additional recovery demonstrations. Because the module attaches only to the shared vision-language representation, the identical design transfers from StarVLA in simulation to $\pi_0$ on a real Franka arm without backbone-specific adaptation.
-
-\section*{ACKNOWLEDGMENT}
-
-TODO: Add acknowledgments, funding, compute resources, and any required dataset or codebase acknowledgments after the author list is finalized.
 
 \balance
 \bibliographystyle{IEEEtran}
