@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex ood_new"] 1788861938.51134 "ood_new.aux" "ood_new.bbl" "ood_new" 1788861939.17523 0
+["bibtex ood_new"] 1789010672.42142 "ood_new.aux" "ood_new.bbl" "ood_new" 1789010673.30245 0
   "./IEEEtran.bst" 1783954723.48895 59246 7bf05f0abb22f315c81a40a033a648dd ""
   "./references.bib" 1788506902.43404 13481 f247889f9cbf62aecf22cc2896edeeac ""
-  "ood_new.aux" 1788861938.95875 9606 6df7e1a0306f4904ac33e890028d1b33 "pdflatex"
+  "ood_new.aux" 1789010673.04495 10071 35af71cb2c08d41338c85a665fdd1608 "pdflatex"
   (generated)
   "ood_new.bbl"
   "ood_new.blg"
   (rewritten before read)
-["pdflatex"] 1788861938.59523 "ood_new.tex" "ood_new.pdf" "ood_new" 1788861939.17538 0
+["pdflatex"] 1789010672.61625 "ood_new.tex" "ood_new.pdf" "ood_new" 1789010673.30265 0
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -100,6 +100,7 @@
   "/usr/local/texlive/2026/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def" 1761248321 30662 bfd6e864f4ffc5018b0e2b6260c3181c ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg" 1279039959 678 4792914a8f45be57bb98413425e4c7af ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/multirow/multirow.sty" 1731446765 6696 886c9f3087d0b973ed2c19aa79cb3023 ""
+  "/usr/local/texlive/2026/texmf-dist/tex/latex/placeins/placeins.sty" 1137110565 4087 636308456f60d2b31cbf97867db5708d ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/preprint/balance.sty" 1137110595 3366 d938ad2440edc1ea1c9042843580ec42 ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/psnfss/ot1ptm.fd" 1137110629 961 15056f4a61917ceed3a44e4ac11fcc52 ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/tools/array.sty" 1761946296 15651 9d7c62df82cb29a555c00550babfe364 ""
@@ -116,10 +117,12 @@
   "figures/fig_ood_overall_success.pdf" 1788858513.35665 24200 286a8dee249917b2a589736c510c01b8 ""
   "figures/fig_perturbation_showcase.pdf" 1788858513.35864 956325 c16fd4fd970589ca604ba6ae56c4cc69 ""
   "figures/fig_sensitivity_heatmap.pdf" 1788858513.35903 25337 d086f8ed08cee5d6d74e01bacbeaeec7 ""
+  "figures/oodrealbot.pdf" 1789007224.75405 1375749 68c0a8d34cef20bc2a174047c4cca776 ""
+  "figures/real-robot-task.pdf" 1789007224.75844 1883285 29950ce1c0d5b99059589e43e2775244 ""
   "ieeeconf.cls" 1783954723.4777 202167 7b37f8353df61c9733ed46143eff807a ""
-  "ood_new.aux" 1788861938.95875 9606 6df7e1a0306f4904ac33e890028d1b33 "pdflatex"
-  "ood_new.bbl" 1788861938.59357 6736 a88b0c543cd3b2e2e8941de0a6c83ff6 "bibtex ood_new"
-  "ood_new.tex" 1788861937.78627 37425 c8d83a42dbd1bc39d2046814adc8fa19 ""
+  "ood_new.aux" 1789010673.04495 10071 35af71cb2c08d41338c85a665fdd1608 "pdflatex"
+  "ood_new.bbl" 1789010672.61219 6736 a88b0c543cd3b2e2e8941de0a6c83ff6 "bibtex ood_new"
+  "ood_new.tex" 1789010671.5417 37890 b90f9525737e195aa47243055127bc88 ""
   (generated)
   "ood_new.aux"
   "ood_new.log"

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  8 SEP 2026 18:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.21)  10 SEP 2026 11:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -273,6 +273,9 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 Package: balance 1999/02/23 4.3 (PWD)
 \oldvsize=\dimen186
 )
+(/usr/local/texlive/2026/texmf-dist/tex/latex/placeins/placeins.sty
+Package: placeins 2005/04/18  v 2.2
+)
 (/usr/local/texlive/2026/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count305
@@ -280,20 +283,20 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 (./ood_new.aux)
 \openout1 = `ood_new.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
 
 (/usr/local/texlive/2026/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -317,13 +320,13 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Trying to load font information for U+msa on input line 31.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 32.
 
 
 (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 31.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 32.
 
 
 (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -332,7 +335,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <figures/fig1.pdf, id=1, 2303.60625pt x 828.09375pt>
 File: figures/fig1.pdf Graphic file (type pdf)
 <use figures/fig1.pdf>
-Package pdftex.def Info: figures/fig1.pdf  used on input line 41.
+Package pdftex.def Info: figures/fig1.pdf  used on input line 42.
 (pdftex.def)             Requested size: 485.65779pt x 174.57451pt.
  [1{/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/
 local/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc}
@@ -342,55 +345,60 @@ local/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc}
 <figures/fig2.pdf, id=14, 561.09625pt x 710.655pt>
 File: figures/fig2.pdf Graphic file (type pdf)
 <use figures/fig2.pdf>
-Package pdftex.def Info: figures/fig2.pdf  used on input line 89.
+Package pdftex.def Info: figures/fig2.pdf  used on input line 90.
 (pdftex.def)             Requested size: 245.71811pt x 311.20357pt.
- [2 <./figures/fig1.pdf>] [3 <./figures/fig2.pdf>]
-LaTeX Font Info:    Trying to load font information for U+euf on input line 157
+ [2 <./figures/fig1.pdf>]
+LaTeX Font Info:    Trying to load font information for U+euf on input line 158
 .
- (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/ueuf.fd
-File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
-)
-Underfull \vbox (badness 1210) has occurred while \output is active []
 
+(/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/ueuf.fd
+File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
+) [3 <./figures/fig2.pdf>]
 <figures/fig_perturbation_showcase.pdf, id=289, 240.66783pt x 275.62807pt>
 File: figures/fig_perturbation_showcase.pdf Graphic file (type pdf)
 <use figures/fig_perturbation_showcase.pdf>
 Package pdftex.def Info: figures/fig_perturbation_showcase.pdf  used on input l
-ine 237.
-(pdftex.def)             Requested size: 245.71811pt x 281.4229pt.
- [4]
-<figures/fig_ood_overall_success.pdf, id=295, 252.2223pt x 177.0615pt>
+ine 239.
+(pdftex.def)             Requested size: 196.57523pt x 225.13748pt.
+ [4 <./figures/fig_perturbation_showcase.pdf>]
+<figures/fig_ood_overall_success.pdf, id=341, 252.2223pt x 177.0615pt>
 File: figures/fig_ood_overall_success.pdf Graphic file (type pdf)
 <use figures/fig_ood_overall_success.pdf>
 Package pdftex.def Info: figures/fig_ood_overall_success.pdf  used on input lin
-e 344.
+e 346.
 (pdftex.def)             Requested size: 245.71811pt x 172.49509pt.
-
-[5 <./figures/fig_perturbation_showcase.pdf> <./figures/fig_ood_overall_success
-.pdf>]
-<figures/fig_ood_mechanism_grid.pdf, id=368, 252.2223pt x 184.28851pt>
+<figures/fig_ood_mechanism_grid.pdf, id=342, 252.2223pt x 184.28851pt>
 File: figures/fig_ood_mechanism_grid.pdf Graphic file (type pdf)
 <use figures/fig_ood_mechanism_grid.pdf>
 Package pdftex.def Info: figures/fig_ood_mechanism_grid.pdf  used on input line
- 354.
+ 356.
 (pdftex.def)             Requested size: 245.71811pt x 179.53575pt.
-<figures/fig_manifold_distance.pdf, id=369, 252.2223pt x 126.4725pt>
+<figures/fig_manifold_distance.pdf, id=343, 252.2223pt x 126.4725pt>
 File: figures/fig_manifold_distance.pdf Graphic file (type pdf)
 <use figures/fig_manifold_distance.pdf>
 Package pdftex.def Info: figures/fig_manifold_distance.pdf  used on input line 
-363.
+365.
 (pdftex.def)             Requested size: 245.71811pt x 123.2108pt.
+ [5 <./figures/fig_ood_overall_success.pdf>]
 <figures/fig_sensitivity_heatmap.pdf, id=370, 252.2223pt x 124.3044pt>
 File: figures/fig_sensitivity_heatmap.pdf Graphic file (type pdf)
 <use figures/fig_sensitivity_heatmap.pdf>
 Package pdftex.def Info: figures/fig_sensitivity_heatmap.pdf  used on input lin
-e 431.
+e 433.
 (pdftex.def)             Requested size: 245.71811pt x 121.0986pt.
-
-Underfull \vbox (badness 2608) has occurred while \output is active []
-
+<figures/real-robot-task.pdf, id=371, 722.7pt x 542.025pt>
+File: figures/real-robot-task.pdf Graphic file (type pdf)
+<use figures/real-robot-task.pdf>
+Package pdftex.def Info: figures/real-robot-task.pdf  used on input line 449.
+(pdftex.def)             Requested size: 245.71811pt x 184.28606pt.
+<figures/oodrealbot.pdf, id=372, 482.92921pt x 455.1403pt>
+File: figures/oodrealbot.pdf Graphic file (type pdf)
+<use figures/oodrealbot.pdf>
+Package pdftex.def Info: figures/oodrealbot.pdf  used on input line 459.
+(pdftex.def)             Requested size: 221.14479pt x 208.41563pt.
  [6 <./figures/fig_ood_mechanism_grid.pdf> <./figures/fig_manifold_distance.pdf
->] [7 <./figures/fig_sensitivity_heatmap.pdf>] (./ood_new.bbl
+>] [7 <./figures/fig_sensitivity_heatmap.pdf> <./figures/real-robot-task.pdf> <
+./figures/oodrealbot.pdf>] (./ood_new.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 41--44
 \OT1/ptm/m/n/8 language-action model de-vel-op-ing,'' $https : / / github . com
  / starVLA /
@@ -415,13 +423,13 @@ L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 4211 strings out of 467525
- 65056 string characters out of 5418982
- 519613 words of memory out of 5000000
- 33057 multiletter control sequences out of 15000+600000
+ 4254 strings out of 467525
+ 66237 string characters out of 5418982
+ 526107 words of memory out of 5000000
+ 33096 multiletter control sequences out of 15000+600000
  672866 words of font info for 131 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,12n,83p,1424b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,12n,83p,1555b,336s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb>
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
 /usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
@@ -446,10 +454,10 @@ t/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2026/texmf
 s/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/u
 rw/times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/u
 tmri8a.pfb>
-Output written on ood_new.pdf (8 pages, 5370036 bytes).
+Output written on ood_new.pdf (8 pages, 8624828 bytes).
 PDF statistics:
- 559 PDF objects out of 1000 (max. 8388607)
- 275 compressed objects within 3 object streams
+ 641 PDF objects out of 1000 (max. 8388607)
+ 306 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
- 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
