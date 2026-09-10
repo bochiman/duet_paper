@@ -1,0 +1,138 @@
+V. LIMITATIONS
+DUET assumes absolute state labels aligned with relative
+action chunks—natural in LIBERO and many robot logs, but
+possibly requiring calibration on other hardware. The gate
+uses min-max state statistics as a coarse St proxy, which
+may be insufficient in highly multimodal workspaces. The
+stateless absolute branch supports recovery but may lose
+accuracy when the current robot state carries task information
+not visible in images. Two further limits follow: Dt is weaker
+on world-state change (Fig. 5(b); Table VII), and both heads
+degrade together under a fully invalid observation, leaving
+only the cached-waypoint guard. Irreversible failures and
+tasks that require a new strategy are out of scope.
+VI. CONCLUSION
+We presented DUET, a dual-branch VLA for endogenous
+failure detection and recovery. Aligning a local relative-
+action tangent field with a stateless, RVQ-anchored absolute-
+waypoint manifold lets cross-space disagreement both detect
+OOD execution and activate a closed-loop recovery direction,
+without an external detector or additional recovery demon-
+strations. Because the module attaches only to the shared
+vision-language representation, the same design transfers
+from StarVLA in simulation to π0 on a real Franka arm.
+REFERENCES
+[1] M. J. Kim, K. Pertsch, S. Karamcheti, T. Xiao, A. Balakrishna,
+S. Nair, R. Rafailov, E. Foster, T. Lampe, P. Sanketi, Q. Vuong,
+T. Kollar, B. Burchfiel, R. Tedrake, D. Sadigh, C. Finn, and P. Liang,
+“OpenVLA: An open-source vision-language-action model,” arXiv
+preprint arXiv:2406.09246, 2024.
+[2] StarVLA Community, “StarVLA: A lego-like codebase for vision-
+language-action
+model
+developing,”
+https://github.com/starVLA/
+starVLA, 2026.
+[3] C. Xu, T. K. Nguyen, E. Dixon, C. Rodriguez, P. Miller, R. Lee,
+P. Shah, R. Ambrus, H. Nishimura, and M. Itkina, “Can we detect fail-
+ures without failure data? uncertainty-aware runtime failure detection
+for imitation learning policies,” in Proceedings of Robotics: Science
+and Systems, 2025.
+[4] S. Ross, G. Gordon, and D. Bagnell, “A reduction of imitation learning
+and structured prediction to no-regret online learning,” in Proceedings
+of the Fourteenth International Conference on Artificial Intelligence
+and Statistics, 2011.
+[5] H. Liu, S. Nasiriany, L. Zhang, Z. Bao, and Y. Zhu, “Robot learning
+on the job: Human-in-the-loop autonomy and learning during deploy-
+ment,” in Proceedings of Robotics: Science and Systems, 2023.
+[6] R. Hoque, A. Mandlekar, C. R. Garrett, K. Goldberg, and D. Fox, “In-
+tervenGen: Interventional data generation for robust and data-efficient
+robot imitation learning,” in IEEE/RSJ International Conference on
+Intelligent Robots and Systems, 2024, pp. 2840–2846.
+[7] S.-W. Lee, X. Kang, and Y.-L. Kuo, “Diff-DAgger: Uncertainty
+estimation with diffusion policy for robotic manipulation,” in IEEE
+International Conference on Robotics and Automation, 2025.
+[8] H. Liu, S. Dass, R. Mart´ın-Mart´ın, and Y. Zhu, “Model-based runtime
+monitoring with interactive imitation learning,” in 2024 IEEE Inter-
+national Conference on Robotics and Automation (ICRA), 2024, pp.
+4154–4161.
+[9] C. Agia, R. Sinha, J. Yang, Z. Cao, R. Antonova, M. Pavone, and
+J. Bohg, “Unpacking failure modes of generative policies: Runtime
+monitoring of consistency and progress,” in Proceedings of the Con-
+ference on Robot Learning, ser. Proceedings of Machine Learning
+Research, vol. 270, 2025, pp. 689–723.
+[10] R. R¨omer, A. Kobras, L. Worbis, and A. P. Schoellig, “Failure
+prediction at runtime for generative robot policies,” in Advances in
+Neural Information Processing Systems, 2025.
+[11] F. Seligmann, E. Gospodinov, E. U. Dincer, and G. Neumann, “VLA-
+FAIL: Efficient task failure detection for finetuned vision-language-
+action models,” arXiv preprint arXiv:2606.21386, 2026.
+[12] G. Zheng, S. Seenivasan, M. Johnson-Roberson, and W. Zhi, “Rewind-
+IL: Online failure detection and state respawning for imitation learn-
+ing,” arXiv preprint arXiv:2604.16683, 2026.
+[13] Q. Gu, Y. Ju, S. Sun, I. Gilitschenski, H. Nishimura, M. Itkina, and
+F. Shkurti, “SAFE: Multitask failure detection for vision-language-
+action models,” in Advances in Neural Information Processing Sys-
+tems, vol. 38, 2025.
+[14] J. Duan, W. Pumacay, N. Kumar, Y. R. Wang, S. Tian, W. Yuan,
+R. Krishna, D. Fox, A. Mandlekar, and Y. Guo, “AHA: A vision-
+language-model for detecting and reasoning over failures in robotic
+manipulation,” in International Conference on Learning Representa-
+tions, 2025.
+[15] J. Spencer, S. Choudhury, M. Barnes, M. Schmittle, M. Chiang, P. Ra-
+madge, and S. Srinivasa, “Learning from interventions: Human-robot
+interaction as both explicit and implicit feedback,” in Proceedings of
+Robotics: Science and Systems, 2020.
+[16] Y. Dai, J. Lee, N. Fazeli, and J. Chai, “RACER: Rich language-guided
+failure recovery policies for imitation learning,” in IEEE International
+Conference on Robotics and Automation, 2025, pp. 15 657–15 664.
+[17] H. Chen, Y. Yao, R. Liu, C. Liu, and J. Ichnowski, “Automating
+robot failure recovery using vision-language models with optimized
+prompts,” arXiv preprint arXiv:2409.03966, 2024.
+[18] Z. Lin, J. Duan, H. Fang, D. Fox, R. Krishna, C. Tan, and B. Wen,
+“FailSafe: Reasoning and recovery from failures in vision-language-
+action models,” arXiv preprint arXiv:2510.01642, 2025.
+[19] A. Reichlin, L. Marchetti, H. Yin, A. Ghadirzadeh, and D. Kragic,
+“Back to the manifold: Recovering from out-of-distribution states,” in
+IEEE/RSJ International Conference on Intelligent Robots and Systems,
+2022, pp. 8660–8666.
+[20] X. Gao, Y. Li, and N. Figueroa, “Out-of-distribution recovery with
+object-centric keypoint inverse policy for visuomotor imitation learn-
+ing,” in IEEE/RSJ International Conference on Intelligent Robots and
+Systems, 2025.
+[21] A. Razmjoo, S. Calinon, M. Gienger, and F. Zhang, “CCDP: Com-
+position of conditional diffusion policies with guided sampling,” in
+IEEE/RSJ International Conference on Intelligent Robots and Systems,
+2025, pp. 20 036–20 043.
+[22] H. Hao, S. N. Syed, J. Ichnowski, and J. Schneider, “FAR: Failure-
+aware retry for test-time recovery and continual policy improvement,”
+arXiv preprint arXiv:2607.01111, 2026.
+[23] E. Aljalbout, F. Frank, M. Karl, and P. van der Smagt, “On the role
+of the action space in robot manipulation learning and sim-to-real
+transfer,” IEEE Robotics and Automation Letters, vol. 9, no. 6, pp.
+5895–5902, 2024.
+[24] Y. Feng, J. Zheng, Z. Wang, D. Liu, J. Li, J. Pang, T. Wang, and
+X. Zhan, “Demystifying action space design for robotic manipulation
+policies,” arXiv preprint arXiv:2602.23408, 2026.
+[25] C. Chi, S. Feng, Y. Du, Z. Xu, E. Cousineau, B. Burchfiel, and S. Song,
+“Diffusion policy: Visuomotor policy learning via action diffusion,”
+The International Journal of Robotics Research, 2024.
+[26] K. Black, N. Brown, D. Driess, A. Esmail, M. Equi, C. Finn,
+N. Fusai, L. Groom, K. Hausman, B. Ichter, J. Jakubczak, T. Jones,
+A. Khazatsky, S. Levine, A. Li-Bell, Y. Lu, S. Nair, K. Pertsch, Q. V.
+Xu, F. Xia, and T. Xiao, “π0: A vision-language-action flow model
+for general robot control,” arXiv preprint arXiv:2410.24164, 2024.
+[27] A. van den Oord, O. Vinyals, and K. Kavukcuoglu, “Neural discrete
+representation learning,” in Advances in Neural Information Process-
+ing Systems, 2017.
+[28] N. Zeghidour, A. Luebs, A. Omran, J. Skoglund, and M. Tagliasac-
+chi, “Soundstream: An end-to-end neural audio codec,” IEEE/ACM
+Transactions on Audio, Speech, and Language Processing, 2022.
+[29] J. Ho and T. Salimans, “Classifier-free diffusion guidance,” arXiv
+preprint arXiv:2207.12598, 2022.
+[30] B. Liu, Y. Zhu, C. Gao, Y. Feng, Q. Liu, Y. Zhu, and P. Stone,
+“LIBERO: Benchmarking knowledge transfer for lifelong robot learn-
+ing,” in Advances in Neural Information Processing Systems, 2023.
+[31] Y. Burda, H. Edwards, A. Storkey, and O. Klimov, “Exploration by
+random network distillation,” in International Conference on Learning
+Representations, 2019.

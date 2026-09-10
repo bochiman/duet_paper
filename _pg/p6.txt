@@ -1,0 +1,171 @@
+t=0
+(a) Action
+Perturb.
+Before
+t=10
+10-step window
+During
+t=23
+After
+t=34
+(b) EEF
+Teleport
+t=39
+t=48
+t=62
+(c) Gripper
+Slip
+t=74
+15-step window
+t=90
+t=10
+(d) Camera
+Blackout
+t=22
+policy input
+blacked out
+15-step window
+t=38
+Fig. 3.
+Object-suite keyframes before, during, and after (a) action
+perturbation, (b) EEF teleport, (c) grasp drop, and (d) camera blackout.
+0
+25
+50
+75
+100
+Task success (%)
+Action execution
+med.+sev., N = 4000
+Robot displacement
+medium, N = 2000
+Occlusion (step 23)
+med.+sev., N = 4000
+Occlusion (step 15)
+medium, N = 2000
+Object / grasp drop
+medium, N = 500
+Contact / ext. force
+med.+sev., N = 4000
+Δ (pp)
+27.9
+64.6
++36.7
+40.0
+61.7
++21.7
+73.5
+90.8
++17.3
+83.4
+92.2
++8.8
+89.2
+95.2
++6.0
+92.22
+95.95+3.73
+DUET-Rel (αt = 0)
+DUET (adaptive αt)
+Fig. 4.
+Paired DUET-Rel→DUET success gain by family.
+D. (Q3) Endogenous OOD Detection
+Table IV isolates the signal that triggers recovery, compar-
+ing Dt with success-only detectors under matched protocols
+[3], [9]. Unlike these standalone scores, Dt is coupled to
+the transported correction ct: the same inconsistency both
+identifies a failure and determines a recovery direction.
+DUET attains the highest AUROC (0.845) and TPR
+(0.900). RND retains the highest TNR and logpZO the best
+short-window localization, so DUET does not dominate ev-
+ery threshold-specific criterion. Q3 still holds: disagreement
+provides the strongest ranking without failure labels, and
+uniquely supplies the correction used by the closed-loop
+0.0
+0.5
+1.0
+Normalized signal
+(a) EEF teleport
+(b) Grasp drop
+−10
+0
+10
+20
+30
+40
+Steps from injection
+0.0
+0.5
+1.0
+Normalized signal
+(c) Action perturbation
+−10
+0
+10
+20
+30
+40
+Steps from injection
+(d) Camera blackout
+Dt
+αt
+Fig. 5.
+Dt and αt on Object, aligned to injection (mean, pointwise
+95% CI): arm-state OOD (a,c), world-state change (b), and validity-guard
+override (d).
+0
+8
+16
+32
+Steps after injection
+2
+3
+4
+5
+6
+7
+d (cm)
+DUET-Rel (αt = 0)
+Absolute-only (αt = 1)
+DUET (adaptive)
+Rel.
+Abs.
+DUET
+0
+25
+50
+75
+100
+Rate (%)
+62
+100
+98
+34
+0
+75
+Re-entry
+Success
+Fig. 6. Object EEF teleport (medium, step 39; n=484–498). Left: distance
+to the clean-trajectory reference after injection. Right: re-entry and final task
+success.
+controller.
+E. Ablations
+Table V isolates the controller. Absolute-only control
+can point toward the demonstrated manifold but lacks the
+local precision needed to finish tasks. Fixed fusion harms
+nominal execution while still under-correcting disturbances.
+Only adaptive fusion is strong in both regimes, supporting
+a continuous switch between local execution and global
+recovery.
+Table VI isolates representation and training. Replacing
+RVQ with an unconstrained MLP collapses the absolute
+branch on LIBERO-10, so a discrete demonstrated-manifold
+anchor is essential in this configuration. Symmetric aug-
+mentation weakens both nominal and perturbed performance
+by reducing the intended specialization between a sensitive
+relative head and a robust absolute head. Removing adaptive
+CFG likewise produces large drops, particularly off distribu-
+tion.
+a) Fusion on clean trajectories.: Across 2,000 clean
+episodes, the mean fusion weight is αt=0.139, its 95th
+percentile is 0.339, and only 1.7% of steps exceed 0.5.

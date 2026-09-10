@@ -1,0 +1,82 @@
+Pick and Place
+Open the drawer
+Wipe the whiteboard
+Push the cube
+Fig. 8. Real-robot tasks on a Franka Emika Panda (top-left to bottom-right):
+drawer opening, whiteboard wiping, block pushing, and pick-and-place.
+Push
+Robot
+State
+OOD
+0
+DUET
+Shift
+World
+State
+OOD
+0
+DUET
+Fig. 9.
+Qualitative recovery on block pushing. Top: robot-state EEF shift—
+π0 fails (0), DUET recovers. Bottom: world-state cube shift—π0 pushes
+empty space (0), DUET reacquires the object.
+TABLE VII
+REAL-ROBOT SUCCESS (%) WITH A π0-BASE BACKBONE (N=20
+TRIALS PER CELL; OVERALL POOLS N=80). ROBOT-STATE:
+RANDOM-DIRECTION EEF SHIFT. WORLD-STATE: OBJECT
+DISPLACEMENT. ∆: π0+DUET MINUS π0.
+Nominal
+Robot-state (EEF shift) World-state (Obj. shift)
+Task
+π0
++DUET
+π0
++DUET
+∆
+π0
++DUET
+∆
+Pick-and-place
+95.0
+95.0
+15.0
+85.0
++70.0
+5.0
+50.0
++45.0
+Block pushing
+95.0
+90.0
+10.0
+75.0
++65.0
+0.0
+60.0
++60.0
+Drawer opening
+95.0
+95.0
+10.0
+80.0
++70.0
+20.0
+70.0
++50.0
+Whiteboard wiping 75.0
+80.0
+5.0
+70.0
++65.0
+0.0
+55.0
++55.0
+Overall
+90.0
+90.0
+10.0
+77.5
++67.5
+6.3
+58.8
++52.5

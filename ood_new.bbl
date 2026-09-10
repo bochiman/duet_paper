@@ -17,9 +17,6 @@
 \fi
 #2}}
 
-\bibitem{rt2}
-A.~Brohan, N.~Brown, J.~Carbajal, Y.~Chebotar, X.~Chen, K.~Choromanski, T.~Ding, D.~Driess, A.~Dubey, C.~Finn, P.~Florence, C.~Fu, M.~G. Arenas, K.~Gopalakrishnan, K.~Han, K.~Hausman, A.~Herzog, J.~Hsu, B.~Ichter, A.~Irpan, N.~Joshi, R.~Julian, D.~Kalashnikov, Y.~Kuang, I.~Leal, K.-H. Lee, S.~Levine, Y.~Lu, H.~Michalewski, I.~Mordatch, K.~Pertsch, K.~Rao, K.~Reymann, M.~Ryoo, G.~Salazar, P.~Sanketi, P.~Sermanet, J.~Singh, A.~Singh, R.~Soricut, H.~Tran, V.~Vanhoucke, Q.~Vuong, A.~Wahid, S.~Welker, P.~Wohlhart, J.~Wu, F.~Xia, T.~Xiao, P.~Xu, S.~Xu, T.~Yu, and B.~Zitkovich, ``{RT-2}: Vision-language-action models transfer web knowledge to robotic control,'' \emph{arXiv preprint arXiv:2307.15818}, 2023.
-
 \bibitem{openvla}
 M.~J. Kim, K.~Pertsch, S.~Karamcheti, T.~Xiao, A.~Balakrishna, S.~Nair, R.~Rafailov, E.~Foster, T.~Lampe, P.~Sanketi, Q.~Vuong, T.~Kollar, B.~Burchfiel, R.~Tedrake, D.~Sadigh, C.~Finn, and P.~Liang, ``{OpenVLA}: An open-source vision-language-action model,'' \emph{arXiv preprint arXiv:2406.09246}, 2024.
 
@@ -38,14 +35,17 @@ H.~Liu, S.~Nasiriany, L.~Zhang, Z.~Bao, and Y.~Zhu, ``Robot learning on the job:
 \bibitem{intervengen}
 R.~Hoque, A.~Mandlekar, C.~R. Garrett, K.~Goldberg, and D.~Fox, ``{IntervenGen}: Interventional data generation for robust and data-efficient robot imitation learning,'' in \emph{IEEE/RSJ International Conference on Intelligent Robots and Systems}, 2024, pp. 2840--2846.
 
-\bibitem{diffdagger}
-S.-W. Lee, X.~Kang, and Y.-L. Kuo, ``{Diff-DAgger}: Uncertainty estimation with diffusion policy for robotic manipulation,'' in \emph{IEEE International Conference on Robotics and Automation}, 2025.
-
 \bibitem{sentinel}
 C.~Agia, R.~Sinha, J.~Yang, Z.~Cao, R.~Antonova, M.~Pavone, and J.~Bohg, ``Unpacking failure modes of generative policies: Runtime monitoring of consistency and progress,'' in \emph{Proceedings of the Conference on Robot Learning}, ser. Proceedings of Machine Learning Research, vol. 270, 2025, pp. 689--723.
 
 \bibitem{fiper}
 R.~R{\"o}mer, A.~Kobras, L.~Worbis, and A.~P. Schoellig, ``Failure prediction at runtime for generative robot policies,'' in \emph{Advances in Neural Information Processing Systems}, 2025.
+
+\bibitem{vlafail}
+F.~Seligmann, E.~Gospodinov, E.~U. Dincer, and G.~Neumann, ``{VLA-FAIL}: Efficient task failure detection for finetuned vision-language-action models,'' \emph{arXiv preprint arXiv:2606.21386}, 2026.
+
+\bibitem{rewindil}
+G.~Zheng, S.~Seenivasan, M.~Johnson-Roberson, and W.~Zhi, ``{Rewind-IL}: Online failure detection and state respawning for imitation learning,'' \emph{arXiv preprint arXiv:2604.16683}, 2026.
 
 \bibitem{safe}
 Q.~Gu, Y.~Ju, S.~Sun, I.~Gilitschenski, H.~Nishimura, M.~Itkina, and F.~Shkurti, ``{SAFE}: Multitask failure detection for vision-language-action models,'' in \emph{Advances in Neural Information Processing Systems}, vol.~38, 2025.

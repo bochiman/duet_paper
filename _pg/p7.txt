@@ -1,0 +1,184 @@
+TABLE IV
+FAILURE DETECTION UNDER MATCHED PROTOCOLS. ALL METRICS ARE
+HIGHER-IS-BETTER; BOLD DENOTES THE BEST RESULT IN EACH
+COLUMN.
+Method
+TPR ↑
+TNR ↑
+AUROC ↑
+Loc.@16 ↑
+logpZO [3]
+0.889
+0.243
+0.817
+0.569
+RND [31], [3]
+0.842
+0.361
+0.549
+0.330
+PCA-kmeans [3]
+0.884
+0.283
+0.625
+0.503
+STAC [9]
+0.839
+0.311
+0.494
+0.260
+DUET (Dt)
+0.900
+0.265
+0.845
+0.523
+TABLE V
+FUSION ABLATIONS, SUCCESS (%). FOUR-SUITE ROWS USE
+N=2000/2000/4000; STATIC GATES USE MATCHED OBJECT
+PROTOCOLS (N=500).
+Controller
+Gate
+Clean
+Robot displ.
+Action exec.
+Four-suite average
+DUET-Rel
+αt=0
+93.8
+40.0
+27.9
+DUET
+adaptive αt
+96.9
+61.7
+64.6
+Object suite, matched protocol
+DUET-Rel
+αt=0
+99.2
+36.2
+48.8
+Absolute-only
+αt=1
+5.2
+1.1
+0.8
+Fixed fusion
+αt=0.5
+46.2
+39.4
+41.0
+DUET
+adaptive αt
+99.2
+76.0
+84.4
+Relative control therefore remains dominant; recovery is
+invoked selectively.
+b) Sensitivity to τ and k.: Figure 7 shows a broad
+Object operating region with more than 90% nominal and
+75% OOD success. The shared setting τ=0.5, k=8 lies well
+inside it, so performance is not tied to a narrowly tuned gate.
+F. Real-Robot Evaluation
+We next test transfer beyond the simulation backbone.
+Because DUET attaches only to the shared vision-language
+representation, the same dual heads, fusion rule, and validity
+guard move from StarVLA to π0 (OpenPi) [26] without
+changing the DUET architecture.
+a) Platform and protocol.: We deploy on a 7-DoF
+Franka Emika Panda with a parallel-jaw gripper, a wrist-
+mounted Intel RealSense D405, and a third-person Orbbec
+FemtoBot camera, executing delta joint-position commands
+at 20 Hz. The backbone is π0-base (PaLIGemma 2B encoder,
+Gemma 300M action expert, flow matching) [26]; each task
+is fine-tuned for 5k steps from the public checkpoint on 50
+VR-teleoperated demonstrations (Fig. 2). Four tasks cover
+complementary primitives (Fig. 8): pick-and-place, block
+pushing, drawer opening, and whiteboard wiping.
+Each task is evaluated under nominal execution and two
+OOD families (N=20 trials per cell): a random-direction
+EEF shift (robot state) and an object displacement (world
+state). Intervention phases and magnitudes are task-specific.
+Random directions are paired across π0 and π0+DUET to
+control trial difficulty.
+b) Results.: Table VII shows that DUET preserves the
+90.0% nominal success of π0. Under robot-state EEF shifts,
+TABLE VI
+COMPONENT ABLATIONS, SUCCESS (%). CFG USES OBJECT (N=500);
+RETRAINS USE LIBERO-10 (N=500/500/1000).
+Variant
+Clean
+Robot displ.
+Action exec.
+CFG schedule, Object suite
+No adaptive CFG
+88.2
+52.6
+57.2
+Full DUET
+99.2
+76.0
+84.4
+Training replacements, LIBERO-10
+RVQ →MLP
+0.0
+0.0
+0.0
+Symmetric augmentation
+86.8
+58.6
+60.9
+Full DUET
+91.8
+60.8
+63.8
+5
+10
+15
+20
+k
+0.2
+0.4
+0.6
+0.8
+τ
+(a) Clean
+5
+10
+15
+20
+k
+(b) Action perturb.
+0
+20
+40
+60
+80
+100
+Success (%)
+Fig. 7.
+Object sensitivity to τ, k from 500 clean and 500 perturbed traces.
+Rectangle: clean > 90%, OOD > 75%; star: operating point.
+matching the simulation teleport protocol, the baseline falls
+to 10.0% while DUET reaches 77.5% (+67.5 pp; +65–70
+pp on every task). World-state object displacement remains
+harder, yet success still rises from 6.3% to 58.8% (+52.5
+pp). Figure 9 shows the same contrast on block pushing:
+the baseline continues off manifold or pushes empty space,
+while DUET reacquires a viable trajectory. As in simulation,
+Dt is strongest when the live pose leaves Ml and weaker on
+object–scene change (Fig. 5). The four-task nominal mean is
+unchanged (block pushing −5.0 pp; wiping +5.0 pp).
+G. Discussion
+The experiments both support and bound the mechanism.
+Disagreement ranks failures and drives recovery when the
+live pose leaves Ml; it is weaker for world-state changes
+and uninformative under invalid images, which the validity
+guard handles. For arm-state OOD, the shared-checkpoint
+comparison attributes the gain to adaptive gating rather than
+co-training, a pattern that persists from StarVLA in simu-
+lation to π0 on hardware. Visual dropout separates the two
+effects: asymmetric training lifts DUET-Rel over StarVLA,
+while the guard adds robustness as the outage lengthens. The
+broad τ–k plateau and successful backbone transfer indicate
+that recovery is not tied to per-suite gate tuning.

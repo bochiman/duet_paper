@@ -1,9 +1,19 @@
-@article{rt2,
-  title = {{RT-2}: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control},
-  author = {Brohan, Anthony and Brown, Noah and Carbajal, Justice and Chebotar, Yevgen and Chen, Xi and Choromanski, Krzysztof and Ding, Tianli and Driess, Danny and Dubey, Avinava and Finn, Chelsea and Florence, Pete and Fu, Chuyuan and Arenas, Montse Gonzalez and Gopalakrishnan, Keerthana and Han, Kehang and Hausman, Karol and Herzog, Alexander and Hsu, Jasmine and Ichter, Brian and Irpan, Alex and Joshi, Nikhil and Julian, Ryan and Kalashnikov, Dmitry and Kuang, Yuheng and Leal, Isabel and Lee, Kuang-Huei and Levine, Sergey and Lu, Yao and Michalewski, Henryk and Mordatch, Igor and Pertsch, Karl and Rao, Kanishka and Reymann, Karsten and Ryoo, Michael and Salazar, Grecia and Sanketi, Pannag and Sermanet, Pierre and Singh, Jaspiar and Singh, Anikait and Soricut, Radu and Tran, Huong and Vanhoucke, Vincent and Vuong, Quan and Wahid, Ayzaan and Welker, Stefan and Wohlhart, Paul and Wu, Jialin and Xia, Fei and Xiao, Ted and Xu, Peng and Xu, Sichun and Yu, Tianhe and Zitkovich, Brianna},
-  journal = {arXiv preprint arXiv:2307.15818},
-  year = {2023}
+@InProceedings{pmlr-v229-zitkovich23a,
+  title = 	 {RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control},
+  author =       {Zitkovich, Brianna and Yu, Tianhe and Xu, Sichun and Xu, Peng and Xiao, Ted and Xia, Fei and Wu, Jialin and Wohlhart, Paul and Welker, Stefan and Wahid, Ayzaan and Vuong, Quan and Vanhoucke, Vincent and Tran, Huong and Soricut, Radu and Singh, Anikait and Singh, Jaspiar and Sermanet, Pierre and Sanketi, Pannag R. and Salazar, Grecia and Ryoo, Michael S. and Reymann, Krista and Rao, Kanishka and Pertsch, Karl and Mordatch, Igor and Michalewski, Henryk and Lu, Yao and Levine, Sergey and Lee, Lisa and Lee, Tsang-Wei Edward and Leal, Isabel and Kuang, Yuheng and Kalashnikov, Dmitry and Julian, Ryan and Joshi, Nikhil J. and Irpan, Alex and Ichter, Brian and Hsu, Jasmine and Herzog, Alexander and Hausman, Karol and Gopalakrishnan, Keerthana and Fu, Chuyuan and Florence, Pete and Finn, Chelsea and Dubey, Kumar Avinava and Driess, Danny and Ding, Tianli and Choromanski, Krzysztof Marcin and Chen, Xi and Chebotar, Yevgen and Carbajal, Justice and Brown, Noah and Brohan, Anthony and Arenas, Montserrat Gonzalez and Han, Kehang},
+  booktitle = 	 {Proceedings of The 7th Conference on Robot Learning},
+  pages = 	 {2165--2183},
+  year = 	 {2023},
+  editor = 	 {Tan, Jie and Toussaint, Marc and Darvish, Kourosh},
+  volume = 	 {229},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--09 Nov},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v229/zitkovich23a/zitkovich23a.pdf},
+  url = 	 {https://proceedings.mlr.press/v229/zitkovich23a.html},
+  abstract = 	 {We study how vision-language models trained on Internet-scale data can be incorporated directly into end-to-end robotic control to boost generalization and enable emergent semantic reasoning. Our goal is to enable a single end-to-end trained model to both learn to map robot observations to actions and enjoy the benefits of large-scale pretraining on language and vision-language data from the web. To this end, we propose to co-fine-tune state-of-the-art vision-language models on both robotic trajectory data and Internet-scale vision-language tasks, such as visual question answering. In contrast to other approaches, we propose a simple, general recipe to achieve this goal: in order to fit both natural language responses and robotic actions into the same format, we express the actions as text tokens and incorporate them directly into the training set of the model in the same way as natural language tokens. We refer to such category of models as vision-language-action models (VLA) and instantiate an example of such a model, which we call RT-2. Our extensive evaluation (6k evaluation trials) shows that our approach leads to performant robotic policies and enables RT-2 to obtain a range of emergent capabilities from Internet-scale training. This includes significantly improved generalization to novel objects, the ability to interpret commands not present in the robot training data (such as placing an object onto a particular number or icon), and the ability to perform rudimentary reasoning in response to user commands (such as picking up the smallest or largest object, or the one closest to another object). We further show that incorporating chain of thought reasoning allows RT-2 to perform multi-stage semantic reasoning, for example figuring out which object to pick up for use as an improvised hammer (a rock), or which type of drink is best suited for someone who is tired (an energy drink).}
 }
+
 @article{aljalbout2024actionspace,
   title   = {On the Role of the Action Space in Robot Manipulation Learning and Sim-to-Real Transfer},
   author  = {Aljalbout, Elie and Frank, Felix and Karl, Maximilian
@@ -275,6 +285,59 @@ archivePrefix = {arXiv},
   author = {Chen, Hongyi and Yao, Yunchao and Liu, Ruixuan and Liu, Changliu and Ichnowski, Jeffrey},
   journal = {arXiv preprint arXiv:2409.03966},
   year = {2024}
+}
+
+@article{failsafe,
+  title = {{FailSafe}: Reasoning and Recovery from Failures in Vision-Language-Action Models},
+  author = {Lin, Zijun and Duan, Jiafei and Fang, Haoquan and Fox, Dieter and Krishna, Ranjay and Tan, Cheston and Wen, Bihan},
+  journal = {arXiv preprint arXiv:2510.01642},
+  year = {2025}
+}
+
+@article{rewindil,
+  title = {{Rewind-IL}: Online Failure Detection and State Respawning for Imitation Learning},
+  author = {Zheng, Gehan and Seenivasan, Sanjay and Johnson-Roberson, Matthew and Zhi, Weiming},
+  journal = {arXiv preprint arXiv:2604.16683},
+  year = {2026}
+}
+
+@article{far,
+  title = {{FAR}: Failure-Aware Retry for Test-Time Recovery and Continual Policy Improvement},
+  author = {Hao, Haoran and Syed, Shahram Najam and Ichnowski, Jeffrey and Schneider, Jeff},
+  journal = {arXiv preprint arXiv:2607.01111},
+  year = {2026}
+}
+
+@inproceedings{backtomanifold,
+  title = {Back to the Manifold: Recovering from Out-of-Distribution States},
+  author = {Reichlin, Alessandro and Marchetti, Luca and Yin, Hang and Ghadirzadeh, Ali and Kragic, Danica},
+  booktitle = {IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  pages = {8660--8666},
+  year = {2022},
+  doi = {10.1109/IROS47612.2022.9981315}
+}
+
+@inproceedings{ocr,
+  title = {Out-of-Distribution Recovery with Object-Centric Keypoint Inverse Policy for Visuomotor Imitation Learning},
+  author = {Gao, Xiao and Li, Yijiong and Figueroa, Nadia},
+  booktitle = {IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  year = {2025},
+  doi = {10.1109/IROS60139.2025.11246616}
+}
+
+@inproceedings{ccdp,
+  title = {{CCDP}: Composition of Conditional Diffusion Policies with Guided Sampling},
+  author = {Razmjoo, Amirreza and Calinon, Sylvain and Gienger, Michael and Zhang, Fan},
+  booktitle = {IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  pages = {20036--20043},
+  year = {2025}
+}
+
+@article{vlafail,
+  title = {{VLA-FAIL}: Efficient Task Failure Detection for Finetuned Vision-Language-Action Models},
+  author = {Seligmann, Florian and Gospodinov, Emiliyan and Dincer, Enes Ulas and Neumann, Gerhard},
+  journal = {arXiv preprint arXiv:2606.21386},
+  year = {2026}
 }
 
 @inproceedings{libero,
