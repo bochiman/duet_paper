@@ -5,14 +5,13 @@
 \citation{dagger}
 \citation{sirius}
 \citation{intervengen}
+\citation{starvla}
+\citation{pi0}
 \@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCTION}{1}{}\protected@file@percent }
 \citation{sentinel}
 \citation{faildetect}
 \citation{fiper}
 \citation{vlafail}
-\citation{rewindil}
-\citation{safe}
-\citation{aha}
 \citation{safe}
 \citation{aha}
 \citation{dagger}
@@ -20,47 +19,50 @@
 \citation{sirius}
 \citation{intervengen}
 \citation{racer}
-\citation{aha}
 \citation{vlmrecovery}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Dual-manifold failure detection and recovery. The relative and absolute end-effector manifolds agree during nominal execution but diverge when a failure drives the system OOD, exposing an endogenous disagreement score $D_t$. Relative actions provide precise local motion, whereas absolute waypoints project execution toward a stable demonstrated-manifold anchor.}}{2}{}\protected@file@percent }
+\citation{backtomanifold}
+\citation{ocr}
+\citation{rewindil}
+\citation{far}
+\citation{aljalbout2024actionspace}
+\citation{feng2026demystifying}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces DUET overview. Cross-space disagreement detects deviations and gates relative control with absolute-waypoint recovery.}}{2}{}\protected@file@percent }
 \newlabel{fig:teaser}{{1}{2}{}{figure.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {II}RELATED WORK}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {II-A}Runtime Failure Detection}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Recovery from Execution Failures}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-C}Action Representations for Robust Control}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {III}METHOD}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-A}Problem Formulation}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Two Views of One Behavior}{2}{}\protected@file@percent }
-\newlabel{sec:manifolds}{{III-B}{2}{}{subsection.3.2}{}}
 \citation{diffusionpolicy}
 \citation{pi0}
 \citation{vqvae}
 \citation{rvq}
 \citation{cfg}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces DUET comprises a shared vision-language encoder, relative and absolute action heads, cross-space failure detection, and closed-loop recovery. Disagreement between state-aware relative control and RVQ-anchored absolute waypoints gates the switch from nominal execution to recovery.}}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces DUET architecture: shared encoder, relative and RVQ-anchored absolute heads, and disagreement-gated recovery.}}{3}{}\protected@file@percent }
 \newlabel{fig:architecture}{{2}{3}{}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Two Views of One Behavior}{3}{}\protected@file@percent }
+\newlabel{sec:manifolds}{{III-B}{3}{}{subsection.3.2}{}}
 \newlabel{eq:transport_map}{{5}{3}{}{equation.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-C}Dual-Head Architecture}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-D}Disagreement-Preserving Learning}{3}{}\protected@file@percent }
 \newlabel{sec:learning}{{III-D}{3}{}{subsection.3.4}{}}
 \newlabel{eq:training_loss}{{7}{3}{}{equation.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {III-E}Joint Failure Detection and Recovery}{3}{}\protected@file@percent }
-\newlabel{sec:method-gate}{{III-E}{3}{}{subsection.3.5}{}}
-\newlabel{eq:recovery_vector}{{9}{3}{}{equation.9}{}}
-\newlabel{eq:disagreement}{{10}{3}{}{equation.10}{}}
-\newlabel{eq:fused_action}{{14}{3}{}{equation.14}{}}
 \citation{libero}
 \citation{starvla}
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Execution-failure families and the quantity driven out of distribution.}}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-E}Joint Failure Detection and Recovery}{4}{}\protected@file@percent }
+\newlabel{sec:method-gate}{{III-E}{4}{}{subsection.3.5}{}}
+\newlabel{eq:recovery_vector}{{9}{4}{}{equation.9}{}}
+\newlabel{eq:disagreement}{{10}{4}{}{equation.10}{}}
+\newlabel{eq:fused_action}{{14}{4}{}{equation.14}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Failure families and affected OOD quantities.}}{4}{}\protected@file@percent }
 \newlabel{tab:taxonomy}{{I}{4}{}{table.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {IV}EXPERIMENTS}{4}{}\protected@file@percent }
 \newlabel{sec:experiments}{{IV}{4}{}{section.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-A}Evaluation Protocol}{4}{}\protected@file@percent }
 \newlabel{sec:protocol}{{IV-A}{4}{}{subsection.4.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Object-suite keyframes before, during, and after (a) action perturbation, (b) EEF teleport, (c) grasp drop, and (d) camera blackout.}}{4}{}\protected@file@percent }
-\newlabel{fig:showcase}{{3}{4}{}{figure.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}\textbf  {(Q1)} Failure-Aware Retry}{4}{}\protected@file@percent }
 \newlabel{sec:retry}{{IV-B}{4}{}{subsection.4.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-B.0.a}Mechanism evidence.}{4}{}\protected@file@percent }
 \citation{faildetect}
 \citation{sentinel}
 \citation{faildetect}
@@ -68,65 +70,73 @@
 \citation{faildetect}
 \citation{faildetect}
 \citation{sentinel}
-\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Closed-loop success (\%; $N{=}500$ per cell). Overall combines medium$+$severe across suites. Rel$\to $DUET has McNemar $p{<}10^{-3}$ except teleport/Spatial ($p{=}0.21/0.067$) and blackout/Object medium.}}{5}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Retry success (\%; $N{=}500$/cell). Overall: medium$+$severe, all suites. Rel$\to $DUET: McNemar $p{<}10^{-3}$ except Spatial teleport ($0.21/0.067$) and medium Object blackout.}}{5}{}\protected@file@percent }
 \newlabel{tab:ood_detailed}{{II}{5}{}{table.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Paired DUET-Rel$\to $DUET success gain by family.}}{5}{}\protected@file@percent }
-\newlabel{fig:overall}{{4}{5}{}{figure.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-B.0.a}Mechanism evidence.}{5}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Nominal LIBERO success (\%). StarVLA-GR00T: joint $30$k training; DUET: suite-specific $10$k.}}{5}{}\protected@file@percent }
+\newlabel{tab:nominal}{{III}{5}{}{table.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-C}\textbf  {(Q2)} Baseline Comparison}{5}{}\protected@file@percent }
 \newlabel{sec:nominal}{{IV-C}{5}{}{subsection.4.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-D}\textbf  {(Q3)} Endogenous OOD Detection}{5}{}\protected@file@percent }
 \newlabel{sec:detection}{{IV-D}{5}{}{subsection.4.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces $D_t$ and $\alpha _t$ on Object, aligned to injection (mean, pointwise 95\% CI): arm-state OOD (a,c), world-state change (b), and validity-guard override (d).}}{5}{}\protected@file@percent }
-\newlabel{fig:telemetry}{{5}{5}{}{figure.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {IV-E}Ablations}{5}{}\protected@file@percent }
-\newlabel{sec:ablations}{{IV-E}{5}{}{subsection.4.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Object-suite disturbances, before/during/after: (a) action perturbation, (b) EEF teleport, (c) grasp drop, (d) camera blackout.}}{6}{}\protected@file@percent }
+\newlabel{fig:showcase}{{3}{6}{}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Paired DUET-Rel$\to $DUET gains by failure family.}}{6}{}\protected@file@percent }
+\newlabel{fig:overall}{{4}{6}{}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Injection-aligned $D_t,\alpha _t$ on Object (mean, pointwise 95\% CI): (a,c) arm-state OOD, (b) world-state change, (d) validity guard.}}{6}{}\protected@file@percent }
+\newlabel{fig:telemetry}{{5}{6}{}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Object teleport (medium, step $39$; $n{=}484$--$498$). Left: clean-trajectory distance. Right: re-entry and task success.}}{6}{}\protected@file@percent }
+\newlabel{fig:manifold}{{6}{6}{}{figure.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Object $\tau ,k$ sensitivity ($500$ traces/condition). Rectangle: clean $>90\%$, OOD $>75\%$; star: operating point.}}{6}{}\protected@file@percent }
+\newlabel{fig:sensitivity}{{7}{6}{}{figure.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-E}Ablations}{6}{}\protected@file@percent }
+\newlabel{sec:ablations}{{IV-E}{6}{}{subsection.4.5}{}}
 \citation{pi0}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Franka evaluation. Left: pick-and-place, drawer opening, wiping, and pushing. Right: pushing recovery under EEF (top) and object (bottom) shifts.}}{7}{}\protected@file@percent }
+\newlabel{fig:real_tasks}{{8}{7}{}{figure.8}{}}
+\newlabel{fig:real_ood}{{8}{7}{}{figure.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Matched-protocol detection. Higher is better; column bests in bold.}}{7}{}\protected@file@percent }
+\newlabel{tab:detection}{{IV}{7}{}{table.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Fusion ablations (success, \%). Four-suite $N{=}2000/2000/4000$; matched Object $N{=}500$.}}{7}{}\protected@file@percent }
+\newlabel{tab:main_results}{{V}{7}{}{table.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-E.0.a}Fusion on clean trajectories.}{7}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Component ablations (success, \%). CFG: Object, $N{=}500$; retrains: LIBERO-10, $N{=}500/500/1000$.}}{7}{}\protected@file@percent }
+\newlabel{tab:ablations}{{VI}{7}{}{table.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-E.0.b}Sensitivity to $\tau $ and $k$.}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-F}Real-Robot Evaluation}{7}{}\protected@file@percent }
+\newlabel{sec:real_robot}{{IV-F}{7}{}{subsection.4.6}{}}
 \bibstyle{IEEEtran}
 \bibdata{references}
 \bibcite{openvla}{1}
 \bibcite{starvla}{2}
 \bibcite{faildetect}{3}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Object EEF teleport (medium, step $39$; $n{=}484$--$498$). Left: distance to the clean-trajectory reference after injection. Right: re-entry and final task success.}}{6}{}\protected@file@percent }
-\newlabel{fig:manifold}{{6}{6}{}{figure.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Nominal LIBERO success (\%). Reported methods provide external context: StarVLA-GR00T uses joint $30$k training, whereas DUET uses suite-specific $10$k checkpoints.}}{6}{}\protected@file@percent }
-\newlabel{tab:nominal}{{III}{6}{}{table.3}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-E.0.a}Fusion on clean trajectories.}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {IV-E.0.b}Sensitivity to $\tau $ and $k$.}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {IV-F}Real-Robot Evaluation}{6}{}\protected@file@percent }
-\newlabel{sec:real_robot}{{IV-F}{6}{}{subsection.4.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Failure detection under matched protocols. All metrics are higher-is-better; bold denotes the best result in each column.}}{6}{}\protected@file@percent }
-\newlabel{tab:detection}{{IV}{6}{}{table.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Fusion ablations, success (\%). Four-suite rows use $N{=}2000/2000/4000$; static gates use matched Object protocols ($N{=}500$).}}{6}{}\protected@file@percent }
-\newlabel{tab:main_results}{{V}{6}{}{table.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}LIMITATIONS}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VI}CONCLUSION}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{6}{}\protected@file@percent }
 \bibcite{dagger}{4}
 \bibcite{sirius}{5}
 \bibcite{intervengen}{6}
-\bibcite{sentinel}{7}
-\bibcite{fiper}{8}
-\bibcite{vlafail}{9}
-\bibcite{rewindil}{10}
+\bibcite{pi0}{7}
+\bibcite{sentinel}{8}
+\bibcite{fiper}{9}
+\bibcite{vlafail}{10}
 \bibcite{safe}{11}
 \bibcite{aha}{12}
 \bibcite{eil}{13}
 \bibcite{racer}{14}
 \bibcite{vlmrecovery}{15}
-\bibcite{diffusionpolicy}{16}
-\bibcite{pi0}{17}
-\bibcite{vqvae}{18}
-\bibcite{rvq}{19}
-\bibcite{cfg}{20}
-\bibcite{libero}{21}
-\bibcite{rnd}{22}
-\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Real-robot success (\%) with a $\pi _0$-base backbone ($N{=}20$ trials per cell; Overall pools $N{=}80$). Robot-state: random-direction EEF shift. World-state: object displacement. $\Delta $: $\pi _0$+DUET minus $\pi _0$.}}{7}{}\protected@file@percent }
-\newlabel{tab:real_robot}{{VII}{7}{}{table.7}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Component ablations, success (\%). CFG uses Object ($N{=}500$); retrains use LIBERO-10 ($N{=}500/500/1000$).}}{7}{}\protected@file@percent }
-\newlabel{tab:ablations}{{VI}{7}{}{table.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Object sensitivity to $\tau ,k$ from $500$ clean and $500$ perturbed traces. Rectangle: clean $>90\%$, OOD $>75\%$; star: operating point.}}{7}{}\protected@file@percent }
-\newlabel{fig:sensitivity}{{7}{7}{}{figure.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Real-robot evaluation on a Franka Emika Panda. Left: four tasks (pick-and-place, drawer opening, whiteboard wiping, and block pushing). Right: qualitative recovery on block pushing. Top: robot-state EEF shift---$\pi _0$ fails, DUET recovers. Bottom: world-state cube shift---$\pi _0$ pushes empty space, DUET reacquires the object.}}{8}{}\protected@file@percent }
-\newlabel{fig:real_tasks}{{8}{8}{}{figure.8}{}}
-\newlabel{fig:real_ood}{{8}{8}{}{figure.8}{}}
+\bibcite{backtomanifold}{16}
+\bibcite{ocr}{17}
+\bibcite{rewindil}{18}
+\bibcite{far}{19}
+\bibcite{aljalbout2024actionspace}{20}
+\bibcite{feng2026demystifying}{21}
+\bibcite{diffusionpolicy}{22}
+\bibcite{vqvae}{23}
+\bibcite{rvq}{24}
+\bibcite{cfg}{25}
+\bibcite{libero}{26}
+\bibcite{rnd}{27}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Franka success (\%, $\pi _0$-base; $N{=}20$/cell, $80$ overall). Robot: random-direction EEF shift; world: object shift. $\Delta $: +DUET minus $\pi _0$.}}{8}{}\protected@file@percent }
+\newlabel{tab:real_robot}{{VII}{8}{}{table.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}LIMITATIONS}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}CONCLUSION}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{8}{}\protected@file@percent }
 \gdef \@abspage@last{8}
