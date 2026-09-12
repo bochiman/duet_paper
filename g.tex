@@ -34,13 +34,13 @@ DUET: Endogenous Failure Detection and Recovery via Dual-Action Disagreement
 \pagestyle{empty}
 
 \begin{abstract}
-Vision-language-action (VLA) policies fine-tuned on limited demonstrations can struggle to detect and recover from execution failures induced by out-of-distribution (OOD) conditions. Existing solutions often require external detectors or costly recovery data. We introduce DUET, a dual-action-head framework whose action heads are trained only on successful demonstrations. Relative actions provide nominal control, while an absolute head without explicit proprioceptive conditioning predicts RVQ-conditioned waypoints for recovery. Disagreement between the relative command and the waypoint-induced correction, augmented by a training-state bound violation, provides an endogenous failure-risk score that continuously gates the transition between them. On four LIBERO suites under four failure families, DUET improves nominal success from $93.8\%$ to $96.9\%$ and action-execution failure success from $27.9\%$ to $64.6\%$ over its relative-only baseline. Its disagreement score achieves the highest AUROC ($0.845$) among the evaluated success-only detectors. Instantiated on a separately trained $\pi_0$ controller for a Franka arm, DUET preserves nominal success ($90.0\%$) and raises robot-state OOD success from $10.0\%$ to $77.5\%$.
+Vision-language-action (VLA) policies fine-tuned on limited successful demonstrations can struggle to detect and recover from out-of-distribution (OOD) execution deviations. Existing solutions often add an external detector or require costly recovery data. We introduce DUET, a dual-action-head framework trained without failure or recovery trajectories. A state-conditioned relative head provides nominal control, while an absolute head without explicit proprioceptive conditioning predicts RVQ-conditioned return waypoints. After converting each waypoint into a local correction, its disagreement with the relative command, together with a state-bound violation score, continuously gates the two predictions. On four LIBERO suites and four failure families, DUET improves nominal success from $93.8\%$ to $96.9\%$ and action-perturbation success from $27.9\%$ to $64.6\%$ over its relative-only baseline. Disagreement also attains the best AUROC ($0.845$) among the evaluated success-only detectors. On a separately trained $\pi_0$ controller and Franka arm, DUET preserves $90.0\%$ nominal success and raises robot-state OOD success from $10.0\%$ to $77.5\%$.
 \end{abstract}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/fig1.pdf}
-\caption{DUET overview. Cross-space disagreement detects deviations and gates relative control with absolute-waypoint recovery.}
+\caption{DUET overview. Cross-space disagreement scores execution deviations and gates relative control with absolute-waypoint correction.}
 \label{fig:teaser}
 \end{figure*}
 
@@ -67,15 +67,15 @@ Our contributions are threefold:
 \section{RELATED WORK}
 
 \subsection{Runtime Failure Detection}
-Runtime monitoring must distinguish unusual observations from deviations that threaten task completion. Sentinel combines temporal action consistency with VLM-based assessment of task progress; we evaluate its action-consistency signal STAC \cite{sentinel}. Without failure examples, FAIL-Detect formulates monitoring as sequential OOD detection using scalar uncertainty signals; we compare against its logpZO, RND, and PCA-kmeans variants \cite{faildetect}. DUET instead compares a relative command with the local correction induced by an absolute waypoint learned from successful demonstrations. Unlike a standalone scalar alarm, the same comparison also exposes a candidate correction for recoverable execution failures.
+Runtime monitors use model uncertainty, action inconsistency, or semantic progress. Sentinel combines temporal consistency with VLM-based progress assessment; we evaluate its training-free STAC signal \cite{sentinel}. FAIL-Detect performs sequential OOD detection without failure examples using policy likelihoods or success-only features; we compare its logpZO, RND, and PCA-kmeans variants \cite{faildetect}. These scalar alarms indicate when to intervene, but not how. DUET instead compares a relative command with the local correction induced by a success-trained waypoint, so the paired predictions provide both a risk score and a recovery direction.
 
 \subsection{Recovery from Execution Failures}
-One route to recovery expands the training distribution: DAgger queries experts on policy-induced states \cite{dagger}, intervention-based learning uses human feedback and takeovers \cite{eil,sirius}, and IntervenGen generates corrective trajectories from a small intervention set \cite{intervengen}. RACER augments demonstrations with recovery trajectories and rich language annotations, then uses a VLM supervisor to guide a visuomotor actor \cite{racer}. Optimized VLM prompts can also support motion correction and task-level recovery without this actor-training pipeline \cite{vlmrecovery}. These methods address broader corrective behavior through additional supervision or semantic reasoning.
+One route expands the training distribution. DAgger queries experts on policy-induced states \cite{dagger}; intervention learning obtains corrective actions from human takeovers \cite{eil,sirius}; and IntervenGen synthesizes trajectories from a small intervention set \cite{intervengen}. RACER combines recovery demonstrations, language, and VLM supervision \cite{racer}, while optimized VLM prompts support motion or task-level correction \cite{vlmrecovery}. These methods can address failures requiring new semantic decisions, but add supervision, intervention, or inference machinery.
 
-Recovery from existing demonstrations is also well established. Back to the Manifold uses an approximate training-data density and an equivariant visual-to-latent mapping to return from OOD states \cite{backtomanifold}. OCR derives an inverse recovery policy from an object-keypoint manifold without collecting additional recovery data \cite{ocr}. Rewind-IL couples action-chunk inconsistency with respawning at VLM-verified demonstration checkpoints \cite{rewindil}; FAR uses failure-derived preferences and action perturbations for test-time adaptation and retry \cite{far}. Thus, avoiding recovery demonstrations is not unique to DUET. Its distinction is to use jointly learned relative and absolute predictions for both the trigger and an online waypoint correction, without checkpoint retrieval or test-time parameter updates.
+Recovery can also reuse existing demonstrations. Back to the Manifold returns toward high-density training states \cite{backtomanifold}, and OCR learns an inverse recovery policy from object-keypoint structure \cite{ocr}. Rewind-IL returns to VLM-verified demonstration checkpoints \cite{rewindil}; FAR performs test-time adaptation using failure-derived preferences \cite{far}. Avoiding recovery demonstrations is therefore not unique to DUET. Its distinction is that two action representations learned jointly from successful trajectories supply both the trigger and a closed-loop waypoint correction, without an external detector, checkpoint retrieval, or test-time update.
 
 \subsection{Action Representations for Robust Control}
-Action-space design changes both learning and deployment behavior. Aljalbout et al. compare control spaces for reinforcement learning and sim-to-real manipulation, showing that representation choice materially affects performance \cite{aljalbout2024actionspace}. Feng et al. systematically study manipulation policies and report benefits of appropriate delta prediction, alongside complementary properties of joint- and task-space control \cite{feng2026demystifying}. These findings motivate treating representation as a design choice, but do not establish a recovery guarantee. DUET retains two operational-space views of the same demonstrations: relative commands for nominal control and absolute waypoints as return targets. Their disagreement is used at runtime, rather than selecting a single representation solely for nominal accuracy.
+Action-space design affects policy learning, transfer, and closed-loop stability \cite{aljalbout2024actionspace,feng2026demystifying}. Prior comparisons largely select one representation for nominal prediction. DUET retains two views: state-conditioned relative commands for local execution and image-conditioned absolute waypoints as return targets. Their asymmetric conditioning is operational: disagreement signals inconsistency between local execution and the visually inferred target, while the waypoint remains usable for correction.
 
 \section{METHOD}
 
@@ -89,7 +89,7 @@ At time $t$, the robot observes multi-view images $o_t$, a language instruction 
 \end{align}
 $\Delta A_t$ contains relative operational-space commands and $W_t$ absolute waypoints $[x,y,z,r_x,r_y,r_z,g]$. Recorded deltas and future end-effector states supervise the respective heads. Fusion acts on the 6-D pose component $a_p$; the deployed gripper command comes from the relative head.
 
-Paired labels describe the same demonstrated continuation, letting both heads learn without annotating failures or recovery actions. At deployment, the live pose converts an absolute target into a correction, although it is not an explicit input to the absolute predictor.
+Paired labels describe the same demonstrated continuation, so neither head requires annotated failures or recovery actions. Below, $\hat{\delta a}_{p,t}$ and $\hat{w}_{p,t}$ denote the current elements of the predicted chunks. The live pose converts the absolute target into a correction but is not an explicit input to the absolute predictor.
 
 \begin{figure}[!t]
 \centering
@@ -146,14 +146,14 @@ where absolute labels are normalized future states and relative labels are recor
 
 Agreement on successful behavior is encouraged indirectly by paired supervision. Explicitly forcing agreement on perturbed inputs could suppress the very residual used for monitoring; the separate objectives instead allow the branches to respond differently when their conditioning becomes unreliable.
 
-Asymmetric visual augmentation specializes the branches. The absolute head and RVQ adapter train on clean and perturbed observations so the global anchor remains stable under degraded input. The relative head is optimized only on the clean subset $\mathcal{B}_{\mathrm{clean}}$:
+Asymmetric visual augmentation specializes the branches. With probability $p_{\mathrm{aug}}$, each view receives one or two of color jitter, an $80$--$95\%$ resized crop, and Gaussian pixel noise ($\sigma{=}5$--$25$ on $[0,255]$); targets remain unchanged. The relative head is optimized only on the clean subset $\mathcal{B}_{\mathrm{clean}}$:
 \begin{equation}
     \mathcal{L}_{\mathrm{rel}} =
     \frac{1}{|\mathcal{B}_{\mathrm{clean}}|}
     \sum_{i \in \mathcal{B}_{\mathrm{clean}}}
-    \ell_{\mathrm{FM}}(\hat{\Delta a}^{(i)}, \Delta a^{(i)}).
+    \ell_{\mathrm{FM}}(\hat{\Delta A}^{(i)}, \Delta A^{(i)}).
 \end{equation}
-This keeps the relative head sensitive and the absolute branch robust. For CFG, the absolute head uses learned null tokens on a subset of samples.
+The absolute and RVQ losses use the full batch, while the relative loss excludes augmented samples. This keeps the relative head sensitive and the absolute branch robust. For CFG, the absolute head replaces its quantized condition by learned null tokens on a subset of samples.
 
 \subsection{Joint Failure-Risk Scoring and Recovery}
 \label{sec:method-gate}
@@ -178,17 +178,17 @@ A coarse state-distance term measures normalized violation of the training-state
     S_t =
     \frac{1}{7}\sum_{j=1}^{7}\left[
     \frac{[u_{\min,j}-u_{t,j}]_+ + [u_{t,j}-u_{\max,j}]_+}
-    {u_{\max,j}-u_{\min,j}+\epsilon}
+    {\max(u_{\max,j}-u_{\min,j},\epsilon)}
     \right].
 \end{equation}
-The failure-risk score and recovery weight are $q_t = D_t + \lambda S_t$ and $\alpha_t = \sigma(k(q_t-\tau))$. DUET interpolates local execution and global recovery while keeping relative gripper control:
+We use $\epsilon{=}10^{-6}$. The failure-risk score and recovery weight are $q_t = D_t + \lambda S_t$ and $\alpha_t = \sigma(k(q_t-\tau))$. DUET interpolates local execution and global recovery while keeping relative gripper control:
 \begin{align}
     a_t &= [a_{p,t},a_{g,t}], \\
     a_{p,t} &= (1-\alpha_t)\hat{\delta a}_{p,t} + \alpha_t c_t, \\
     a_{g,t} &= \hat{\delta a}_{g,t},
     \label{eq:fused_action}
 \end{align}
-Relative control dominates on support; rising $q_t$ shifts the pose command toward $c_t$, and control returns after realignment. The previous fusion weight also sets the next absolute-head CFG scale, $w_t = w_{\max}-(w_{\max}-w_{\min})\alpha_{t-1}$. Thus $q_t$ determines \emph{when} and $c_t$ \emph{how} to recover. If vision is invalid, a guard freezes the last reliable waypoint and holds $\alpha_t{=}1$ until it returns.
+Relative control dominates on support; rising $q_t$ shifts the pose command toward $c_t$, and control returns after realignment. The previous fusion weight from a valid observation sets the next absolute-head CFG scale, $w_t = w_{\max}-(w_{\max}-w_{\min})\alpha_{t-1}$. Thus $q_t$ determines \emph{when} and $c_t$ \emph{how} to recover. If vision is invalid, a guard freezes the last reliable waypoint and holds $\alpha_t{=}1$ until it returns; this guard override is not fed back into CFG.
 
 \section{EXPERIMENTS}
 \label{sec:experiments}
@@ -199,7 +199,7 @@ We organize the simulation experiments around three questions:
     \setlength{\itemsep}{0pt}
     \setlength{\parsep}{0pt}
     \setlength{\topsep}{2pt}
-    \item[\textbf{(Q1)}] \textbf{Failure-aware retry:} Can DUET convert execution failures into successful task completion?
+    \item[\textbf{(Q1)}] \textbf{Failure-aware retry:} Can DUET recover from controlled execution deviations and complete the task?
     \item[\textbf{(Q2)}] \textbf{Baseline comparison:} Does DUET improve robustness without sacrificing nominal performance?
     \item[\textbf{(Q3)}] \textbf{Endogenous failure-risk scoring:} Does cross-space disagreement provide a useful runtime signal for recoverable execution failures when the action heads are trained only on successful demonstrations?
 \end{itemize}
@@ -208,9 +208,9 @@ Closed-loop success is the primary outcome. We evaluate disturbed execution, nom
 
 \subsection{Evaluation Protocol}
 \label{sec:protocol}
-We evaluate four LIBERO suites \cite{libero}, each with $10$ tasks and $50$ initial states per task, using checkpoints trained only on successful demonstrations ($10$k steps for Spatial, Object, and Goal; $40$k for LIBERO-10).
+We evaluate four LIBERO suites \cite{libero}, each with $10$ tasks and $50$ initial states per task, using checkpoints trained only on successful demonstrations ($10$k steps for Spatial, Object, and Goal; $40$k for LIBERO-10). Training uses seed $42$, AdamW, $500$ warmup steps, and cosine decay; the base/interface/head learning rates are $2.5{\times}10^{-5}/10^{-5}/10^{-4}$, and both flow heads use four inference steps.
 
-StarVLA \cite{starvla} is the external relative-action baseline. DUET-Rel ($\alpha_t{=}0$) and DUET share a checkpoint, so their difference isolates adaptive recovery, whereas StarVLA$\to$DUET-Rel captures dual-head co-training. Absolute-only ($\alpha_t{=}1$) and fixed fusion ($\alpha_t{=}0.5$) are inference-time ablations. DUET uses Qwen3-VL features (size $2048$), 16-/8-layer relative/absolute DiT-B heads, and $K{=}8$ actions per chunk. The absolute branch uses $16$ RVQ tokens from three codebooks (size $512$, dimension $256$), with $p_{\mathrm{aug}}{=}0.3$, $p_{\mathrm{drop}}{=}0.15$, $\lambda{=}1$, $\tau{=}0.5$, and $k{=}8$. The same gate setting is used for every suite and perturbation.
+StarVLA \cite{starvla} is the external relative-action baseline. DUET-Rel ($\alpha_t{=}0$) and DUET share a checkpoint, so their difference isolates adaptive recovery, whereas StarVLA$\to$DUET-Rel captures dual-head co-training. Absolute-only ($\alpha_t{=}1$) and fixed fusion ($\alpha_t{=}0.5$) are inference-time ablations. DUET uses Qwen3-VL features (size $2048$), 16-/8-layer relative/absolute DiT-B heads, and $K{=}8$ actions per chunk. The absolute branch uses $16$ RVQ tokens from three codebooks (size $512$, dimension $256$), with $p_{\mathrm{aug}}{=}0.3$, $p_{\mathrm{drop}}{=}0.15$, $\lambda{=}1$, $\tau{=}0.5$, $k{=}8$, and $(w_{\min},w_{\max}){=}(0,1)$. These gate settings are fixed across suites and perturbations.
 
 Perturbations use deterministic seeds and matched $(\mathrm{task},\mathrm{initial\ state})$ keys. At step $5$, action perturbation replaces the six pose-command dimensions by a seeded random unit vector scaled to $0.5/0.8$ for $10/15$ steps at medium/severe intensity, while preserving the gripper command. At step $39$, EEF teleport applies a collision-checked random XY displacement of $5/8$\,cm while preserving height and orientation. A medium grasp drop lowers the held object by $5$\,cm at step $67$. At step $23$, blackout replaces both third-person and wrist images by zeros for $15/30$ steps. These fixed steps place disturbances in initial reach, transport, post-grasp, and approach, respectively. They ensure identical interventions across methods but sample one recovery horizon per family. All perturbed episodes remain in the success-rate denominator; we report injection coverage for semantic preconditions and use paired McNemar tests.
 
@@ -291,7 +291,7 @@ Table~\ref{tab:ood_detailed} reports rollout success, not success conditioned on
 \label{fig:overall}
 \end{figure}
 
-\paragraph{Mechanism evidence.}
+\paragraph{Mechanism evidence}
 Figure~\ref{fig:telemetry} shows transient recovery: arm-state disturbances raise disagreement and correction weight; after realignment, relative control resumes. World-state responses are weaker, while complete visual dropout invokes the guard. These traces support the switching mechanism, but do not imply that every disagreement peak predicts failure.
 
 \begin{figure}[t]
@@ -301,7 +301,7 @@ Figure~\ref{fig:telemetry} shows transient recovery: arm-state disturbances rais
 \label{fig:telemetry}
 \end{figure}
 
-On the trace-complete Object-teleport subsets (Fig.~\ref{fig:manifold}; $n{=}484$--$498$), DUET closes $4.69$\,cm within $32$ steps and re-enters the clean-trajectory neighborhood in $97.9\%$ of episodes (median $16$ steps), versus $0.71$\,cm, $62.5\%$, and $58$ steps for DUET-Rel. Absolute-only reaches $99.6\%$ re-entry but only $1.1\%$ task success. These subset rates differ slightly from the all-rollout rates in Table~\ref{tab:ood_detailed}. Geometric proximity is insufficient without resuming task-appropriate local actions.
+For the geometric analysis in Fig.~\ref{fig:manifold}, the task-conditioned reference set $\mathcal{R}_{\ell}\subset\mathbb{R}^3$ contains end-effector positions from successful, unperturbed Object rollouts collected before scoring the disturbed rollouts. We measure translational distance to this set as $d_{\mathcal{M}}(t)=\min_{x^{\mathrm{ref}}\in\mathcal{R}_{\ell}}\lVert x_t-x^{\mathrm{ref}}\rVert_2$; orientation and gripper state are excluded. Re-entry occurs at the first post-injection step for which $d_{\mathcal{M}}(t)\leq3$\,cm, and re-entry time is measured from the injection at step $39$. On the trace-complete subsets ($n{=}484$--$498$), DUET closes $4.69$\,cm within $32$ steps and re-enters in $97.9\%$ of episodes (median $16$ steps), versus $0.71$\,cm, $62.5\%$, and $58$ steps for DUET-Rel. Absolute-only reaches $99.6\%$ re-entry but only $1.1\%$ task success. These subset rates differ slightly from the all-rollout rates in Table~\ref{tab:ood_detailed}. Geometric proximity is insufficient without resuming task-appropriate local actions.
 
 \begin{figure}[t]
 \centering
@@ -335,9 +335,16 @@ DUET & 98.8 & 99.4 & 97.6 & 91.8 & \textbf{96.9} \\
 \end{tabular}}
 \end{table}
 
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.96\textwidth]{figures/real-robot-exp.pdf}
+\caption{Franka evaluation. Left: pick-and-place, drawer opening, wiping, and pushing. Right: pushing recovery under EEF (top) and object (bottom) shifts.}
+\label{fig:real_tasks}
+\end{figure*}
+
 \subsection{\textbf{(Q3)} Endogenous Failure-Risk Scoring}
 \label{sec:detection}
-Table~\ref{tab:detection} evaluates whether $D_t$ provides a useful runtime ranking signal, comparing it with success-only detectors under matched protocols \cite{faildetect,sentinel}. Unlike those standalone scores, $D_t$ is coupled to the correction $c_t$; we evaluate it here as a ranking signal rather than a calibrated failure probability.
+Table~\ref{tab:detection} evaluates $D_t$ against detectors trained without failure examples under matched rollouts \cite{faildetect,sentinel}. Matched timestep scores are split by $(\mathrm{task},\mathrm{initial\ state})$ key. For detector $m$, $\gamma_m$ is selected on the calibration split at $95\%$ TPR and frozen on the test split; labels set only this reporting point and do not train the detector. This evaluation threshold differs from controller threshold $\tau$. TPR, TNR, and AUROC use held-out timestep scores; Loc.@16 is the fraction of perturbed episodes first alarming within $16$ steps after injection. Unlike the baselines, $D_t$ also supplies correction $c_t$ and is not a calibrated failure probability.
 
 \begin{table}[t]
 \caption{Matched-protocol failure-risk scoring. Higher is better; column bests in bold.}
@@ -358,20 +365,11 @@ DUET ($D_t$) & \textbf{0.900} & 0.265 & \textbf{0.845} & 0.523 \\
 \end{tabular}}
 \end{table}
 
-DUET leads AUROC ($0.845$) and TPR ($0.900$), but RND leads TNR and logpZO localization. Better ranking therefore does not imply fewer false alarms or better timing at the evaluated threshold. All methods' low TNR ($0.24$--$0.36$) indicates frequent nominal hard-threshold triggers.
-
-DUET applies a continuous correction weight, not a binary stop command. Across $2{,}000$ clean episodes, $\alpha_t$ has mean $0.139$ and $95$th percentile $0.339$, with only $1.7\%$ of steps above $0.5$. These results answer Q3 narrowly: $D_t$ is a competitive ranking and control signal for the evaluated deviations, not a calibrated failure probability. Q1 evaluates the closed-loop benefit of coupling it to $c_t$.
-
-\begin{figure*}[!t]
-\centering
-\includegraphics[width=0.96\textwidth]{figures/real-robot-exp.pdf}
-\caption{Franka evaluation. Left: pick-and-place, drawer opening, wiping, and pushing. Right: pushing recovery under EEF (top) and object (bottom) shifts.}
-\label{fig:real_tasks}
-\end{figure*}
+DUET leads AUROC and TPR, whereas RND leads TNR and logpZO localization; ranking quality therefore does not guarantee fewer false alarms or earlier detection. DUET nevertheless uses a continuous correction rather than a binary stop: over $2{,}000$ clean episodes, $\alpha_t$ averages $0.139$, its $95$th percentile is $0.339$, and only $1.7\%$ of steps exceed $0.5$. Thus, $D_t$ is a competitive ranking and control signal for these deviations, not a calibrated failure probability.
 
 \subsection{Ablations}
 \label{sec:ablations}
-Table~\ref{tab:main_results} tests whether adding the absolute action is sufficient. On Object, absolute-only and fixed fusion reach only $5.2\%$ and $46.2\%$ clean success. Fixed fusion also underperforms DUET-Rel under action perturbation ($41.0\%$ versus $48.8\%$), while adaptive fusion reaches $84.4\%$, supporting conditional waypoint use. The four-suite displacement average uses medium disturbances ($40.0\%\to61.7\%$); Table~\ref{tab:ood_detailed}'s $34.5\%\to59.4\%$ pools both severities.
+Table~\ref{tab:main_results} shows that merely adding an absolute prediction is insufficient: absolute-only and fixed fusion severely reduce clean success, and fixed fusion underperforms DUET-Rel under action perturbation. Adaptive fusion instead reaches $84.4\%$, supporting conditional waypoint use. The four-suite displacement row uses medium severity; Table~\ref{tab:ood_detailed} pools both severities.
 
 \begin{table}[t]
 \caption{Fusion ablations (success, \%). Four-suite $N{=}2000/2000/4000$; matched Object $N{=}500$.}
@@ -397,11 +395,11 @@ DUET & adaptive $\alpha_t$ & 99.2 & \textbf{76.0} & \textbf{84.4} \\
 \end{tabular}}
 \end{table}
 
-Table~\ref{tab:ablations} separates CFG from training replacements. Without adaptive CFG, Object displacement success falls from $76.0\%$ to $52.6\%$ and action-perturbation success from $84.4\%$ to $57.2\%$, with lower clean success. On LIBERO-10, symmetric augmentation reduces all three outcomes, supporting branch-specific training. RVQ-to-MLP replacement yields zero success in this configuration, not a general rejection of continuous heads. Comparisons are within each suite-specific block.
+Table~\ref{tab:ablations} separates CFG from training replacements. Removing adaptive CFG or branch-specific augmentation reduces every reported outcome. RVQ-to-MLP replacement yields zero LIBERO-10 success in this configuration, not a general rejection of continuous heads; comparisons remain within each suite-specific block.
 
 
 \begin{table}[t]
-\caption{Component and gate-score ablations (success, \%). $^\dagger$Projected targets for experiment planning, not measured results.}
+\caption{Component and gate-score ablations (success, \%).}
 \label{tab:ablations}
 \centering
 \resizebox{\columnwidth}{!}{%
@@ -420,11 +418,11 @@ Symmetric augmentation & 86.8 & 58.6 & 60.9 \\
 \rowcolor{gray!20}
 Full DUET & 91.8 & 60.8 & 63.8 \\
 \midrule
-\multicolumn{4}{@{}l}{\textit{Target gate-score decomposition, Object (medium)}} \\
+\multicolumn{4}{@{}l}{\textit{Gate-score decomposition, Object (medium)}} \\
 Relative only ($\alpha_t{=}0$) & 99.2 & 36.2 & 48.8 \\
-$S_t$ only$^\dagger$ & 99.0 & 52.4 & 56.0 \\
-$\lVert c_t\rVert_2$ only$^\dagger$ & 98.8 & 61.6 & 67.2 \\
-$D_t$ only$^\dagger$ & 99.0 & 70.8 & 80.6 \\
+$S_t$ only & 99.0 & 52.4 & 56.0 \\
+$\lVert c_t\rVert_2$ only & 98.8 & 61.6 & 67.2 \\
+$D_t$ only & 99.0 & 70.8 & 80.6 \\
 \rowcolor{gray!20}
 $D_t+\lambda S_t$ (full) & \textbf{99.2} & \textbf{76.0} & \textbf{84.4} \\
 \bottomrule
@@ -432,8 +430,8 @@ $D_t+\lambda S_t$ (full) & \textbf{99.2} & \textbf{76.0} & \textbf{84.4} \\
 \end{table}
 
 
-\paragraph{Recovery-score decomposition.}
-The target decomposition uses a shared checkpoint and matched Object rollouts. Thresholds are calibrated on disjoint clean rollouts to match nominal activation; other settings are fixed. Theory predicts $D_t$ to dominate action corruption and arm displacement, $S_t$ to respond only to state-bound crossings, and $\lVert c_t\rVert_2$ to conflate recovery with legitimate large motions. The full score should therefore retain clean behavior while outperforming each cue. Daggered entries are planning targets and must be replaced before submission.
+\paragraph{Recovery-score decomposition}
+Using a shared checkpoint and matched Object rollouts, thresholds are calibrated on disjoint clean rollouts to match nominal activation. $D_t$ is the strongest individual cue; correction magnitude also grows during legitimate motion, while $S_t$ requires a bound crossing. Their combination improves on $D_t$ by $5.2$ pp under displacement and $3.8$ pp under action perturbation with unchanged clean success.
 
 \subsection{Real-Robot Evaluation}
 \label{sec:real_robot}
@@ -467,15 +465,19 @@ Whiteboard wiping & 75.0 & 80.0 &  5.0 & 70.0 & $+65.0$ &  0.0 & 55.0 & $+55.0$ 
 \end{tabular}}
 \end{table}
 
-DUET preserves $90.0\%$ aggregate nominal success (Table~\ref{tab:real_robot}). Robot-state OOD improves from $10.0\%$ to $77.5\%$ across all four tasks, while world-state OOD rises from $6.3\%$ to $58.8\%$. The remaining gap is consistent with changed object relationships being harder to recover than arm alignment, but task-specific interventions preclude severity-matched comparison (Fig.~\ref{fig:real_tasks}). With $20$ trials per cell, the results support these tasks and backbone, not broad cross-robot generalization. No additional detector or recovery dataset is used.
+DUET preserves $90.0\%$ aggregate nominal success (Table~\ref{tab:real_robot}). Robot-state OOD rises from $10.0\%$ to $77.5\%$ (Wilson $95\%$ CIs: $5.2$--$18.5\%$, $67.2$--$85.3\%$), and world-state OOD from $6.3\%$ to $58.8\%$ ($2.7$--$13.8\%$, $47.8$--$68.9\%$). Because interventions are task-specific and each cell has $20$ trials, these results support the evaluated tasks and backbone rather than broad cross-robot generalization. No additional detector or recovery data are used.
+
+\section{DISCUSSION}
+
+Shared-checkpoint comparisons isolate adaptive fusion, while ablations show that neither waypoints nor geometric re-entry alone ensure completion. DUET works best when the visual target remains valid; changed object relations are harder. It is a retry controller for recoverable execution deviations, not a semantic replanner or universal detector.
 
 \section{LIMITATIONS}
 
-DUET requires aligned absolute-state labels and hardware calibration. Its min--max proxy can miss multimodal structure, while the absolute branch can lose information not visible in images. $D_t$ is weaker for world-state changes and shared visual corruption; the guard handles only the latter. Fixed-phase injections do not establish robustness to arbitrary timing. Irreversible failures and tasks requiring a new strategy are out of scope.
+DUET requires aligned absolute-state labels and controller-scale calibration. Coordinatewise bounds ignore multimodal structure, while the state-excluded absolute head can miss hidden information. Shared visual corruption and changed object relations weaken $D_t$; invalid images require the guard. Fixed-phase interventions test one recovery horizon, and thresholds require deployment recalibration. Simulation uses one seed; hardware covers one robot with $20$ trials per cell. Irreversible failures and new-strategy cases remain out of scope.
 
 \section{CONCLUSION}
 
-We presented DUET, a dual-branch VLA for endogenous failure-risk scoring and recovery. Comparing a local relative command with an RVQ-conditioned absolute waypoint yields both an unreliability signal and a closed-loop correction without an external detector or recovery demonstrations. Separately trained StarVLA and $\pi_0$-based controllers demonstrate applicability across the two evaluated backbones rather than direct weight transfer.
+DUET couples failure-risk scoring and correction by comparing relative commands with success-trained absolute waypoints. Its gate preserves nominal control while improving recovery from controlled execution deviations, without an external detector or recovery demonstrations. Separately trained StarVLA and $\pi_0$ controllers support applicability across two backbones; broader generalization remains future work.
 
 % Keep all floats ahead of the references without forcing an extra page.
 \FloatBarrier
